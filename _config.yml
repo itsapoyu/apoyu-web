@@ -1,0 +1,20 @@
+title: Apoyu
+description: Daily recovery coach for Apple Watch.
+url: https://apoyu.app
+theme: jekyll-theme-minimal
+
+# Permalinks: serve /privacy, /terms, /health-privacy, /support cleanly
+permalink: /:title
+
+# Pages that should be included
+include:
+  - privacy.md
+  - terms.md
+  - health-privacy.md
+  - support.md
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: page
