@@ -249,7 +249,7 @@ If we make material changes to this Privacy Policy, we will notify you in the ap
 
 If you have questions about this Privacy Policy or want to exercise your data rights, contact us at:
 
-**Email:** [CONTACT EMAIL TO BE ADDED]
+**Email:** support@apoyu.app
 **App:** apoyu.app
 
 <TODO: counsel to advise on whether a physical mailing address is required in your target jurisdictions (required for GDPR, CCPA, and several other regimes)>

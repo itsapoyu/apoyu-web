@@ -15,7 +15,7 @@ permalink: /terms
 
 By downloading, installing, or using the Apoyu app ("App"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the App.
 
-These Terms form a binding agreement between you and [LEGAL ENTITY NAME TO BE CONFIRMED] ("Apoyu," "we," "our," or "us"). <TODO: counsel to advise on entity type and name — sole proprietor, LLC, etc.>
+These Terms form a binding agreement between you and Daryll Cheng, a sole proprietor doing business as Apoyu ("Apoyu," "we," "our," or "us").
 
 ---
 
@@ -193,7 +193,7 @@ We may suspend or terminate your account if you violate these Terms, engage in f
 
 **Governing law:** These Terms are governed by the laws of [JURISDICTION TO BE DETERMINED]. <TODO: counsel to advise>
 
-**Informal resolution:** Before filing any formal dispute, please contact us at [CONTACT EMAIL] to try to resolve the issue informally. Most concerns can be resolved within 30 days.
+**Informal resolution:** Before filing any formal dispute, please contact us at support@apoyu.app to try to resolve the issue informally. Most concerns can be resolved within 30 days.
 
 **Formal dispute:** <TODO: counsel to advise on arbitration vs. litigation, venue, and class action waiver language>
 
@@ -221,7 +221,7 @@ We may update these Terms from time to time. If we make material changes, we wil
 
 If you have questions about these Terms, contact us at:
 
-**Email:** [CONTACT EMAIL TO BE ADDED]
+**Email:** support@apoyu.app
 **App:** apoyu.app
 
 <TODO: counsel to advise on whether a physical mailing address is required in your target jurisdictions>

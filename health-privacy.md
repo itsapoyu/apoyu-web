@@ -21,7 +21,7 @@ Apoyu reads heart rate variability, sleep, resting heart rate, respiratory rate,
 
 This document explains what consumer health data Apoyu collects, how we use it, who receives it, and how you can exercise your rights under Washington's My Health My Data Act ("MHMDA"). It supplements our [general Privacy Policy](https://apoyu.app/privacy). Where the two documents overlap, this one controls for consumer health data covered by MHMDA.
 
-This notice is written in plain language, as required by RCW 19.373.020(2). If anything below is unclear, contact us at [CONTACT EMAIL TO BE ADDED] and we will explain it.
+This notice is written in plain language, as required by RCW 19.373.020(2). If anything below is unclear, contact us at support@apoyu.app and we will explain it.
 
 ---
 
@@ -29,7 +29,7 @@ This notice is written in plain language, as required by RCW 19.373.020(2). If a
 
 This policy applies to anyone who uses Apoyu. We publish it to comply with the Washington My Health My Data Act, which protects Washington residents. If you live outside Washington, your rights may differ. Our [general Privacy Policy](https://apoyu.app/privacy) describes additional rights for residents of California, the European Union, and other regions.
 
-Apoyu is operated by [LEGAL ENTITY NAME] ("Apoyu," "we," "our," or "us").
+Apoyu is operated by Daryll Cheng (sole proprietor doing business as Apoyu) ("Apoyu," "we," "our," or "us").
 
 Apoyu is a general wellness product, not a medical device. Nothing in this policy or in the app is medical advice, diagnosis, or treatment.
 
@@ -191,7 +191,7 @@ Washington's MHMDA gives you the following rights regarding consumer health data
 
 You may ask us to confirm whether we are collecting, sharing, or selling your consumer health data (we do not sell), and to provide you with a list of all third parties with which we have shared your data.
 
-**How to exercise:** Email us at [CONTACT EMAIL TO BE ADDED] with the subject line "MHMDA access request." Include the email address linked to your account so we can verify you. We will respond within 45 days.
+**How to exercise:** Email us at support@apoyu.app with the subject line "MHMDA access request." Include the email address linked to your account so we can verify you. We will respond within 45 days.
 
 ### 7.2 Right to withdraw consent
 
@@ -215,7 +215,7 @@ You may ask us to delete the consumer health data we hold about you. Account del
 3. Clear locally stored recovery history, baselines, and card state from your device
 4. Sign you out
 
-You may also email us at [CONTACT EMAIL TO BE ADDED] with the subject line "MHMDA deletion request." We will complete deletion within 30 days of a verified request.
+You may also email us at support@apoyu.app with the subject line "MHMDA deletion request." We will complete deletion within 30 days of a verified request.
 
 A small audit trail of the deletion (the timestamp and the fact that a deletion occurred, with the user identifier removed or anonymized) is retained for compliance purposes. The audit record does not contain consumer health data. See Section 9.
 
@@ -231,7 +231,7 @@ To protect your data, we may ask you to verify a deletion or access request by s
 
 ## 8. How to appeal a denied request
 
-If we deny a rights request, we will tell you why in writing. You may appeal that decision by emailing [CONTACT EMAIL TO BE ADDED] with the subject line "MHMDA appeal" within 60 days of our denial.
+If we deny a rights request, we will tell you why in writing. You may appeal that decision by emailing support@apoyu.app with the subject line "MHMDA appeal" within 60 days of our denial.
 
 We will respond to your appeal within 60 days. If we maintain our denial, our response will tell you how to contact the Washington State Attorney General's Office. The Attorney General's consumer protection page is at [https://www.atg.wa.gov/file-complaint](https://www.atg.wa.gov/file-complaint).
 
@@ -276,7 +276,7 @@ Despite these measures, no system is perfectly secure. If a breach affects your 
 
 ## 11. Children
 
-Apoyu is not directed to children under the age of 13. We require users to confirm they are at least 13 during onboarding before any account is created. If you believe a child under 13 has created an account with us, contact [CONTACT EMAIL TO BE ADDED] and we will delete the account promptly.
+Apoyu is not directed to children under the age of 13. We require users to confirm they are at least 13 during onboarding before any account is created. If you believe a child under 13 has created an account with us, contact support@apoyu.app and we will delete the account promptly.
 
 We do not knowingly collect consumer health data from anyone under 13. We do not knowingly sell consumer health data of any minor.
 
@@ -302,7 +302,7 @@ If a change expands the categories of consumer health data we collect or the thi
 
 For any question about this policy or to exercise any right described above:
 
-**Email:** [CONTACT EMAIL TO BE ADDED]
+**Email:** support@apoyu.app
 **Subject lines we monitor:** "MHMDA access request," "MHMDA deletion request," "MHMDA appeal," or simply "Privacy question"
 **App:** apoyu.app
 **General Privacy Policy:** [https://apoyu.app/privacy](https://apoyu.app/privacy)
