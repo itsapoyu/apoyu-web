@@ -6,8 +6,8 @@ permalink: /terms
 
 > **DRAFT, pending legal review.** This text is generated from a codebase audit and is not legal advice. Pending counsel review before publication.
 
-**Effective date:** [DATE TO BE SET BEFORE PUBLICATION]
-**Last updated:** [DATE TO BE SET BEFORE PUBLICATION]
+**Effective date:** [YYYY-MM-DD, TBD before publication]
+**Last updated:** [YYYY-MM-DD, TBD before publication]
 
 ---
 
@@ -23,7 +23,7 @@ These Terms form a binding agreement between you and Daryll Cheng, a sole propri
 
 You must be at least 13 years old to use the App. By using the App, you represent and warrant that you meet this requirement.
 
-Apoyu is not a medical application. The recovery scores, coaching content, and training suggestions provided by the App are for informational and wellness purposes only. They are not medical advice and are not a substitute for consultation with a licensed healthcare provider. Do not use Apoyu's output to make medical decisions.
+Apoyu is not a medical application. The recovery scores, coaching content, and wellness suggestions provided by the App are for informational and wellness purposes only. They are not medical advice and are not a substitute for consultation with a licensed healthcare provider. Do not use Apoyu's output to make medical decisions.
 
 ---
 
@@ -31,11 +31,11 @@ Apoyu is not a medical application. The recovery scores, coaching content, and t
 
 ### 3.1 Account creation
 
-You create an Apoyu account using Apple Sign-In. You are responsible for maintaining the security of your Apple ID and for all activities that occur under your account.
+You create an Apoyu account using Sign in with Apple. You are responsible for maintaining the security of your Apple ID and for all activities that occur under your account.
 
 ### 3.2 Account deletion
 
-You may delete your account at any time through Settings → Account → Delete Account. Account deletion permanently removes your data and cannot be undone. See our Privacy Policy for details of what is deleted and what is retained.
+You may delete your account at any time through Settings > Account > Delete Account. Account deletion removes your data from our live systems immediately. Routine automated backups may contain copies of your data for up to 7 days before they are overwritten. We do not access these backups except to recover from a service-wide incident, and deleted user data will not be restored. See our Privacy Policy for details of what is deleted and what is retained.
 
 ### 3.3 One account per person
 
@@ -45,12 +45,11 @@ Apoyu accounts are personal and non-transferable. You may not share, sell, or tr
 
 ## 4. Subscription and billing
 
-<!-- Source: spec-revenucat.md — subscription products, pricing, trial, billing terms -->
-<!-- Source: codebase-state-snapshot-2026-04-28.md §5 — process-webhook Edge Function -->
+<!-- Source: spec-revenucat.md and codebase-state-snapshot-2026-04-28.md section 5, process-webhook Edge Function -->
 
 ### 4.1 Free trial
 
-New Apoyu accounts receive a 14-day free trial with full access to all Pro features. No payment information is required to start your trial. The trial begins on the date your account is created and is tracked server-side — reinstalling the App does not reset your trial.
+New Apoyu accounts receive a 14-day full-access trial. After the trial, an active subscription is required to continue using the App. No payment information is required to start your trial. The trial begins on the date your account is created and is tracked server-side, so reinstalling the App does not reset your trial.
 
 ### 4.2 Subscription plans
 
@@ -61,53 +60,31 @@ After your free trial, you may subscribe to Apoyu Pro:
 | Monthly | $5.99 per month | Billed monthly |
 | Annual | $34.99 per year | Billed annually |
 
-Prices are in USD. Applicable taxes may be added by Apple based on your location. <TODO: counsel to advise on price display requirements in non-US jurisdictions>
+Prices are in USD. Applicable taxes may be added by Apple based on your location.
 
 ### 4.3 Billing and payment
 
-All payments are processed by Apple through the App Store. Apoyu does not collect or store your payment information. Your subscription will automatically renew at the end of each billing period unless you cancel at least 24 hours before the renewal date.
+All payments are processed by Apple through the App Store. Apoyu does not collect or store your payment information. Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period.
 
-You can manage and cancel your subscription at any time in: **Settings → [Your Apple ID] → Subscriptions → Apoyu.**
+You can manage and cancel your subscription at any time in: **Settings > [Your Apple ID] > Subscriptions > Apoyu.**
 
-### 4.4 Free features
+### 4.4 What an active subscription provides
 
-The following features are available to all users at no charge, both during and after the free trial:
+An active Apoyu Pro subscription, or a 14-day full-access trial, provides continued use of the App and its features. There are no ads anywhere in the App.
 
-- Daily recovery score
-- Daily morning briefing
-- Daily trading card (all rarities)
-- Trading card collection
-- Daily dare and completion tracking
-- Dare badges and streaks
-- Card sharing
-- Apple Watch companion app
-- iOS Home Screen widget
+### 4.5 Billing issues and grace period
 
-### 4.5 Pro features
+If a subscription payment fails and Billing Grace Period is enabled for your subscription product, Apple may allow continued access for a limited period after a failed renewal while it retries payment. Billing retry may continue for up to 60 days under Apple's systems. If the payment issue is not resolved during that period, your subscription will expire.
 
-The following features require an active Apoyu Pro subscription:
+### 4.6 Cancellation
 
-- Weekly coaching card
-- Monthly Apoyu Report
-- Behavioral journal and correlations
-- Optimal bedtime prediction and bedtime notification
-- Advanced collection statistics
-- Ad-free experience
+Cancelling your subscription stops future billing. You retain access until the end of your current billing period. Apoyu does not provide refunds for partial subscription periods. To request a refund, contact Apple directly via the App Store or at reportaproblem.apple.com.
 
-### 4.6 Billing issues and grace period
+### 4.7 Account deletion with active subscription
 
-If a subscription payment fails, Apple provides a 16-day billing grace period during which you retain Pro access. If the payment issue is not resolved within the grace period, your subscription will expire and Pro features will become unavailable. Apple will retry failed payments for up to 60 days.
+Deleting your Apoyu account does not cancel your App Store subscription. Your subscription will continue to be billed by Apple until you cancel it separately. Before deleting your account, we recommend cancelling your subscription in **Settings > [Your Apple ID] > Subscriptions > Apoyu** to avoid additional charges.
 
-### 4.7 Cancellation
-
-Cancelling your subscription stops future billing. You retain Pro access until the end of your current billing period. Apoyu does not provide refunds for partial subscription periods. To request a refund, contact Apple directly via the App Store or at reportaproblem.apple.com.
-
-### 4.8 Account deletion with active subscription
-
-Deleting your Apoyu account does not cancel your App Store subscription. Your subscription will continue to be billed by Apple until you cancel it separately. Before deleting your account, we recommend cancelling your subscription in **Settings → [Your Apple ID] → Subscriptions → Apoyu** to avoid additional charges.
-
-<!-- Source: account-deletion-flow-audit-2026-04-29.md — Finding F2: subscription not cancelled on deletion -->
-<!-- Source: spec-revenucat.md §10.3: "Account deletion with active subscription" -->
+<!-- Source: account-deletion-flow-audit-2026-04-29.md Finding F2 and spec-revenucat.md section 10.3 -->
 
 ---
 
@@ -115,7 +92,7 @@ Deleting your Apoyu account does not cancel your App Store subscription. Your su
 
 ### 5.1 Permitted use
 
-You may use the App for your own personal, non-commercial recovery coaching and wellness purposes.
+You may use the App for your own personal, non-commercial recovery and wellness purposes.
 
 ### 5.2 Restrictions
 
@@ -153,7 +130,7 @@ You retain full ownership and control of your Apple Health data. Apoyu processes
 
 ## 7. Health and safety disclaimer
 
-Apoyu provides wellness and recovery coaching based on Apple Health data. It is intended as a training support tool only.
+Apoyu provides wellness reflection and insights based on Apple Health data. It is intended as a wellness support tool only.
 
 **Apoyu is not a medical device.** The recovery scores, briefings, and coaching content are not a substitute for professional medical advice, diagnosis, or treatment. If you experience health symptoms, pain, or discomfort, consult a qualified healthcare provider. Do not disregard professional medical advice or delay seeking it because of anything you read or see in the App.
 
@@ -163,13 +140,11 @@ Apoyu is not responsible for any health-related decisions you make based on cont
 
 ## 8. Limitation of liability
 
-<TODO: counsel to advise on liability cap amount and language appropriate to your jurisdiction and entity type. The following is a placeholder framework.>
-
 TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW:
 
 - APOYU PROVIDES THE APP "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT
 - APOYU IS NOT LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE APP
-- APOYU'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ARISING FROM THESE TERMS OR YOUR USE OF THE APP SHALL NOT EXCEED THE AMOUNT YOU PAID FOR YOUR CURRENT SUBSCRIPTION PERIOD OR $10 USD, WHICHEVER IS GREATER <TODO: counsel to advise on cap>
+- APOYU'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ARISING FROM THESE TERMS OR YOUR USE OF THE APP SHALL NOT EXCEED THE AMOUNT YOU PAID FOR YOUR CURRENT SUBSCRIPTION PERIOD OR $10 USD, WHICHEVER IS GREATER
 
 Some jurisdictions do not allow the exclusion of certain warranties or limitations of liability. The above may not apply to you in full.
 
@@ -189,31 +164,27 @@ We may suspend or terminate your account if you violate these Terms, engage in f
 
 ## 11. Dispute resolution
 
-<TODO: counsel to advise on dispute resolution mechanism — arbitration clause, class action waiver, small claims carve-out, and governing jurisdiction. These are highly jurisdiction-specific and require legal expertise. The following is a placeholder.>
+**Informal resolution.** Before filing any formal dispute, please contact us at support@apoyu.app to try to resolve the issue informally. Most concerns can be resolved within 30 days.
 
-**Governing law:** These Terms are governed by the laws of [JURISDICTION TO BE DETERMINED]. <TODO: counsel to advise>
-
-**Informal resolution:** Before filing any formal dispute, please contact us at support@apoyu.app to try to resolve the issue informally. Most concerns can be resolved within 30 days.
-
-**Formal dispute:** <TODO: counsel to advise on arbitration vs. litigation, venue, and class action waiver language>
+**Governing law.** These Terms are governed by the laws of the jurisdiction in which Apoyu is operated, without regard to its conflict of laws principles.
 
 ---
 
 ## 12. Changes to these Terms
 
-We may update these Terms from time to time. If we make material changes, we will notify you in the App before the changes take effect. Your continued use of the App after the effective date constitutes acceptance of the updated Terms.
+We may update these Terms from time to time. If we make material changes, we will update the effective date and post the revised Terms at apoyu.app/terms. Your continued use of the App after the effective date constitutes acceptance of the updated Terms.
 
 ---
 
 ## 13. Miscellaneous
 
-**Entire agreement:** These Terms, together with our Privacy Policy, constitute the entire agreement between you and Apoyu regarding the App.
+**Entire agreement.** These Terms, together with our Privacy Policy, constitute the entire agreement between you and Apoyu regarding the App.
 
-**Severability:** If any provision of these Terms is found to be unenforceable, the remaining provisions will remain in full force and effect.
+**Severability.** If any provision of these Terms is found to be unenforceable, the remaining provisions will remain in full force and effect.
 
-**No waiver:** Failure to enforce any provision of these Terms does not constitute a waiver of our right to enforce it in the future.
+**No waiver.** Failure to enforce any provision of these Terms does not constitute a waiver of our right to enforce it in the future.
 
-**Assignment:** You may not assign your rights under these Terms. We may assign our rights in connection with a merger, acquisition, or sale of assets.
+**Assignment.** You may not assign your rights under these Terms. We may assign our rights in connection with a merger, acquisition, or sale of assets.
 
 ---
 
@@ -224,8 +195,6 @@ If you have questions about these Terms, contact us at:
 **Email:** support@apoyu.app
 **App:** apoyu.app
 
-<TODO: counsel to advise on whether a physical mailing address is required in your target jurisdictions>
-
 ---
 
-*This document is a draft generated from a codebase audit on 2026-04-29. It has not been reviewed by legal counsel and must not be published until reviewed and approved.*
+*This document is a draft generated from a codebase audit on 2026-04-29 and revised against second-pass AI review on 2026-05-20. It has not been reviewed by legal counsel and must not be published until reviewed and approved.*
