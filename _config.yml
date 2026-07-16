@@ -12,6 +12,8 @@ include:
   - terms.md
   - health-privacy.md
   - support.md
+  - trust.md
+  - press.md
 
 defaults:
   - scope:
