@@ -291,7 +291,3 @@ If we make material changes, we will update the effective date and post the revi
 **Email:** support@apoyu.app
 **Web:** https://apoyu.app
 **Related documents:** [Terms of Service](https://apoyu.app/terms), [Health Data Disclosure and Consumer Health Data Privacy Policy](https://apoyu.app/health-privacy), [Support](https://apoyu.app/support)
-
----
-
-*Draft prepared 2026-07-15 from a verified codebase audit. Not yet reviewed by legal counsel; do not publish until the review items listed in docs/legal/drafts/README-legal-status.md are cleared.*
