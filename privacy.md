@@ -4,20 +4,26 @@ title: Privacy Policy
 permalink: /privacy
 ---
 
-> **DRAFT, pending legal review.** This text is generated from a codebase audit and is not legal advice. Pending counsel review before publication.
-
-**Effective date:** [YYYY-MM-DD, TBD before publication]
-**Last updated:** [YYYY-MM-DD, TBD before publication]
+**Effective date:** 2026-08-19
+**Last updated:** 2026-08-19
 
 ---
 
 ## 1. Introduction
 
-Apoyu is operated by Daryll Cheng, a sole proprietor doing business as Apoyu ("Apoyu," "we," "our," or "us"). Apoyu is a personal recovery and wellness app that uses your health data to generate a daily recovery score, coaching cards, and wellness insights. This Privacy Policy explains what data we collect, why we collect it, who we share it with, and how you can control or delete it.
+Apoyu is operated by Daryll Cheng, a sole proprietor doing business as Apoyu ("Apoyu," "we," "our," or "us").
 
-Apoyu is a general wellness product, not a medical device. Recovery scores and coaching content are not medical advice.
+Apoyu is an iPhone and Apple Watch wellness app for people who train hard. With your permission, it reads health data from Apple Health, computes a daily recovery score on your device, and delivers a short daily briefing, a collectible card, one training-intensity suggestion for the day, and one small evening recovery action.
 
-In ordinary operation, Apoyu processes raw Apple Health readings on your device and does not transmit those raw readings to our servers. Derived values and certain account-linked metadata are synced as described below. Raw HealthKit readings stay on device; server-synced data includes your derived recovery metrics, certain workout metadata, account identifiers, preferences, and related app-functionality records described in Section 2.2.
+Apoyu is a general wellness product, not a medical device. Recovery scores, briefings, and training suggestions are not medical advice. See our [Health Data Disclosure and Medical Disclaimer](https://apoyu.app/health-privacy).
+
+**The three sentences that govern everything below:**
+
+1. **Your individual readings never leave your phone.** Sample-level data (individual heart rate variability readings, heartbeat and sleep-stage samples, intra-night series, raw workout sensor data) is read from Apple Health, processed on your device, and never uploaded. There is no server copy of your raw readings.
+2. **Per-day results are stored in your private account.** Your daily recovery score, plus the daily summary values behind it (average overnight HRV, resting heart rate, sleep duration and quality, respiratory rate, training load), sync to our servers so your history and collection survive reinstalls.
+3. **To write the daily coaching, the day's derived values, a short history of your recent activity (recent workouts, evening dares, day tags, recent scores, and your recent briefings), and your display name go to our AI providers** (Anthropic and OpenAI). They never receive your individual sample-level readings, they do not train on your data, and we ask them not to keep it.
+
+The rest of this policy is the detail behind those three sentences.
 
 ---
 
@@ -25,208 +31,202 @@ In ordinary operation, Apoyu processes raw Apple Health readings on your device 
 
 ### 2.1 Data that stays on your device (not transmitted to Apoyu servers)
 
-<!-- Source: CLAUDE.md - Raw biometric data stays on device. Only derived scores sync to Supabase -->
-<!-- Source: codebase-state-snapshot-2026-04-28.md section 4, MMKV stores for baselines and computed scores -->
-
-The following data is read from Apple Health, processed locally by the Apoyu app, and in ordinary operation is not transmitted to our servers:
+With your explicit permission through the iOS Health permission sheet, Apoyu reads the following from Apple Health. It is processed locally by our recovery algorithm, stored only in encrypted local storage on your device, and is not transmitted to our servers:
 
 - Heart rate variability (HRV) readings, in milliseconds (SDNN)
 - Resting heart rate readings, in beats per minute
+- Heart rate samples
 - Sleep stage and sleep duration samples
 - Respiratory rate readings
-- Heart rate samples
-- SpO2 readings (if available from your device)
+- Blood oxygen (SpO2) readings, if available from your device
 - Step count and active energy readings
+- Walking, running, and cycling distance samples
 - Raw workout sensor data from any connected device
-- Rolling per-metric baselines (the personal averages and standard deviations the algorithm builds for you)
+- Mindfulness session records
+- Date of birth and biological sex, if you have granted access to them in Apple Health (your date of birth never leaves your device; see Section 2.2 for the coarse age band that does)
+- Rolling per-metric baselines (the personal averages and variability statistics the algorithm builds for you)
+- Your goal's free-text label and any training plan details you enter (only the goal type, phase, and event date sync; see Section 2.2)
 
-This data is processed entirely on your device by our recovery algorithm and is stored only in encrypted local storage (MMKV) keyed to your account. It is cleared when you delete your account.
+**The one thing Apoyu writes to Apple Health:** when you finish an in-app breathing exercise, Apoyu saves a single mindfulness session to Apple Health so it counts toward your mindful minutes. It writes nothing else.
+
+You can revoke any of these permissions at any time in iOS Settings under Health, Data Access and Devices, Apoyu.
 
 ### 2.2 Data we collect and store on our servers
-
-<!-- Source: codebase-state-snapshot-2026-04-28.md section 8, database schema -->
 
 **Account and identity data**
 
 - Email address, which is typically an Apple relay address provided through Sign in with Apple
-- Apple account identifier (an opaque user ID provided through Sign in with Apple)
+- Apple account identifier (an opaque user ID provided through Sign in with Apple), and an Apple Sign-In token used to support account deletion and sign-in revocation (readable only by our server-side functions, never by other users or the app itself)
 - Your display name, if you choose to provide one during onboarding
-- Account creation date and onboarding completion status
+- Account creation date, onboarding status, and your personal Ember share code
 
-**Recovery and coaching data**
+**Daily recovery record (derived values, computed on your device)**
 
-- Your daily recovery score (a numeric value derived from your health metrics on-device)
-- Component z-scores that feed the recovery score (derived statistics, not raw measurements)
-- Comfort type label and confidence level (categorical wellness indicators)
-- Archetype identifier and inferred personality framework
-- Your daily training intentions (short text entries you select each morning)
-- Generated coaching content: daily briefings, trading card commentary, and daily dares associated with your account
-- Dare completion records and badge streak data
-- Weekly coaching cards (Pro subscribers only)
-- Workout metadata: type, start time, end time, duration, and the source app name reported by HealthKit (not raw sensor data)
+- Your daily recovery score (a number from 0 to 100) and its comfort word (for example "Cloud" or "Concrete")
+- Confidence level (how much data the score stands on)
+- Component z-scores and the weighting used (derived statistics, not raw measurements)
+- Daily summary health values: average overnight HRV (milliseconds), resting heart rate (beats per minute), sleep duration, sleep efficiency, deep sleep percentage, sleep quality score, respiratory rate, and training load
+- The per-day baseline statistics used in that day's computation (your personal averages and variability measures for each metric; these are derived statistics, never raw readings)
+- A coarse age band (a decade range such as "30 to 39," never your date of birth) and biological sex, where you have granted Apple Health access to them, stored as part of an internal algorithm-calibration record
+- Data availability flags and algorithm version, so we can explain and improve the score
+
+**Training and check-in data (the athlete layer)**
+
+- Workout metadata reported by Apple Health: workout type, start and end time, duration, distance, pace, and the source app name (never raw sensor streams), plus an opaque HealthKit workout identifier used only to avoid syncing the same workout twice
+- Your optional one-tap soreness check-in (one of four words: fresh, usual, sore, wrecked)
+- Your optional post-workout effort rating (RPE, a small number)
+- Your goal context: goal type, training phase, and event date (the goal's free-text label and any plan details stay on your device)
+- The daily training call (one of push, hold, ease, rest) and its one-line reason
+- Receipt records (which kept evening action was acknowledged against which next-morning metric)
+
+**Cards, coaching, and collection data**
+
+- Your daily collectible card records, including the card's name, rarity, commentary text, and the stat block shown on the card (recovery score, HRV, sleep duration, deep sleep, resting heart rate, training load, steps, active energy, sleep quality)
+- A mint receipt frozen with each card. It is the card's own record of why it turned out the way it did, and it is written once, at mint, and never recomputed. As applicable to that card, it contains:
+  - which completeness gate minted it (its commit reason) and when it was minted
+  - the version of the card-selection system that chose the archetype, and how deeply the day fit that card's story (its match depth on a fixed zero-to-one scale)
+  - the version of the rarity model and, separately, the version of the tier calibration it was scored under
+  - the rarity score itself, the tier that score earned on its own, and the final tier after any floor was applied, so the two can always be compared
+  - the four rarity component scores (how deeply the story fit, how unusual the day was for you, what multi-day pattern led there, and whether independent signals agreed), each with a confidence value and a note of how present its evidence was
+  - the exact thresholds and weights that mint ran under, so a later recalibration can never make an old card's receipt read as though it were scored under today's numbers
+  - the typed derived facts the card actually consulted, and only those, split into the facts that made the story true and the facts that made it deep. Examples: recovery and training-load bands, prior-day training strain, an acute-to-chronic training ratio, a workout's duration or start hour, run and pattern lengths, distance from your personal median, how far past a personal ceiling or below a personal floor the day landed, day-of-week and named calendar events, and which signals corroborated. All are per-day derived values.
+  - when a rarity floor actually raised the card's tier, a stable short code naming which floor did it, and the magnitude that satisfied it (for example how many points past your personal ceiling the day landed)
+  - any edition marks (such as a first-ever mint) and a deterministic seed used only to position the card's visual finish
+
+  The receipt never contains raw HealthKit sample series, intra-night time series, raw sensor arrays, HealthKit or workout identifiers, location, free-text health narrative, or a dump of the day's full context. Every field is a typed value drawn from a closed, versioned list, and anything outside that list is rejected before it can be stored.
+- Generated coaching content associated with your account: daily briefings, card commentary, evening dares and their completion records, and mascot interaction content
+- Dare badges and streak data, journal tags you attach to a day, collection statistics, and your egg/mascot progression state
+- Personality quiz choices made during onboarding and your selected intensity level
+- Share records when you share a card (what was shared, when, and to which destination; used to attribute your Ember code)
 
 **App usage and preferences**
 
-- Your content intensity preference (Encouraging, Savage, or Unhinged), which affects the tone of generated content
-- Notification preferences (morning briefing enabled, dare reminder enabled, learned wake time)
-- App open events used to learn your typical wake time for better notification scheduling
-- Collection statistics (counts and metadata for your trading cards)
-- Card reveal state (whether you have seen today's card)
-- Re-engagement state flag that tracks whether you have opened the app recently
+- Notification preferences, learned wake time, and timezone (used to schedule notifications at a sensible hour), plus a device push token if you enable notifications
+- App open events and a re-engagement state flag
+- First-party product events (for example "call shown," "call followed," "soreness logged," "goal set," "receipt shown"). These events carry named event types and coarse categorical properties only. They never contain raw metric values, and we use no third-party analytics service.
 
-**Subscription data**
+**Purchase data**
 
-- Your subscription status (free trial, active Pro, expired) synced from RevenueCat
-- Subscription expiration date
-- Subscription event history (purchases, renewals, cancellations) for billing records
+- Your purchase and subscription status (for example Founding Keeper purchased, Ember Pro active or expired), product identifier, expiration date where applicable, and purchase event history, synced from RevenueCat for entitlement and billing records
 
-**Diagnostic data**
+**Diagnostics and quality data**
 
-- Error reports and crash diagnostics sent to Sentry (see Section 4.5)
-- Application health events used for debugging (these do not include raw health data)
+- Error reports and crash diagnostics sent to Sentry, scrubbed as described in Section 4.5
+- A service quality log of AI generations: one record per generated briefing, dare, or card commentary, keyed to a one-way hashed identifier rather than your account ID. By default this record contains only categorical quality features (bucketed bands such as "recovery: high" or "sleep debt: moderate," not raw values), the generated output, the model used, timing, and cost. The full prompt text (which includes that day's derived values and the recent-activity context described in Section 4.2) and the raw derived values behind it are stored only if you turn on the optional diagnostic sharing in Settings. If you turn that sharing off, the data you shared is deleted within 30 days. Prompt text is scrubbed after 90 days and quality-log records are deleted after 365 days. All of these records, including the hashed-identifier logs, are deleted when you delete your account.
+- Consent records: which consent text you agreed to, its version, when, and on which app version and platform
 
 ### 2.3 Data we do not collect
 
 We do not collect:
-- Precise geolocation
-- Advertising identifiers (we do not implement App Tracking Transparency or request IDFA)
-- Data from other apps on your device
+
+- Raw biometric samples or timestamped readings on our servers
+- Precise or coarse geolocation
+- Advertising identifiers (we do not implement App Tracking Transparency or request the IDFA, and the app contains no advertising)
+- Contacts, photos, or data from other apps on your device
+- Browsing or search history
 - Keystroke or input data beyond what you explicitly enter in the app
+
+We use no third-party analytics, attribution, or advertising SDKs of any kind.
 
 ---
 
 ## 3. How we use your data and lawful basis
 
-<!-- Source: codebase-state-snapshot-2026-04-28.md section 5, Edge Functions and LLM routing -->
-
 We use the data we collect to:
 
-- Compute and display your daily recovery score, which is the core function of the app
-- Generate personalized daily briefings, trading card commentary, and dare suggestions tailored to your recovery data and stated intentions
-- Deliver notifications at times learned from your app usage patterns
-- Track your dare streaks, badges, and card collection
-- Manage your subscription and enforce entitlement (free vs. Pro features)
-- Diagnose and fix bugs and crashes via anonymized error reports
+- Compute and display your daily recovery score and training call, which is the core function of the app
+- Generate personalized daily briefings, card commentary, and evening dare suggestions in the character voice and intensity you chose
+- Acknowledge kept actions against your next-morning data (receipts) and maintain your collection, badges, and streaks
+- Deliver notifications at times learned from your app usage patterns, if you enable them
+- Manage your purchases and entitlements
+- Measure whether core features work (first-party events such as whether a shown call was followed), so the product can be improved honestly
+- Diagnose and fix bugs and crashes
 - Comply with our legal obligations, including maintaining records required by applicable privacy law
 
-We do not currently use your data for advertising targeting, sell it to third parties, or use it for any purpose not described in this policy.
+We do not use your data for advertising, do not sell it, and do not share it with data brokers. We do not use your data to train AI models, and we contractually and technically request that our AI providers do not either (Section 4.2).
 
-**Lawful basis (GDPR Article 6).** Where the EU or UK General Data Protection Regulation applies to our processing of your personal data, we rely on the following lawful bases:
+**Lawful basis (GDPR Article 6), where the EU or UK GDPR applies:**
 
-- **(a) Explicit consent** for processing health-derived data via Apple HealthKit, collected through the consent screen on first launch. Where the data qualifies as a special category of personal data under GDPR Article 9, we rely on Article 9(2)(a) explicit consent.
-- **(b) Performance of a contract** to deliver the subscription services and features you have requested.
-- **(c) Legitimate interest** in diagnosing and fixing errors via crash reporting, where the data sent is scrubbed of personal identifiers as described in Section 4.5.
-
-You may withdraw consent at any time by disabling the relevant HealthKit categories in iOS Settings or by deleting your account.
+- **Explicit consent** (Article 6(1)(a), and Article 9(2)(a) for special-category health data) for processing health-derived data, collected through the consent screen on first launch. You may withdraw consent at any time by disabling HealthKit categories in iOS Settings or deleting your account.
+- **Performance of a contract** (Article 6(1)(b)) to deliver the app features and purchases you request.
+- **Legitimate interest** (Article 6(1)(f)) in diagnosing errors via crash reporting scrubbed of personal identifiers, and in maintaining service quality logs under the retention limits in Section 2.2.
 
 ---
 
 ## 4. Third-party services
 
-<!-- Source: codebase-state-snapshot-2026-04-28.md section 5, required-secrets.ts listing all integrations -->
+We use a small, fixed set of service providers. None of them may use your data for their own advertising, and none of them sells it.
 
 ### 4.1 Supabase (database and server infrastructure)
 
-We use Supabase to store account data, recovery scores, coaching content, and subscription records. Supabase is a U.S.-based company. Data is stored on Supabase's cloud infrastructure.
+We use Supabase (United States) to store the account and derived data described in Section 2.2, to authenticate you, and to run the server functions that produce coaching content. Access is protected by row-level security so no user can read another user's data.
 
-### 4.2 OpenAI (AI content generation)
+### 4.2 AI providers: Anthropic and OpenAI (content generation)
 
-We use OpenAI's API to generate your daily morning briefing, daily dare suggestion, and trading card commentary. To personalize this content, we include:
+Apoyu uses large language models from Anthropic and OpenAI to phrase the daily briefing, evening dare, and some card commentary in the character's voice. Which provider phrases which surface can change as models improve; the data they may receive is the same fixed list:
 
-- Your recovery score for the day (a numeric value, not raw health data)
-- Your HRV summary value (milliseconds), sleep duration (hours), and resting heart rate (bpm) as numeric context for briefing and card commentary generation
-- Your display name (the pseudonym you set during onboarding), if you provided one
-- Your stated daily training intention (text you select from options in the app)
-- Your selected content intensity level
-- Basic archetype context (the personality framework used to style the content)
+- Your recovery score for the day and derived statistics behind it (for example z-scores or sleep-debt figures)
+- Daily summary values, formatted for context (for example HRV in milliseconds, sleep duration in hours, resting heart rate in beats per minute)
+- Your soreness check-in word, the day's training call and its reason, and coarse goal context (goal type and phase)
+- Your display name, if you provided one
+- Your selected intensity level and the day's card archetype context
+- A short history of your recent activity, so the coaching stays continuous and does not repeat itself: your recent workouts (date, type, duration, and training load, not the raw sensor data), your recent evening dares and whether you accepted them (including the dare text), the tags you attached to recent days, your recent daily scores and comfort tiers, your current and longest streaks, and the text of your recent briefings
+- For model-generated card commentary only, the card's COMMITTED mint receipt: the typed derived facts behind that day's archetype and rarity, together with the model versions, thresholds and component scores described in section 2.2. The commentary may describe only what that receipt actually carries, so it cannot narrate a fact the card did not consult. These are always per-day derived values, never raw readings.
 
-OpenAI does not receive your Apple account information or any raw HealthKit data. OpenAI business and API data is not used to train models by default, and we configure API requests not to store response objects where supported (`store: false`). Provider terms may permit limited retention for abuse prevention; see OpenAI's privacy policy for details.
+They never receive: individual readings or sample-level data, your email, your Apple account identifier, your date of birth, or your location.
 
-<!-- Source: supabase/functions/_shared/model-router.ts -->
+Two honesty notes. First, most standard daily cards are served from pre-written lines with no AI call at all; the values above reach a provider only when content is actually model-generated. Second, the training suggestion itself (push, hold, ease, rest) is computed by fixed rules in the app, never by an AI; the AI only phrases it.
 
-**Model used:** GPT-4.1 Mini
+Neither provider uses our API data to train models by default. We configure requests not to store response objects where the provider supports it. Provider terms may permit limited retention for abuse prevention; see the Anthropic and OpenAI privacy policies for details.
 
-### 4.3 Anthropic (AI content generation, rare and legendary cards)
+### 4.3 RevenueCat (purchases)
 
-We use Anthropic's API to generate rare and legendary trading card commentary. The same recovery, biometric summary, and identity context described in Section 4.2 applies: recovery score, HRV summary value (ms), sleep duration (hours), resting heart rate (bpm), display name (if provided), intensity level, and archetype context. Daily training intention is not included in card commentary generation and is not sent to Anthropic.
+We use RevenueCat (United States) to process purchase events from Apple and verify entitlements. RevenueCat receives your Apoyu account identifier (an internal UUID, not your Apple ID or email) and purchase event payloads (product, transaction ID, expiration where applicable, and event metadata such as currency, country code, and environment). RevenueCat receives no health data and no generated content. RevenueCat retains transaction history on its own systems for its standard business and legal compliance period, even after Apoyu deletes its own records.
 
-Anthropic does not use commercial API inputs or outputs for model training by default. Provider terms may permit limited retention for abuse prevention; see Anthropic's privacy policy for details.
+### 4.4 Apple
 
-<!-- Source: supabase/functions/_shared/model-router.ts -->
-
-**Model used:** Claude Haiku
-
-### 4.4 RevenueCat (subscription management)
-
-We use RevenueCat to manage subscriptions, process purchase events from Apple, and verify entitlements. RevenueCat receives:
-
-- Your Supabase account identifier (a UUID, not your Apple ID or email), passed as `appUserID`
-- The full RevenueCat webhook event payload, which includes subscription product, transaction ID, and expiration date, and may also include fields such as currency, pricing, country code, period type, environment (sandbox vs. production), and original purchase identifiers
-
-RevenueCat does not receive health data or content generated by the app. RevenueCat retains your subscription transaction history on its own systems for its standard business and legal compliance period, even after Apoyu deletes its own records. See https://www.revenuecat.com/privacy for details.
+- **Sign in with Apple** for authentication. Apple provides us a unique account identifier and, typically, a relay email address.
+- **App Store** for all billing. Apple manages payment information; we never see your payment card details.
+- **HealthKit** for on-device reads (Section 2.1). We do not upload HealthKit sample data to anyone.
+- **Apple Push Notification service** to deliver notifications you enable.
 
 ### 4.5 Sentry (error monitoring)
 
-We use Sentry to capture crash reports and application errors. We do not transmit personally identifiable information; specifically, we remove the following fields before transmission to Sentry:
-
-- Email address
-- IP address
-- Username
-- Apple account identifier
-- Apple Sign-In tokens (identity token, authorization code)
-- OAuth refresh and access tokens
-- User metadata fields (except a small allowlist of non-identifying flags)
-- Provider strings
-
-<!-- Source: codebase-state-snapshot-2026-04-28.md section 6, Sentry integration, beforeSend hook -->
-
-We may still transmit non-identifying device characteristics (device model, iOS version, app version) and crash diagnostic data such as stack traces for debugging. Sentry does not receive recovery scores, health data, or content generated by the app.
-
-### 4.6 Apple
-
-We use Apple's services for:
-
-- **Sign in with Apple.** User authentication. Apple provides us with a unique account identifier and, typically, an Apple relay email address.
-- **App Store.** Subscription billing and payment processing. Apple manages all payment information; we never see your payment card details.
-- **HealthKit.** We request read access to your Apple Health data for on-device processing only. We do not upload HealthKit data to Apple or any third party.
-- **Push notifications.** We use Apple Push Notification service (APNs) to deliver morning briefing and dare reminder notifications.
+We use Sentry (United States) to capture crash reports and application errors. Before transmission we remove: email address, IP address, username, Apple account identifier, Apple Sign-In tokens, OAuth tokens, provider strings, and user metadata beyond a small allowlist of non-identifying flags. Sentry may still receive non-identifying device characteristics (device model, iOS version, app version) and stack traces. Sentry does not receive recovery scores, health data, or generated content.
 
 ---
 
 ## 5. Data retention and deletion
 
-<!-- Source: account-deletion-flow-audit-2026-04-29.md section 6, DB coverage of delete_user_account RPC -->
+**During active use:** we retain your data for as long as your account exists, with two automatic exceptions: AI service quality logs have their prompt text scrubbed after 90 days and are deleted entirely after 365 days.
 
-**During active use:** We retain your data for as long as your account exists.
+**Account deletion:** delete your account at any time in the app under Settings, Account, Delete Account. When you do, we:
 
-**Account deletion:** When you delete your account through the app (Settings > Account > Delete Account), we:
+1. Revoke your Sign in with Apple authorization with Apple before deleting any data. In rare cases where the sign-in must be re-verified, the app will direct you through iOS Settings and then retry.
+2. Delete all your user-keyed records from our database: recovery records, cards, dares, briefings, check-ins, goals, receipts, events, notifications, purchase records, and all other personal records, including the pseudonymous AI quality logs linked to your account.
+3. Clear all locally stored data on your device (recovery history, baselines, card state, settings) and remove authentication tokens from the iOS Keychain.
+4. Sign you out.
 
-1. Revoke your Sign in with Apple authorization with Apple before deleting any data. In rare cases where the Apple sign-in must be re-verified, the app will direct you to revoke authorization through iOS Settings and re-authorize, then retry deletion.
-2. Delete all your user-keyed records from our database, including recovery scores, trading cards, daily dares, intentions, briefings, notifications, subscription events, and all other personal records
-3. Clear all locally stored data on your device (recovery history, card state, settings)
-4. Sign you out of the app
+**What survives deletion** (neither item contains health data):
 
-The following records are retained after account deletion for legal and operational reasons:
+- **A deletion audit record:** the fact that a deletion occurred and when, with your identifier removed or anonymized. Retained for legal compliance.
+- **Your released Ember code:** held for 90 days so it cannot immediately be re-assigned to another person. The code is not linked to any of your data after deletion.
 
-- **Consent records.** A record that an account deletion was requested (your account identifier is removed; only the fact of deletion and timestamp are kept). This is retained for legal compliance.
-- **Ember Code records.** If you used or generated an Ember Code referral, the code itself is retained for 90 days so it cannot be re-assigned immediately to another user.
+Deletion removes your data from live systems immediately. Routine automated backups maintained by our database provider may contain copies for up to 7 days before being overwritten. We do not access backups except to recover from a service-wide incident, and deleted user data will not be restored. Your collection and recovery history cannot be recovered after deletion.
 
-Account deletion removes your data from our live systems immediately. Routine automated backups maintained by our database provider may contain copies of your data for up to 7 days (the standard Supabase backup window for our plan tier) before they are overwritten. We do not access these backups except to recover from a service-wide incident, and deleted user data will not be restored. Your card collection and recovery history cannot be recovered after deletion.
-
-**Deleting your Apoyu account does not cancel any App Store subscription;** billing continues until you cancel through Apple. Before deleting your account, we recommend cancelling your subscription in Settings > [Your Apple ID] > Subscriptions > Apoyu.
+**Deleting your Apoyu account does not cancel an App Store subscription.** If you have an active auto-renewing subscription, cancel it first in iOS Settings under your Apple ID, Subscriptions, Apoyu. One-time purchases (such as the Founding Keeper) belong to your Apple ID and can be restored if you later create a new account.
 
 ---
 
 ## 6. Data security
 
-We protect your data using:
-
-- **Encrypted local storage.** Health baselines and computed scores are stored in encrypted local storage on your device (MMKV).
-- **Keychain storage.** Your authentication tokens are stored in the iOS Keychain (`expo-secure-store`), not in unencrypted storage.
-- **Row-level security.** Our database uses row-level security policies that prevent any user from accessing another user's data.
-- **Service-role isolation.** Sensitive operations (reading Apple Sign-In tokens, inserting trading cards and dares) are performed only by server-side Edge Functions using elevated permissions; the app client has no write access to these tables.
-- **PII scrubbing.** We apply best-effort PII scrubbing on the structured fields of error reports before transmission to our diagnostics service.
-- **HTTPS.** All network communication uses HTTPS.
+- **Encrypted local storage.** Health baselines and computed scores are stored in encrypted local storage on your device.
+- **Keychain storage.** Authentication tokens are stored in the iOS Keychain, never in unencrypted storage.
+- **Row-level security.** Database policies prevent any user from accessing another user's data.
+- **Service-role isolation.** Sensitive operations run only in server-side functions with elevated permissions; the app client has no direct write access to those tables.
+- **Pseudonymization.** Service quality logs are keyed to a one-way hashed identifier, not your account ID.
+- **PII scrubbing** on error reports before transmission (Section 4.5).
+- **HTTPS** for all network communication.
 
 No system is perfectly secure. If a breach affects your personal data, we will notify you and any required authorities within the timelines required by applicable law.
 
@@ -234,71 +234,64 @@ No system is perfectly secure. If a breach affects your personal data, we will n
 
 ## 7. Children's privacy
 
-Apoyu is not designed for or directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected information from a child under 13, please contact us and we will delete it promptly.
+Apoyu is intended for users aged 13 and older. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected information from a child under 13, contact us at support@apoyu.app and we will delete it promptly.
 
 ---
 
 ## 8. International users
 
-This Privacy Policy describes our current practices. Additional region-specific notices may apply where required by law.
+If you are in the European Economic Area or the United Kingdom, the lawful bases in Section 3 apply, you have the rights in Section 9, and you may lodge a complaint with your local data protection authority.
 
-If you are located in the European Economic Area or the United Kingdom, the lawful bases described in Section 3 apply to our processing. You have the rights described in Section 9. You also have the right to lodge a complaint with the data protection authority in your country of residence.
+If you are a California resident, see the California section in Section 9.
 
-If you are located in California, please see the "California Residents" subsection in Section 9.
-
-If you are located in Washington State, please also see our separate [Consumer Health Data Privacy Policy](https://apoyu.app/health-privacy), which describes additional rights under the Washington My Health My Data Act.
+If you are a Washington State resident, see our separate [Consumer Health Data Privacy Policy](https://apoyu.app/health-privacy), which describes additional rights under the Washington My Health My Data Act. Where the two documents overlap for consumer health data, that one controls.
 
 ---
 
 ## 9. Your rights and choices
 
-Depending on your location, you may have rights regarding your personal data, including the right to:
+Depending on your location, you may have the right to:
 
-- **Access.** Request a copy of the data we hold about you.
-- **Deletion.** Delete your account and all associated data (available in-app via Settings > Account > Delete Account).
-- **Correction.** Request correction of inaccurate data.
-- **Portability.** Request a copy of your data in a structured, commonly used format.
-- **Withdrawal of consent.** Withdraw the HealthKit consent in iOS Settings, or delete your account to stop all server-side processing.
-- **Opt out.** We do not sell your personal data and do not use it for advertising targeting.
+- **Access:** request a copy of the data we hold about you.
+- **Deletion:** delete your account and all associated data in the app (Settings, Account, Delete Account) or by emailing us.
+- **Correction:** request correction of inaccurate data.
+- **Portability:** request a copy of your data in a structured, commonly used format.
+- **Withdraw consent:** disable HealthKit categories in iOS Settings, or delete your account to stop all server-side processing.
+- **No sale, no ads:** we do not sell personal data and do not use it for advertising, so there is nothing to opt out of; the right exists regardless.
 
-To exercise these rights, email us at support@apoyu.app.
+To exercise any right, email **support@apoyu.app**. We will verify the request against the email or sign-in linked to your account and respond within the time required by applicable law (and in practice, usually within a few days; Apoyu is run by one person and every request is read).
 
-**Notification preferences.** You can enable or disable morning briefing and dare reminder notifications at any time in Settings > Notifications.
+**In-app controls:** notification toggles (Settings, Notifications), intensity level, hide-score mode, and the soreness check-in and goal features are all optional and skippable.
 
-**Intensity level.** You can change the content intensity level for Apoyu's coaching voice at any time in Settings.
+### California residents
 
-### California Residents
+Under the California Consumer Privacy Act (CCPA/CPRA), the categories below describe our collection in the structure California law requires:
 
-Under the California Consumer Privacy Act (CCPA, as amended by the CPRA), California residents have the rights described in this Section 9. The following categories provide the structural disclosure required by California Civil Code Section 1798.110.
-
-| Category of personal information we collect | Sources | Business or commercial purpose | Categories of third parties with whom shared |
+| Category of personal information | Sources | Purpose | Third parties shared with |
 |---|---|---|---|
-| Identifiers (Apple account ID, Supabase user UUID, email address typically an Apple relay) | You via Sign in with Apple | Authenticate your account; deliver notifications | Service providers (Supabase, RevenueCat) |
-| Customer records (display name, if provided) | You directly in onboarding | Personalize coaching content | Service providers (Supabase, OpenAI, Anthropic) |
-| Commercial information (subscription status, transaction events) | Apple (via RevenueCat) | Manage subscription and entitlements | Service providers (Supabase, RevenueCat) |
-| Internet or other network activity (app open timestamps, re-engagement state) | You via app use | Schedule notifications; measure engagement | Service providers (Supabase) |
-| Health-related information (recovery score, component z-scores, summary biometric values, workout metadata) | You via Apple HealthKit, computed on-device | Compute recovery score; generate coaching content | Service providers (Supabase, OpenAI, Anthropic) |
-| Inferences (archetype, comfort type, confidence level) | Derived from health-related and quiz data | Personalize coaching content | Service providers (Supabase, OpenAI, Anthropic) |
+| Identifiers (Apple account ID, internal user UUID, email, typically an Apple relay) | You, via Sign in with Apple | Authentication, account operation | Service providers (Supabase, RevenueCat) |
+| Customer records (display name, if provided) | You, in onboarding | Personalize content | Service providers (Supabase, Anthropic, OpenAI) |
+| Commercial information (purchase status, transaction events) | Apple, via RevenueCat | Purchases and entitlements | Service providers (Supabase, RevenueCat) |
+| Internet or network activity (app open events, named product events) | You, via app use | Notification timing, honest feature measurement | Service providers (Supabase) |
+| Health-related information (recovery score, z-scores, daily summary values, soreness check-in, effort ratings, goal context, workout metadata, coarse age band, biological sex) | You, via Apple Health and in-app inputs, computed on-device | Compute the score and call; generate coaching content | Service providers (Supabase, Anthropic, OpenAI) |
+| Inferences (archetype, comfort word, confidence level) | Derived from the above | Personalize content | Service providers (Supabase, Anthropic, OpenAI) |
 
-We have not sold or shared your personal information for cross-context behavioral advertising in the preceding 12 months. California residents have the right to know what personal information we collect, the right to delete personal information, the right to correct inaccurate personal information, the right to opt out of the sale or sharing of personal information (we do not sell or share for advertising), the right to limit the use of sensitive personal information, and the right not to be subject to retaliation for exercising these rights.
-
-To exercise California rights, email support@apoyu.app with the subject line "CCPA request." Authorized agents may submit a request on your behalf with written authorization and verification of your identity.
+We have not sold or shared personal information for cross-context behavioral advertising in the preceding 12 months. California residents have the rights to know, delete, correct, opt out of sale or sharing (we do neither), limit use of sensitive personal information, and be free from retaliation for exercising these rights. To exercise them, email support@apoyu.app with the subject line "CCPA request." Authorized agents may act for you with written authorization and identity verification.
 
 ---
 
 ## 10. Changes to this policy
 
-If we make material changes to this Privacy Policy, we will update the effective date and post the revised policy at apoyu.app/privacy. If the changes materially affect your rights, we will require you to acknowledge the update on next app launch.
+If we make material changes, we will update the effective date and post the revised policy at apoyu.app/privacy. If changes materially affect your rights, we will ask you to acknowledge the update on next app launch. Prior versions remain available on request.
 
 ---
 
 ## 11. Contact
 
-If you have questions about this Privacy Policy or want to exercise your data rights, contact us at:
-
 **Email:** support@apoyu.app
-**App:** apoyu.app
+**Web:** https://apoyu.app
+**Related documents:** [Terms of Service](https://apoyu.app/terms), [Health Data Disclosure and Consumer Health Data Privacy Policy](https://apoyu.app/health-privacy), [Support](https://apoyu.app/support)
 
 ---
 
-*This document is a draft generated from a codebase audit on 2026-04-29 and revised against second-pass AI review on 2026-05-20. It has not been reviewed by legal counsel and must not be published until reviewed and approved.*
+*Draft prepared 2026-07-15 from a verified codebase audit. Not yet reviewed by legal counsel; do not publish until the review items listed in docs/legal/drafts/README-legal-status.md are cleared.*
