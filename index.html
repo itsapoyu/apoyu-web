@@ -354,9 +354,14 @@ button{font:inherit; color:inherit; -webkit-tap-highlight-color:transparent}
 .claimform input:focus{outline:none; border-color:var(--cta-rim);
   box-shadow:0 0 0 3px rgba(255,138,74,.14)}
 .claimform input[aria-invalid=true]{border-color:#D14040}
-.claimed{display:none}
-.isclaimed .claimlead{display:none}
+.claimed,.previewed{display:none}
+.isclaimed .claimlead,.ispreviewed .claimlead{display:none}
 .isclaimed .claimed{display:block}
+.ispreviewed .previewed{display:block}
+/* demo mode must not look like a win: no display type, no ember, just a note */
+.previewed{margin-top:4px}
+.previewed .ptitle{font-size:var(--t-heading); font-weight:600; letter-spacing:-.01em}
+.previewed .pbody{margin-top:7px; font-size:var(--t-label); color:var(--ink-2); line-height:1.52}
 
 /* FAQ */
 .faq details{border-top:1px solid rgba(255,255,255,.07)}
@@ -725,6 +730,13 @@ body.calm .flipinner{transition:none}
       <p class="lede" style="margin-top:12px">Watch your inbox. A new card waits here every morning, and
         tomorrow's is a different one.</p>
     </div>
+
+    <!-- Shown INSTEAD of the success state whenever WAITLIST_ENDPOINT is empty.
+         The prototype must never tell a reviewer they joined something. -->
+    <div class="previewed panel" aria-live="polite">
+      <p class="ptitle">Preview mode.</p>
+      <p class="pbody">The signup backend is not connected yet. Nothing was submitted.</p>
+    </div>
   </div>
 </section>
 
@@ -930,9 +942,19 @@ if ('IntersectionObserver' in window) {
 }
 
 /* ===========================================================================
-   CLAIM FORM — mechanics preserved. In demo mode nothing is collected.
+   CLAIM FORM
+   ---------------------------------------------------------------------------
+   Two visibly different outcomes, on purpose:
+     LIVE MODE (endpoint set, request ok) -> the real success state.
+     DEMO MODE (endpoint empty)           -> "Preview mode. Nothing was
+                                             submitted." Nothing is stored, so
+                                             a reload comes back to a fresh
+                                             form rather than a fake signup.
+   The prototype is never allowed to claim the visitor joined anything.
    =========================================================================== */
-if (store.get('claimed')) document.body.classList.add('isclaimed');
+// A remembered signup is only meaningful when a real endpoint exists. This also
+// neutralises any 'claimed' flag left behind by an earlier demo-mode build.
+if (WAITLIST_IS_LIVE && store.get('claimed')) document.body.classList.add('isclaimed');
 
 $('#claimform').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -954,9 +976,12 @@ $('#claimform').addEventListener('submit', async (e) => {
       ok = r.ok || r.type === 'opaque';
     } catch (err) { ok = false; }
   } else {
-    // DEMO MODE: local only. See the CONFIG banner at the top of this script.
-    console.warn('[apoyu] WAITLIST_ENDPOINT is empty. Demo mode: nothing was collected.');
-    store.set('waitlist', v);
+    // DEMO MODE. Nothing is sent and nothing is kept, not even the address:
+    // storing it while saying "nothing was submitted" would be the same lie in
+    // a quieter place. See the CONFIG banner at the top of this script.
+    console.warn('[apoyu] WAITLIST_ENDPOINT is empty. Preview mode: nothing was submitted or stored.');
+    document.body.classList.add('ispreviewed');
+    return;
   }
   if (ok) { store.set('claimed', true); document.body.classList.add('isclaimed'); }
   else {

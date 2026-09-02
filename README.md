@@ -19,8 +19,10 @@ Static site serving `apoyu.app` — landing page + legal policies.
 ## Landing page (index.html)
 
 - **🔴 Before launch:** set `WAITLIST_ENDPOINT` at the top of the inline script. Empty is DEMO MODE:
-  the form stores the address in localStorage, shows the success state, and collects nothing.
-  Publishing while it is empty silently drops every signup. Also fill the `[BRACKETS]` in
+  the form validates, then answers "Preview mode. The signup backend is not connected yet. Nothing
+  was submitted." It sends nothing, stores nothing, and never shows the real success state, so a
+  reviewer is never told they joined a list that does not exist. Publishing while it is empty still
+  drops every signup, it just no longer pretends otherwise. Also fill the `[BRACKETS]` in
   `trust.md` and `press.md`.
 - **Visual source of truth is the app, not this repo's history.** The ground reproduces the app's
   Banked Hearth substrate (`GradientBackdrop`): the same plum-to-ember stops, hearth glow from
