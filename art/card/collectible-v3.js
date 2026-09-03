@@ -147,6 +147,15 @@ export const V3_INK = {
 
 /* --- comfort-material.ts ---------------------------------------------------- */
 export const COMFORT_MATERIAL = {
+  dirt: {
+    label: 'Dirt',
+    character: 'Earthy mineral with a fine grit. Matte, grounded, no polish anywhere.',
+    overlayColor: '#A87F55', overlayOpacity: 0.07, grain: 0.4,
+    edgeColor: 'rgba(178, 142, 100, 0.52)', edgeSoftness: 0.32,
+    glassTint: 'rgba(29, 22, 18, 0.62)', glassFrost: 0.8,
+    socketTint: 'rgba(166, 132, 96, 0.52)', orbSpecular: 0.26,
+    highlight: 'rgba(248, 220, 186, 0.52)',
+  },
   concrete: {
     label: 'Concrete',
     character: 'Hard cool stone. A tight rim, a restrained aggregate roughness, no give.',
