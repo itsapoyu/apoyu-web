@@ -14,6 +14,7 @@ Static site serving `apoyu.app` — landing page + legal policies.
 | `apoyu.app/trust` | `trust.md` | "What leaves your phone" positioning page (linked from landing; counsel C2 glance pending) |
 | `apoyu.app/press` | `press.md` | Press kit page (placeholders in [BRACKETS] to fill before launch) |
 | `apoyu.app/og.png` | `og.png` | Social share image referenced by index.html og:image |
+| `apoyu.app/art/card/*` · `art/rive/*` | `art/card/`, `art/rive/` | The W1A.2 fidelity specimen: a port of the app's CollectibleCardV3 (`collectible-v3.js` geometry + tokens, `card-render.js` the SkSL finish ported to GLSL plus the orb and gem, `mount.js` the layer assembly and inspection), the vendored `@rive-app/canvas` 2.42.0 runtime, and the PRODUCTION `archetype_this_is_absolutely_fine.riv`. Lazy-loaded: the hero paints from the canonical poster first |
 | `apoyu.app/art/*` | `art/` | `art/cards/` the real collectible art (9 WebP, 214 KB), `art/font/fredoka-var.ttf` the app's Fredoka subset (41 KB, weight axis only), and 5 environment WebPs used as low-opacity atmosphere. WebP only; the JPG twins were removed. The page degrades to the procedural substrate if any art file is absent |
 
 ## Landing page (index.html)
@@ -40,6 +41,17 @@ Static site serving `apoyu.app` — landing page + legal policies.
 - **Debug hooks (safe in prod, no visible controls):** `#reveal` opens with today's card already
   flipped, `#collection` jumps to the rail, `#cta` jumps to the conversion block, `#calm` forces
   the reduced-motion presentation for review.
+- **The hero collectible (W1A.2)** is a PORT of `CollectibleCardV3`, not an impression of
+  it. The 2:3 silhouette, frame, bevel, orb anchor, plaque box, top stat bar and gem socket all
+  come from `collectible-v3-geometry.ts` as arithmetic, so the object cannot drift by eyeballing.
+  The world is the same production `.riv` the app plays, through the Rive web runtime. The rarity
+  finish is `finish-sksl-v3.ts` translated SkSL to GLSL ES with the expressions unchanged, fed by
+  the same `finishStateAt` vector and the same splitmix32 seed. Facts are the app's own visual-lab
+  fixture for the archetype. See the fidelity matrix in the W1A.2 handoff for what is exact and
+  what is approximated (the orb's flame is the one genuinely re-drawn layer).
+- **One clock.** A single rAF drives the finish, orb, gem and idle float; pointer and touch feed a
+  SEPARATE specular drive, so inspecting the card never restarts its intrinsic motion. Everything
+  pauses when the hero leaves the viewport.
 - **Motion:** card float, rarity sweep, card flip, ambient sparks, scroll-in. All CSS-driven and
   GPU-composited, with no requestAnimationFrame loop. `prefers-reduced-motion` settles everything
   and drops the sparks. Scroll-in is opt-in and carries a failsafe, so motion can never leave

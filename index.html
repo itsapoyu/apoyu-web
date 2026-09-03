@@ -43,6 +43,10 @@
       #collection  jump to the collection rail
       #cta         jump to the final conversion block
       #calm        force the reduced-motion presentation for review
+      #light-left  the hero specimen held to the left, light from the left
+      #light-right the hero specimen held to the right, light from the right
+      #light-top   the hero specimen tipped back, light from above
+      #sweep       the rarity catch held mid-card (the finish, in a still)
   ============================================================================
 -->
 
@@ -266,6 +270,14 @@ button{font:inherit; color:inherit; -webkit-tap-highlight-color:transparent}
 .float{animation:float 7.5s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translate3d(0,0,0) rotate(-1.1deg)}
   50%{transform:translate3d(0,-11px,0) rotate(.7deg)}}
+/* the specimen carries its own inspection transform, so its idle drift is
+   TRANSLATE ONLY — a rotating parent would fight the tilt. */
+.floaty{animation:floaty 7.5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-9px,0)}}
+.specimen-fallback{width:100%;height:auto;border-radius:5.5%;display:block;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.72)}
+#specimen{touch-action:pan-y}
+#specimen.mounted .specimen-fallback{display:none}
 .hero .act{margin-top:auto; padding-top:clamp(16px,2.8svh,28px)}
 .hero .fine{margin-top:10px; text-align:center}
 
@@ -440,6 +452,7 @@ footer a:hover{color:var(--ink)}
   .js .rise{opacity:1; transform:none}
   .flipinner{transition:none}
   .pill{transition:none}
+  .floaty{animation:none}
 }
 /* #calm review hook mirrors the same presentation */
 body.calm .sparks{display:none}
@@ -447,6 +460,7 @@ body.calm .float,body.calm .seal{animation:none}
 body.calm .card .sweep{animation:none; transform:translate3d(0,0,0); opacity:.2}
 body.calm .js .rise,body.calm .rise{opacity:1; transform:none}
 body.calm .flipinner{transition:none}
+body.calm .floaty{animation:none}
 </style>
 </head>
 <body>
@@ -467,17 +481,15 @@ body.calm .flipinner{transition:none}
       <p class="util">One call every morning: <em>push</em>, <em>hold</em>, <em>ease</em>, or <em>rest</em>.</p>
     </div>
 
-    <div class="herocard float">
-      <article class="card r-common" style="--edge:rgba(240,236,255,.78)">
-        <img src="art/cards/turn_the_lights_off@2x.webp" width="760" height="1133"
-             alt="Apoyü, a small fire creature, eyes closed in a crowd under stage lights."
-             fetchpriority="high" decoding="async">
-        <span class="sweep" aria-hidden="true"></span>
-        <div class="plaque">
-          <p class="aname">Turn the lights off</p>
-          <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Cloud</p>
-        </div>
-      </article>
+    <!-- W1A.2 FIDELITY SPECIMEN. The host is replaced by the ported CollectibleCardV3
+         once its module loads; until then the canonical poster stands in, so the
+         hero paints immediately and the runtime streams in behind it. -->
+    <div class="herocard floaty" id="specimen"
+         role="img"
+         aria-label="This Is Absolutely Fine. A Legendary Apoyü collectible on concrete,
+                     recovery 38. Training load stayed high while recovery sank.">
+      <img class="specimen-fallback" src="art/card/this_is_absolutely_fine.webp"
+           width="720" height="1073" fetchpriority="high" decoding="async" alt="">
     </div>
 
     <div class="act">
@@ -991,11 +1003,71 @@ $('#claimform').addEventListener('submit', async (e) => {
 });
 
 /* ===========================================================================
+   THE V3 FIDELITY SPECIMEN (W1A.2)
+   ---------------------------------------------------------------------------
+   Facts are the app's own visual-lab fixture for this archetype
+   (features/collectible/fixtures/visual-lab-fixtures.ts) — nothing invented.
+   The module is loaded LAZILY and only when the hero is near the viewport, so
+   the runtime never blocks first paint.
+   =========================================================================== */
+window.APOYU_SPECIMEN = {
+  archetypeId: 'this_is_absolutely_fine',
+  title: 'This Is Absolutely Fine',
+  why: 'Training load stayed high while recovery sank. The overload finally added up, and the lights agree.',
+  comfortType: 'concrete',
+  rarity: 'legendary',
+  finishSeed: 880713920,
+  recoveryScore: 38,
+  hrvMs: 34,
+  sleepQualityScore: 61,
+  rhrBpm: 59,
+  trainingLoad: { position: 0.86 },
+};
+
+/* ===========================================================================
    REVIEW HOOKS
    =========================================================================== */
 if (HASH === 'reveal') $('#pull').scrollIntoView({ behavior: 'auto' });
 if (HASH === 'collection') $('#collection').scrollIntoView({ behavior: 'auto' });
 if (HASH === 'cta') $('#claim').scrollIntoView({ behavior: 'auto' });
+</script>
+
+<script type="module">
+/* Boot the fidelity specimen. Everything here is additive: if the module, WebGL2
+   or Rive is unavailable the hero keeps the canonical poster and the page is
+   otherwise unchanged. */
+const host = document.getElementById('specimen');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches
+             || location.hash.replace('#','') === 'calm';
+let booted = false;
+async function boot() {
+  if (booted || !host) return;
+  booted = true;
+  try {
+    const { mountCollectibleV3 } = await import('./art/card/mount.js');
+    const card = await mountCollectibleV3(host, window.APOYU_SPECIMEN, { reduceMotion: REDUCED });
+    host.classList.add('mounted');
+    window.__apoyuCard = card;               // review hook: card.setPointer(x, y)
+    document.documentElement.dataset.specimen = card.riveActive ? 'rive' : 'poster';
+    // Review hooks for the inspection states, so a still can be captured at a
+    // known light position instead of chasing a live pointer.
+    const h = location.hash.replace('#', '');
+    if (h === 'light-left') card.setPointer(-0.85, -0.35);
+    if (h === 'light-right') card.setPointer(0.85, 0.35);
+    if (h === 'light-top') card.setPointer(0, -0.9);
+    // Hold the travelling catch mid-card so a still can evidence the finish.
+    if (h === 'sweep' || h === 'light-left' || h === 'light-right') card.setFinishPhase(0.72);
+  } catch (e) {
+    console.warn('[apoyu] specimen unavailable, canonical poster stands:', e);
+    document.documentElement.dataset.specimen = 'poster';
+  }
+}
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((es) => {
+    if (es[0].isIntersecting) { io.disconnect(); boot(); }
+  }, { rootMargin: '200px' });
+  io.observe(host);
+} else { boot(); }
 </script>
 </body>
 </html>
