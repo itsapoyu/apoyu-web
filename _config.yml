@@ -7,11 +7,22 @@ theme: jekyll-theme-minimal
 permalink: /:title
 
 # Pages that should be included
+#
+# 🔴 `_expo` IS LISTED HERE BECAUSE JEKYLL EXCLUDES UNDERSCORE-PREFIXED PATHS BY DEFAULT, AND THE
+# SITE'S ENTIRE JAVASCRIPT LIVES UNDER ONE. Expo's static export emits `_expo/static/js/web/*.js`;
+# without this line Jekyll silently drops that directory from `_site` and the published page loads
+# a shell that can never mount, with a perfectly green build. Proven both ways with a real
+# github-pages Jekyll build (W1A.3 W3.1).
+#
+# `.nojekyll` is NOT the answer and must never be added: it disables Jekyll entirely, and the four
+# legal routes below are Markdown that Jekyll renders. Turning it off serves /privacy as a raw
+# download and breaks the App-Store-referenced legal URLs.
 include:
   - privacy.md
   - terms.md
   - health-privacy.md
   - support.md
+  - _expo
 
 defaults:
   - scope:
