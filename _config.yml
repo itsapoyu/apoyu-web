@@ -17,6 +17,14 @@ permalink: /:title
 # `.nojekyll` is NOT the answer and must never be added: it disables Jekyll entirely, and the four
 # legal routes below are Markdown that Jekyll renders. Turning it off serves /privacy as a raw
 # download and breaks the App-Store-referenced legal URLs.
+# 🔴 THE UNDERSCORE LIST IS NOT HAND-MAINTAINED. Every build writes the paths it needs into
+# `site-build.json` as `jekyllInclude`, and the publish step compares the two, so a new Expo
+# output directory can never be silently dropped.
+#
+# Only `_expo` needs listing. Jekyll's `include:` rescues a TOP-LEVEL underscore path but NOT a
+# nested one — measured: listing `assets/_mobile` and `assets/__assets` changed nothing and the
+# built site still had ZERO .riv worlds, ZERO card posters and ZERO Fredoka faces. Those nested
+# directories are therefore renamed by `finish-export.mjs` before they ever arrive here.
 include:
   - privacy.md
   - terms.md

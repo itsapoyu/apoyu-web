@@ -4,26 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apoyü</title>
-<meta name="theme-color" content="#170E22">
-<meta name="color-scheme" content="dark">
-<!--
-  W3.1 SHELL. Deliberately minimal: this document exists to prove the export/publish
-  architecture, not to be a landing page. The real head (description, canonical, Open Graph,
-  Twitter card, icons) is W3.8 release hardening, and the sections are W3.3 onwards.
-  Nothing here is marketing copy and nothing here should be treated as approved.
--->
 <style>
   html,body{margin:0;background:#170E22;color:#F0ECE3;
     font-family:ui-rounded,'SF Pro Rounded',system-ui,sans-serif}
-  #boot-fallback{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
-  #boot-fallback p{color:#A39A8E;font-size:12px;margin:0}
+  #boot-fallback{position:fixed;inset:0;display:grid;place-items:center;gap:12px;
+    text-align:center;padding:24px}
+  #boot-fallback img{width:min(70vw,260px);border-radius:5.5%;
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.72)}
+  #boot-fallback p{color:#A39A8E;font-size:12px;margin:14px 0 0}
 </style>
 </head>
 <body>
-<!-- FIRST PAINT, with no JavaScript. Removed once the entry chunk has mounted. -->
-<div id="boot-fallback"><p id="boot-note">Loading…</p></div>
+<!-- FIRST PAINT. The canonical poster shows immediately; CanvasKit and the real
+     card replace it when ready. Nothing here blocks on the WASM. -->
+<div id="boot-fallback">
+  <div>
+    <img src="/poster-fallback.jpg" alt="">
+    <p id="boot-note">Loading the shared renderer…</p>
+  </div>
+</div>
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-dca7441b53f71964a2bddaba99bb6b78.js" defer></script>
-<script src="/_expo/static/js/web/entry-a2c3e1b6f1da739a308a3613c5790241.js" defer></script>
+<script src="/_expo/static/js/web/index-93040806baf748dd8ebb37481442c3b0.js" defer></script>
+<script src="/_expo/static/js/web/entry-bfd5c301f32de54ecfeb66f8342f6b41.js" defer></script>
 </body>
 </html>
