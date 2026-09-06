@@ -6,6 +6,16 @@
 <title>Apoyü</title>
 <meta name="theme-color" content="#150C20">
 <meta name="color-scheme" content="dark">
+<link rel="preload" as="font" type="font/ttf" href="/assets/assets/fonts/Fredoka-SemiBold.3c72d6f9a71b6878e18db59daaebe757.ttf" crossorigin>
+<style>@font-face{font-family:'Fredoka-SemiBold';src:url(/assets/assets/fonts/Fredoka-SemiBold.3c72d6f9a71b6878e18db59daaebe757.ttf) format('truetype');font-weight:600;font-style:normal;font-display:swap}</style>
+<!--
+  🔴 THE DISPLAY FACE IS THE APP'S (W3.3F). The brand guide names Fredoka as the display font and
+  the card sets its archetype names in it; a headline in the system's rounded face read as system UI
+  next to the card's own world. The marker above is replaced by `finish-export.mjs` with a preload
+  and an `@font-face` pointing at the SAME hashed Fredoka file the card registers through
+  `FontFace`, so the pre-JS hero and the React hero share one font fetch. Body copy stays in the
+  system face on purpose: display and body, not everything in the mascot's voice.
+-->
 <!--
   🔴 THE FIRST PAINT IS THE HERO, NOT A SPINNER.
 
@@ -16,60 +26,90 @@
   understandable before a single byte of JavaScript executes, and React replaces it with the same
   composition — running the app's real renderer — once the stack is ready.
 
+  🔴 IT STAYS AS A VEIL UNTIL THE EXACT CARD HAS ITS POSTER (W3.3F). React committing is the
+  application's readiness, not the hero object's: the canonical card fetches its poster AFTER it
+  mounts, and on a slow connection that left a black art window where this poster had just been.
+  So on `/`, `index.js` turns this block into a pointer-transparent overlay at commit and fades it
+  out only on `apoyu:hero-ready`. Both compositions share every class below, so they are the same
+  size and the crossfade is poster → card and nothing else.
+
   🔴 EVERY STRING HERE IS GENERATED. The double-brace placeholders below are filled by
   `scripts/finish-export.mjs` from `content/landing-copy.json`, the same file React reads, and an
   unresolved one fails the build. Do not type copy into this document: a landing page whose pre-JS
-  text and post-JS text can disagree WILL eventually disagree.
+  text and post-JS text can disagree WILL eventually disagree. The poster `src` is rewritten by the
+  same script to the hashed asset the exact card will request, so the second fetch is a cache hit.
 -->
 <style>
   :root {
     --ink: #F4EFE6;
-    --ink-dim: #A79C8E;
+    --ink-dim: #A99E90;
     --ember: #FFB25C;
     --ember-deep: #E0742C;
     --night: 0;
+    /* 🔴 MIRRORS `src/landing/card-scale.ts`. Change both or neither. */
+    --card-w: min(82vw, 360px);
+    --pull-w: min(76vw, 320px);
+  }
+  @media (min-width: 600px) {
+    :root { --card-w: min(430px, 70vw, calc(58svh / 1.49)); --pull-w: min(380px, 60vw, calc(52svh / 1.49)); }
+  }
+  @media (min-width: 900px) {
+    :root { --card-w: min(480px, calc(72svh / 1.49), 34vw); --pull-w: min(420px, calc(62svh / 1.49), 30vw); }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #150C20; color: var(--ink);
     font-family: ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body { position: relative; }
+  /* Display strings in the app's own face; everything else stays in the system's. */
+  .apoyu-mark, .apoyu-headline, .apoyu-eyebrow, .apoyu-subhead, .apoyu-back__mark {
+    font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
+    font-weight: 600; }
 
   /* ── THE CONTINUOUS ENVIRONMENT ─────────────────────────────────────────────
      One fixed backdrop for the whole document. Sections never paint their own
      background; they sit in this room. `--night` is driven by scroll, so the
-     light travels dusk → midnight without a single horizontal divider. */
+     light travels dusk → midnight without a single horizontal divider.
+     Dusk: warm plum with the fire still high. Midnight: indigo-black, the fire
+     banked to a glow, cool light arriving from above. */
   .apoyu-env { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .apoyu-env__ground {
     position: absolute; inset: 0;
     background:
       linear-gradient(180deg,
-        color-mix(in oklab, #2A1330 calc((1 - var(--night)) * 100%), #140B22) 0%,
-        #170E24 42%,
-        #12091C 78%,
-        #100816 100%);
+        color-mix(in oklab, #301636 calc((1 - var(--night)) * 100%), #0D0A1F) 0%,
+        color-mix(in oklab, #1B1029 calc((1 - var(--night)) * 100%), #0F0B1D) 44%,
+        color-mix(in oklab, #15091F calc((1 - var(--night)) * 100%), #0B0916) 78%,
+        #0E0816 100%);
   }
   /* The fire, always below the horizon: one source, so every warm highlight is motivated. */
   .apoyu-env__ember {
-    position: absolute; left: 50%; bottom: -34vh; width: 150vw; height: 82vh;
+    position: absolute; left: 50%; bottom: -30vh; width: 160vw; height: 86vh;
     transform: translateX(-50%);
+    /* Banks fast as the visitor descends: at half a viewport the fire has already receded to a
+       third, so the mid-scroll reads as the room darkening rather than the same wash twice. */
     background: radial-gradient(closest-side,
-      rgba(255, 150, 62, calc(0.30 - var(--night) * 0.12)) 0%,
-      rgba(214, 96, 40, calc(0.15 - var(--night) * 0.06)) 45%,
+      rgba(255, 150, 62, calc(0.34 - var(--night) * 0.28)) 0%,
+      rgba(214, 96, 40, calc(0.17 - var(--night) * 0.14)) 46%,
       rgba(120, 44, 26, 0) 78%);
-    filter: blur(6px);
+    filter: blur(8px);
   }
+  /* On desktop the fire sits toward the card's side of the room, so the object is the lit thing
+     and the copy column stays in shadow; a fire centred under the text was the one asymmetry the
+     composition had backwards. */
+  @media (min-width: 900px) { .apoyu-env__ember { left: 60%; } }
   /* Cool night light arriving from above as the visitor descends toward Today's Pull. */
   .apoyu-env__moon {
-    position: absolute; right: -18vw; top: -22vh; width: 92vw; height: 92vh;
+    position: absolute; right: -14vw; top: -34vh; width: 118vw; height: 104vh;
     background: radial-gradient(closest-side,
-      rgba(150, 176, 255, calc(var(--night) * 0.13)) 0%,
-      rgba(96, 118, 208, calc(var(--night) * 0.06)) 52%,
+      rgba(146, 172, 255, calc(var(--night) * 0.22)) 0%,
+      rgba(96, 118, 208, calc(var(--night) * 0.09)) 50%,
       rgba(60, 70, 140, 0) 76%);
-    filter: blur(10px);
+    filter: blur(12px);
   }
   /* Film grain. Kills the flat digital-fill read of a large dark area. */
   .apoyu-env__grain {
-    position: absolute; inset: -50%; opacity: 0.028; mix-blend-mode: overlay;
+    position: absolute; inset: -50%; opacity: 0.03; mix-blend-mode: overlay;
     background-image: repeating-conic-gradient(#fff 0% 25%, #000 0% 50%);
     background-size: 3px 3px;
   }
@@ -81,7 +121,7 @@
       radial-gradient(1.1px 1.1px at 44% 92%, rgba(255,208,150,.40), transparent 60%),
       radial-gradient(1.4px 1.4px at 88% 68%, rgba(255,170,96,.35), transparent 60%);
     animation: apoyu-rise 26s linear infinite;
-    opacity: calc(0.85 - var(--night) * 0.35);
+    opacity: calc(0.85 - var(--night) * 0.5);
   }
   @keyframes apoyu-rise { from { transform: translateY(0); } to { transform: translateY(-22vh); } }
   .apoyu-env--still .apoyu-env__sparks { animation: none; }
@@ -89,118 +129,180 @@
 
   /* ── LANDING LAYOUT ─────────────────────────────────────────────────────── */
   .apoyu-stage { position: relative; z-index: 1; }
-  .apoyu-beat { position: relative; margin: 0 auto; padding: 0 24px; max-width: 1180px;
+  .apoyu-beat { position: relative; margin: 0 auto; padding: 0 24px; max-width: 1240px;
     width: 100%; }
-  .apoyu-hero { min-height: 100svh; display: grid; align-content: center; gap: 26px;
-    padding-top: 40px; padding-bottom: 48px; }
-  .apoyu-mark { font-size: 15px; letter-spacing: .16em; color: var(--ember); margin: 0;
+
+  /* THE HERO. One grid, two compositions. Phone: the copy, then the object, then the ask —
+     tell me, show me, ask me — centred on one axis so it never reads as a stacked desktop
+     layout. Desktop: copy and ask in the left column, vertically centred on the card. */
+  .apoyu-hero { min-height: 100svh; display: grid; align-content: center;
+    grid-template-areas: "copy" "card" "act"; justify-items: center; text-align: center;
+    row-gap: 22px; padding-top: 28px; padding-bottom: 44px; }
+  .apoyu-hero__copy { grid-area: copy; display: grid; gap: 14px; justify-items: center; }
+  .apoyu-cardstage { grid-area: card; }
+  .apoyu-act { grid-area: act; display: grid; gap: 12px; justify-items: center; }
+  .apoyu-mark { font-size: 14px; letter-spacing: .18em; color: var(--ember); margin: 0;
     font-weight: 600; }
-  .apoyu-headline { margin: 0; font-weight: 600; line-height: 1.04; letter-spacing: -.015em;
-    font-size: clamp(34px, 7.2vw, 66px); max-width: 15ch; text-wrap: balance; }
-  .apoyu-support { margin: 0; color: var(--ink-dim); font-size: clamp(15px, 2.1vw, 19px);
-    line-height: 1.5; max-width: 34ch; }
+  /* 20ch, not 15: "Meet your recovery." must sit on one line in Fredoka, whose glyphs run wider
+     than the system face the 15ch was measured against — at 15ch it broke as "recovery. It". */
+  .apoyu-headline { margin: 0; line-height: 1.04; letter-spacing: .004em;
+    font-size: clamp(30px, 7.6vw, 60px); max-width: 20ch; text-wrap: balance; }
+  .apoyu-support { margin: 0; color: var(--ink-dim); font-size: clamp(16px, 1.1vw + 10px, 19px);
+    line-height: 1.45; max-width: 42ch; text-wrap: balance; }
   .apoyu-support em { font-style: normal; color: var(--ink); }
   .apoyu-cta { appearance: none; border: 0; cursor: pointer; display: inline-flex;
-    align-items: center; justify-content: center; padding: 15px 26px; border-radius: 999px;
-    font: inherit; font-size: 16px; font-weight: 600; color: #21120A;
+    align-items: center; justify-content: center; padding: 15px 28px; border-radius: 999px;
+    font: inherit; font-size: 16px; font-weight: 600; letter-spacing: .005em; color: #21120A;
     background: linear-gradient(180deg, #FFC178 0%, var(--ember) 46%, var(--ember-deep) 100%);
-    box-shadow: 0 12px 34px -12px rgba(255, 150, 60, .62), 0 1px 0 rgba(255,255,255,.35) inset;
-    transition: transform 140ms ease, box-shadow 140ms ease; }
+    box-shadow: 0 14px 34px -14px rgba(255, 140, 50, .55), 0 1px 0 rgba(255,255,255,.32) inset;
+    transition: transform 140ms ease, box-shadow 140ms ease, opacity 320ms ease; }
   .apoyu-cta:hover { transform: translateY(-1px);
-    box-shadow: 0 16px 40px -12px rgba(255,150,60,.72), 0 1px 0 rgba(255,255,255,.4) inset; }
+    box-shadow: 0 18px 40px -14px rgba(255,140,50,.68), 0 1px 0 rgba(255,255,255,.4) inset; }
   .apoyu-cta:active { transform: translateY(0); }
   .apoyu-cta:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 3px; }
-  .apoyu-cta[disabled] { opacity: .96; cursor: default; }
+  /* The pre-runtime CTA is HONESTLY dormant. Until React owns it nothing happens on press, and
+     a control that looks live but is dead is worse than one that visibly has not woken yet. It
+     brightens through the veil crossfade the moment the real one is underneath. */
+  .apoyu-cta[disabled] { opacity: .58; cursor: progress; box-shadow: none; }
   .apoyu-fine { margin: 0; color: var(--ink-dim); font-size: 13px; }
-  .apoyu-act { display: grid; gap: 12px; justify-items: start; }
-  .apoyu-cardstage { position: relative; display: grid; place-items: center; perspective: 1200px; }
+
+  /* THE STAGE: the object placed in the room, not in a grid cell. The fire below the horizon
+     reaches the card's underside (light), the card has weight (shadow), and both are outer
+     presentation — nothing here redraws frame, orb, gem, glass or plaque. */
+  .apoyu-cardstage { position: relative; display: grid; place-items: center; perspective: 1100px;
+    width: var(--card-w); }
+  #root .apoyu-cardstage { width: auto; }
+  .apoyu-cardstage__light { position: absolute; left: -22%; right: -22%; bottom: -14%; height: 62%;
+    pointer-events: none; z-index: 0; filter: blur(22px);
+    background: radial-gradient(ellipse at 50% 96%,
+      rgba(255, 146, 58, .30) 0%, rgba(230, 110, 44, .14) 38%, rgba(160, 60, 30, 0) 72%); }
+  .apoyu-cardstage__shadow { position: absolute; left: 8%; right: 8%; bottom: -6%; height: 22%;
+    pointer-events: none; z-index: 0; filter: blur(18px); border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 50%, rgba(6, 2, 10, .78) 0%, rgba(6, 2, 10, .38) 50%,
+      rgba(6, 2, 10, 0) 100%); }
   .apoyu-cardstage img { display: block; width: 100%; height: auto; border-radius: 5.6%;
-    box-shadow: 0 40px 90px -30px rgba(0,0,0,.86), 0 0 60px -18px rgba(255,150,60,.20); }
+    position: relative; z-index: 1;
+    box-shadow: 0 34px 70px -28px rgba(0,0,0,.9), 0 0 0 1px rgba(255,220,180,.06); }
 
   @media (min-width: 900px) {
-    .apoyu-hero { grid-template-columns: minmax(0,1fr) minmax(0,.92fr); align-items: center;
-      column-gap: 56px; }
-    .apoyu-hero__copy { display: grid; gap: 26px; }
-    .apoyu-cardstage { width: min(430px, 100%); justify-self: end; }
-  }
-  @media (max-width: 899px) {
-    .apoyu-hero__copy { display: grid; gap: 18px; }
-    .apoyu-cardstage { width: min(330px, 82vw); margin: 4px auto 0; }
+    .apoyu-beat { padding: 0 48px; }
+    .apoyu-hero { grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "copy card" "act card"; align-items: center; text-align: left;
+      justify-items: start; column-gap: clamp(48px, 6vw, 104px); row-gap: 30px;
+      padding-top: 40px; padding-bottom: 40px; }
+    .apoyu-hero__copy { align-self: end; justify-items: start; gap: 22px; }
+    .apoyu-act { align-self: start; justify-items: start; }
+    .apoyu-cardstage { justify-self: end; align-self: center; }
+    /* Sized so "Meet your recovery." holds one line in the copy column at 1024×768 (~470 px). */
+    .apoyu-headline { font-size: clamp(40px, 3.6vw + 8px, 66px); }
+    .apoyu-mark { font-size: 15px; }
   }
 
   /* ── TILT + GLARE (browser-only presentation, never card geometry) ─────── */
-  .apoyu-tiltable { position: relative; transform-style: preserve-3d; will-change: transform;
-    touch-action: pan-y; }
+  .apoyu-tiltable { position: relative; z-index: 1; transform-style: preserve-3d;
+    will-change: transform; touch-action: pan-y; }
   .apoyu-glare { position: absolute; inset: 0; border-radius: 5.6%; pointer-events: none;
     mix-blend-mode: screen; }
 
   /* ── TODAY'S PULL (midnight) ────────────────────────────────────────────── */
-  .apoyu-pull { min-height: 100svh; display: grid; align-content: center; gap: 30px;
-    padding-top: 56px; padding-bottom: 72px; }
-  .apoyu-eyebrow { margin: 0; font-size: 12px; letter-spacing: .18em; color: var(--ember);
+  /* No min-height of its own: the beat is as tall as its content plus air, so the scroll from
+     the Hero reads as one room getting darker rather than two screens with a void between. On
+     desktop the card takes the LEFT, so the eye travels from the hero card (right) diagonally
+     down to the pull card — a path through the room, not a repeated template row. */
+  .apoyu-pull { display: grid; grid-template-areas: "copy" "card"; justify-items: center;
+    text-align: center; row-gap: 30px;
+    padding-top: clamp(56px, 12vh, 140px); padding-bottom: clamp(80px, 16vh, 180px); }
+  .apoyu-pull__copy { grid-area: copy; display: grid; gap: 12px; justify-items: center; }
+  .apoyu-pull__stage { grid-area: card; position: relative; display: grid; place-items: center;
+    perspective: 1400px; }
+  .apoyu-eyebrow { margin: 0; font-size: 12px; letter-spacing: .2em; color: var(--ember);
     font-weight: 600; }
-  .apoyu-subhead { margin: 0; font-weight: 600; line-height: 1.08; letter-spacing: -.01em;
-    font-size: clamp(27px, 4.6vw, 42px); max-width: 16ch; text-wrap: balance; }
+  .apoyu-subhead { margin: 0; line-height: 1.08; letter-spacing: .004em;
+    font-size: clamp(28px, 5.4vw, 44px); max-width: 18ch; text-wrap: balance; }
   .apoyu-pull__hint { color: var(--ink-dim); }
-  .apoyu-pull__stage { display: grid; place-items: center; perspective: 1400px; }
+  /* Midnight on the stage: cool light from above right, the last of the fire from below. */
+  .apoyu-pull__light { position: absolute; inset: -18% -26% -16% -26%; pointer-events: none;
+    z-index: 0; filter: blur(26px);
+    background:
+      radial-gradient(ellipse at 72% 4%, rgba(150, 176, 255, .10) 0%, rgba(120, 140, 230, .04) 42%, rgba(80, 90, 180, 0) 70%),
+      radial-gradient(ellipse at 50% 100%, rgba(255, 140, 60, .12) 0%, rgba(200, 90, 40, .04) 40%, rgba(120, 44, 26, 0) 68%); }
+  /* The pull card has weight too: the same contact shadow the hero card stands on. */
+  .apoyu-pull__shadow { position: absolute; left: 10%; right: 10%; bottom: -5%; height: 20%;
+    pointer-events: none; z-index: 0; filter: blur(18px); border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 50%, rgba(4, 2, 10, .7) 0%, rgba(4, 2, 10, .3) 50%,
+      rgba(4, 2, 10, 0) 100%); }
   .apoyu-pullcard { appearance: none; border: 0; background: none; padding: 0; cursor: pointer;
-    display: block; position: relative; }
+    display: block; position: relative; z-index: 1; }
   .apoyu-pullcard.is-revealed { cursor: default; }
   .apoyu-pullcard:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 8px;
     border-radius: 18px; }
   .apoyu-flip { position: absolute; inset: 0; transform-style: preserve-3d;
-    transition: transform 680ms cubic-bezier(.2,.7,.2,1); }
+    transition: transform 720ms cubic-bezier(.2,.7,.2,1); }
   .apoyu-pullcard.is-revealed .apoyu-flip { transform: rotateY(180deg); }
   .apoyu-flip--instant { transition: none; }
   .apoyu-flip__back, .apoyu-flip__front { position: absolute; inset: 0;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     display: grid; place-items: center; }
   .apoyu-flip__front { transform: rotateY(180deg); }
-  /* THE BACK: manufactured card stock, not an empty rectangle. A milled edge, an inset frame
-     line, a warm centre where the fire reaches it, and one ember seal. Deliberately NOT an egg —
-     Birth is the app's surprise and the website must not spend it. */
+  /* THE BACK: manufactured card stock. Milled diagonal stock, a double inset frame, a small
+     embossed seal carrying the mark, lit by the room — cool from above, the fire's last warmth
+     from below. Nothing on it glows by itself, and there is nothing egg-shaped on it. */
   .apoyu-flip__back { border-radius: 5.6%; overflow: hidden;
     background:
-      radial-gradient(58% 42% at 50% 50%, rgba(255,150,60,.10) 0%, rgba(255,150,60,0) 70%),
-      radial-gradient(120% 80% at 50% 118%, rgba(255,140,55,.20) 0%, rgba(255,140,55,0) 60%),
-      repeating-linear-gradient(122deg, rgba(255,225,190,.022) 0 2px, rgba(0,0,0,0) 2px 7px),
-      linear-gradient(158deg, #2A1A3C 0%, #1D1229 44%, #150C1E 100%);
+      radial-gradient(90% 60% at 70% -6%, rgba(150,176,255,.13) 0%, rgba(150,176,255,0) 62%),
+      radial-gradient(110% 70% at 50% 112%, rgba(255,140,55,.18) 0%, rgba(255,140,55,0) 60%),
+      repeating-linear-gradient(118deg, rgba(255,232,205,.045) 0 1px, rgba(0,0,0,0) 1px 6px),
+      linear-gradient(160deg, #2C1A40 0%, #1C1229 50%, #130C1E 100%);
     box-shadow:
-      0 40px 90px -30px rgba(0,0,0,.86),
-      0 0 0 1px rgba(255,220,180,.10) inset,
-      0 0 90px -30px rgba(255,150,60,.35) inset; }
-  /* The inset frame line: what makes it read as a printed back rather than a dark div. */
-  .apoyu-flip__back::before { content: ''; position: absolute; inset: 5.5%;
-    border-radius: 4%; border: 1px solid rgba(255,222,186,.09);
-    box-shadow: 0 0 0 1px rgba(0,0,0,.28) inset; }
-  .apoyu-seal { position: relative; width: 58px; height: 58px; border-radius: 50%;
-    background: radial-gradient(circle at 50% 38%, #FFE0B6 0%, #FFB25C 34%, #D9701F 68%, #8E3F13 100%);
-    box-shadow:
-      0 0 34px -4px rgba(255,150,60,.62),
-      0 0 0 1px rgba(255,214,170,.34),
-      0 0 0 9px rgba(255,150,60,.05),
-      0 0 0 10px rgba(255,150,60,.05); }
-  /* A quiet ring around the seal, like an embossed collar. */
-  .apoyu-seal::after { content: ''; position: absolute; inset: -20px; border-radius: 50%;
-    border: 1px solid rgba(255,196,140,.13); }
+      0 36px 80px -30px rgba(0,0,0,.9),
+      0 0 0 1px rgba(255,220,180,.13) inset,
+      0 -1px 0 rgba(0,0,0,.4) inset; }
+  .apoyu-flip__back::before { content: ''; position: absolute; inset: 5.2%;
+    border-radius: 4.2%; border: 1px solid rgba(255,222,186,.17);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.34) inset; }
+  .apoyu-flip__back::after { content: ''; position: absolute; inset: 7.6%;
+    border-radius: 3.6%; border: 1px solid rgba(255,222,186,.075); }
+  .apoyu-back__seal { position: relative; display: grid; place-items: center;
+    width: 31%; aspect-ratio: 1; border-radius: 50%;
+    border: 1px solid rgba(255,214,170,.32);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,235,210,.07),
+      0 0 26px -8px rgba(255,150,60,.22);
+    background: radial-gradient(circle at 50% 40%, rgba(255,190,120,.09) 0%, rgba(255,190,120,0) 70%); }
+  .apoyu-back__seal::before { content: ''; position: absolute; inset: 12%; border-radius: 50%;
+    border: 1px solid rgba(255,214,170,.16); }
+  .apoyu-back__mark { font-size: clamp(11px, 3.8cqw, 15px); letter-spacing: .22em;
+    color: rgba(255,178,92,.9); text-transform: none; padding-left: .22em; }
+  .apoyu-pullcard { container-type: inline-size; }
   @media (prefers-reduced-motion: reduce) { .apoyu-flip { transition: none; } }
 
   @media (min-width: 900px) {
-    .apoyu-pull { grid-template-columns: minmax(0,.9fr) minmax(0,1fr); align-items: center;
-      column-gap: 64px; }
-    .apoyu-pull__copy { display: grid; gap: 16px; }
-  }
-  @media (max-width: 899px) {
-    .apoyu-pull__copy { display: grid; gap: 12px; }
+    /* Card and copy are one gathered group, centred as a pair, so the instruction shares a gaze
+       with the thing it instructs and the reveal does not land in a corner. */
+    .apoyu-pull { grid-template-columns: auto minmax(0, 30rem); grid-template-areas: "card copy";
+      align-items: center; text-align: left; justify-items: start; justify-content: center;
+      column-gap: clamp(48px, 5.5vw, 88px); min-height: 100svh;
+      padding-top: 10vh; padding-bottom: 12vh; }
+    .apoyu-pull__copy { justify-items: start; gap: 16px; }
+    .apoyu-pull__stage { justify-self: end; }
   }
 
   /* ── PREVIEW SHEET ──────────────────────────────────────────────────────── */
   .apoyu-sheet { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
     padding: 24px; background: rgba(8,4,14,.62); backdrop-filter: blur(6px); }
-  .apoyu-sheet__card { max-width: 380px; width: 100%; display: grid; gap: 10px; padding: 24px;
-    border-radius: 18px; background: linear-gradient(180deg, #221532 0%, #180E24 100%);
-    box-shadow: 0 30px 80px -24px rgba(0,0,0,.9), 0 0 0 1px rgba(255,220,180,.08) inset; }
-  .apoyu-sheet__title { margin: 0; font-size: 17px; font-weight: 600; }
+  /* The sheet is cut from the same stock as the card back — milled, framed, lit from below by the
+     room's fire — so the last thing a visitor sees after the CTA is still this world. */
+  .apoyu-sheet__card { position: relative; max-width: 380px; width: 100%; display: grid; gap: 10px;
+    padding: 26px 26px 24px; border-radius: 18px; overflow: hidden;
+    background:
+      radial-gradient(110% 70% at 50% 112%, rgba(255,140,55,.16) 0%, rgba(255,140,55,0) 60%),
+      repeating-linear-gradient(118deg, rgba(255,232,205,.035) 0 1px, rgba(0,0,0,0) 1px 6px),
+      linear-gradient(160deg, #2A1A3E 0%, #1B1128 55%, #140D1F 100%);
+    box-shadow: 0 30px 80px -24px rgba(0,0,0,.9), 0 0 0 1px rgba(255,220,180,.12) inset; }
+  .apoyu-sheet__card::before { content: ''; position: absolute; inset: 7px; border-radius: 12px;
+    border: 1px solid rgba(255,222,186,.10); pointer-events: none; }
+  .apoyu-sheet__title { margin: 0; font-size: 18px; font-weight: 600; color: var(--ember);
+    font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
+    letter-spacing: .01em; }
   .apoyu-sheet__body { margin: 0 0 8px; color: var(--ink-dim); font-size: 14px; line-height: 1.5; }
   .apoyu-cta--quiet { justify-self: start; background: rgba(255,255,255,.09); color: var(--ink);
     box-shadow: none; padding: 11px 20px; font-size: 15px; }
@@ -208,8 +310,20 @@
   .apoyu-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  /* Removed by index.js once React has COMMITTED — never once a canvas exists. */
+  /* The first paint, then the veil. In flow until React commits; then positioned over the React
+     hero (same classes → same geometry), pointer-transparent so the real CTA beneath is live, and
+     faded out once the exact card has its poster. Never removed on a canvas, never on a timer. */
   #boot-fallback { position: relative; z-index: 1; }
+  #boot-fallback.is-veil { position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+    pointer-events: none; }
+  /* While veiled, only the POSTER stays visible. The React hero beneath already renders the same
+     copy and the live CTA; a second copy of the text at a sub-pixel offset ghosts it (seen in the
+     throttled recording), and the dormant CTA has nothing left to be honest about. */
+  #boot-fallback.is-veil .apoyu-hero__copy, #boot-fallback.is-veil .apoyu-act,
+  #boot-fallback.is-veil .apoyu-cardstage__light, #boot-fallback.is-veil .apoyu-cardstage__shadow,
+  #boot-fallback.is-veil #boot-note { visibility: hidden; }
+  #boot-fallback.is-leaving { opacity: 0; transition: opacity 440ms ease; }
+  @media (prefers-reduced-motion: reduce) { #boot-fallback.is-leaving { transition: none; } }
   #boot-note { color: var(--ink-dim); font-size: 12px; margin: 0; padding-bottom: 16px; }
 </style>
 </head>
@@ -230,21 +344,23 @@
       <p class="apoyu-mark">Apoyü</p>
       <h1 class="apoyu-headline">Meet your recovery. It has a face.</h1>
       <p class="apoyu-support">One call every morning: push, hold, ease, or rest.</p>
-      <div class="apoyu-act">
-        <button class="apoyu-cta" type="button" disabled>Get early access</button>
-        <p class="apoyu-fine">Daily recovery is free · Built for Apple Watch</p>
-      </div>
     </div>
     <div class="apoyu-cardstage">
-      <img src="/poster-fallback.jpg" width="720" height="1073" fetchpriority="high"
+      <div class="apoyu-cardstage__light" aria-hidden="true"></div>
+      <div class="apoyu-cardstage__shadow" aria-hidden="true"></div>
+      <img src="/assets/mobile/assets/images/collectible-v3-posters/this_is_absolutely_fine.7fe50db5f43f3e256d36e07c23115b3b.jpg" width="720" height="1073" fetchpriority="high"
            decoding="async" alt="This Is Absolutely Fine. A Rare Apoyü collectible on dirt, recovery 38.">
+    </div>
+    <div class="apoyu-act">
+      <button class="apoyu-cta" type="button" disabled>Get early access</button>
+      <p class="apoyu-fine">Daily recovery is free · Built for Apple Watch</p>
     </div>
   </header>
   <p id="boot-note" class="apoyu-beat"></p>
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-a650906c68df82946f0ef9938a545d39.js" defer></script>
-<script src="/_expo/static/js/web/entry-bd198cb450bea6ad4cbe646cf39c029e.js" defer></script>
+<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
+<script src="/_expo/static/js/web/entry-efe95141052d97341b56ffe9865abbde.js" defer></script>
 </body>
 </html>
