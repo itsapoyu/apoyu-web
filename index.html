@@ -141,8 +141,11 @@
   .apoyu-hero__copy { grid-area: copy; display: grid; gap: 14px; justify-items: center; }
   .apoyu-cardstage { grid-area: card; }
   .apoyu-act { grid-area: act; display: grid; gap: 12px; justify-items: center; }
-  .apoyu-mark { font-size: 14px; letter-spacing: .18em; color: var(--ember); margin: 0;
-    font-weight: 600; }
+  /* The BRAND, not an eyebrow (W3.3F.1, founder). 14 px at .18em read as a second label next to
+     TODAY'S PULL; 20 px at .06em is a mark: bigger than the eyebrow, well under the headline,
+     same place, same ember, same face. Identical in the pre-JS hero, so nothing jumps on commit. */
+  .apoyu-mark { font-size: 20px; letter-spacing: .06em; color: var(--ember); margin: 0;
+    font-weight: 600; line-height: 1; }
   /* 20ch, not 15: "Meet your recovery." must sit on one line in Fredoka, whose glyphs run wider
      than the system face the 15ch was measured against — at 15ch it broke as "recovery. It". */
   .apoyu-headline { margin: 0; line-height: 1.04; letter-spacing: .004em;
@@ -169,7 +172,8 @@
   /* THE STAGE: the object placed in the room, not in a grid cell. The fire below the horizon
      reaches the card's underside (light), the card has weight (shadow), and both are outer
      presentation — nothing here redraws frame, orb, gem, glass or plaque. */
-  .apoyu-cardstage { position: relative; display: grid; place-items: center; perspective: 1100px;
+  /* 900 px perspective, not 1100: at 7–8° the closer eye makes the turn legible on a phone. */
+  .apoyu-cardstage { position: relative; display: grid; place-items: center; perspective: 900px;
     width: var(--card-w); }
   #root .apoyu-cardstage { width: auto; }
   .apoyu-cardstage__light { position: absolute; left: -22%; right: -22%; bottom: -14%; height: 62%;
@@ -195,14 +199,14 @@
     .apoyu-cardstage { justify-self: end; align-self: center; }
     /* Sized so "Meet your recovery." holds one line in the copy column at 1024×768 (~470 px). */
     .apoyu-headline { font-size: clamp(40px, 3.6vw + 8px, 66px); }
-    .apoyu-mark { font-size: 15px; }
+    .apoyu-mark { font-size: 22px; }
   }
 
   /* ── TILT + GLARE (browser-only presentation, never card geometry) ─────── */
   .apoyu-tiltable { position: relative; z-index: 1; transform-style: preserve-3d;
     will-change: transform; touch-action: pan-y; }
   .apoyu-glare { position: absolute; inset: 0; border-radius: 5.6%; pointer-events: none;
-    mix-blend-mode: screen; }
+    mix-blend-mode: screen; opacity: 0; will-change: opacity, background; }
 
   /* ── TODAY'S PULL (midnight) ────────────────────────────────────────────── */
   /* No min-height of its own: the beat is as tall as its content plus air, so the scroll from
@@ -244,35 +248,45 @@
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     display: grid; place-items: center; }
   .apoyu-flip__front { transform: rotateY(180deg); }
-  /* THE BACK: manufactured card stock. Milled diagonal stock, a double inset frame, a small
-     embossed seal carrying the mark, lit by the room — cool from above, the fire's last warmth
-     from below. Nothing on it glows by itself, and there is nothing egg-shaped on it. */
-  .apoyu-flip__back { border-radius: 5.6%; overflow: hidden;
+  /* THE BACK (W3.3F.1): manufactured collectible card stock. Deep plum stock with a pressed-fibre
+     microtexture (the app's own hearth-noise, `--stock-noise`), a whisper of satin across it, one
+     debossed perimeter line, and ONE blind-embossed Apoyü mascot — the Today-tab IconProfile
+     artboard exported as a still — catching the midnight light from above and the fire from below.
+     No stripes, no circles, no wordmark, nothing that glows by itself, nothing egg-shaped. */
+  .apoyu-flip__back { border-radius: 5.6%; overflow: hidden; isolation: isolate;
     background:
-      radial-gradient(90% 60% at 70% -6%, rgba(150,176,255,.13) 0%, rgba(150,176,255,0) 62%),
-      radial-gradient(110% 70% at 50% 112%, rgba(255,140,55,.18) 0%, rgba(255,140,55,0) 60%),
-      repeating-linear-gradient(118deg, rgba(255,232,205,.045) 0 1px, rgba(0,0,0,0) 1px 6px),
-      linear-gradient(160deg, #2C1A40 0%, #1C1229 50%, #130C1E 100%);
+      radial-gradient(90% 60% at 70% -6%, rgba(150,176,255,.11) 0%, rgba(150,176,255,0) 62%),
+      radial-gradient(110% 70% at 50% 112%, rgba(255,140,55,.16) 0%, rgba(255,140,55,0) 60%),
+      linear-gradient(118deg, rgba(255,236,214,0) 34%, rgba(255,236,214,.035) 50%, rgba(255,236,214,0) 66%),
+      linear-gradient(160deg, #2B1A3F 0%, #1D1329 52%, #140D1F 100%);
     box-shadow:
       0 36px 80px -30px rgba(0,0,0,.9),
       0 0 0 1px rgba(255,220,180,.13) inset,
       0 -1px 0 rgba(0,0,0,.4) inset; }
-  .apoyu-flip__back::before { content: ''; position: absolute; inset: 5.2%;
-    border-radius: 4.2%; border: 1px solid rgba(255,222,186,.17);
-    box-shadow: 0 0 0 1px rgba(0,0,0,.34) inset; }
-  .apoyu-flip__back::after { content: ''; position: absolute; inset: 7.6%;
-    border-radius: 3.6%; border: 1px solid rgba(255,222,186,.075); }
-  .apoyu-back__seal { position: relative; display: grid; place-items: center;
-    width: 31%; aspect-ratio: 1; border-radius: 50%;
-    border: 1px solid rgba(255,214,170,.32);
-    box-shadow: 0 0 0 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,235,210,.07),
-      0 0 26px -8px rgba(255,150,60,.22);
-    background: radial-gradient(circle at 50% 40%, rgba(255,190,120,.09) 0%, rgba(255,190,120,0) 70%); }
-  .apoyu-back__seal::before { content: ''; position: absolute; inset: 12%; border-radius: 50%;
-    border: 1px solid rgba(255,214,170,.16); }
-  .apoyu-back__mark { font-size: clamp(11px, 3.8cqw, 15px); letter-spacing: .22em;
-    color: rgba(255,178,92,.9); text-transform: none; padding-left: .22em; }
-  .apoyu-pullcard { container-type: inline-size; }
+  /* Pressed fibre: the app's own noise, twice at fine scale, so the tile never reads as a tile. */
+  .apoyu-flip__back::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: var(--stock-noise), var(--stock-noise);
+    background-size: 96px 96px, 150px 150px; background-position: 0 0, 41px 23px;
+    mix-blend-mode: soft-light; opacity: .42; }
+  /* One debossed perimeter line: a dark cut with a hair of light below it. */
+  .apoyu-flip__back::after { content: ''; position: absolute; inset: 6%; pointer-events: none;
+    border-radius: 4%; border: 1px solid rgba(0,0,0,.42);
+    box-shadow: 0 1px 0 rgba(255,226,196,.10), 0 -1px 0 rgba(0,0,0,.25) inset; }
+  /* The blind emboss: the mark's luminance as a mask (white head visible, dark pupils cut),
+     three copies stacked below the face — a highlight up-left, a shade down-right — so the mark
+     reads as pressed INTO the stock and catches the room's light along its upper edge. */
+  .apoyu-back__mark, .apoyu-back__mark::before, .apoyu-back__mark::after {
+    -webkit-mask-image: var(--mascot-mark); mask-image: var(--mascot-mark);
+    -webkit-mask-mode: luminance; mask-mode: luminance;
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center; }
+  .apoyu-back__mark { position: relative; z-index: 0; width: 46%; aspect-ratio: 1; pointer-events: none;
+    background: linear-gradient(160deg, rgba(0,0,0,.34) 0%, rgba(0,0,0,.22) 55%, rgba(60,30,50,.20) 100%); }
+  .apoyu-back__mark::before { content: ''; position: absolute; inset: 0; z-index: -1;
+    transform: translate(-1.6%, -1.8%); background: rgba(255,226,196,.16); }
+  .apoyu-back__mark::after { content: ''; position: absolute; inset: 0; z-index: -2;
+    transform: translate(1.6%, 2%); background: rgba(0,0,0,.5); }
   @media (prefers-reduced-motion: reduce) { .apoyu-flip { transition: none; } }
 
   @media (min-width: 900px) {
@@ -361,6 +375,6 @@
 
 <div id="root"></div>
 <script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
-<script src="/_expo/static/js/web/entry-efe95141052d97341b56ffe9865abbde.js" defer></script>
+<script src="/_expo/static/js/web/entry-b9a2670555a973fec7078224d6a299d3.js" defer></script>
 </body>
 </html>

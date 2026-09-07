@@ -1,0 +1,14 @@
+{
+  "source": "apps/mobile/assets/animations/tabbar_icons.riv",
+  "sourceSha256": "5ff582f4-fd90de67-b210c060-c00a77c9-10b14650-73d4bda3-f37d5bf5-94a935aa",
+  "artboard": "IconProfile",
+  "runtime": "@rive-app/canvas 2.40.1 (build-time export only)",
+  "size": 1024,
+  "playback": "paused on load (rest pose)",
+  "names": {
+    "artboards": ["IconProfile", "IconCollection", "IconHome"],
+    "machines": ["State Machine"],
+    "animations": ["off", "on"]
+  },
+  "exportedAt": "2026-09-07T05:28:08.361Z"
+}
