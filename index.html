@@ -207,6 +207,9 @@
     will-change: transform; touch-action: pan-y; }
   .apoyu-glare { position: absolute; inset: 0; border-radius: 5.6%; pointer-events: none;
     mix-blend-mode: screen; opacity: 0; will-change: opacity, background; }
+  /* A bare stage (W3.3F.2): the same coordinate space, shadow, tilt and glare on a surface that
+     does not light the room — the Scenario diagnostic's card today. */
+  .apoyu-cardstage--bare { width: auto; }
 
   /* ── TODAY'S PULL (midnight) ────────────────────────────────────────────── */
   /* No min-height of its own: the beat is as tall as its content plus air, so the scroll from
@@ -272,21 +275,53 @@
   .apoyu-flip__back::after { content: ''; position: absolute; inset: 6%; pointer-events: none;
     border-radius: 4%; border: 1px solid rgba(0,0,0,.42);
     box-shadow: 0 1px 0 rgba(255,226,196,.10), 0 -1px 0 rgba(0,0,0,.25) inset; }
-  /* The blind emboss: the mark's luminance as a mask (white head visible, dark pupils cut),
-     three copies stacked below the face — a highlight up-left, a shade down-right — so the mark
-     reads as pressed INTO the stock and catches the room's light along its upper edge. */
-  .apoyu-back__mark, .apoyu-back__mark::before, .apoyu-back__mark::after {
+  /* THE DEBOSS (W3.3F.2, founder: "does not yet feel like part of the card"). W3.3F.1 stacked three
+     full copies of the mark — a dark face, a light copy up-left, a dark copy down-right — which is
+     the anatomy of a sticker with a drop shadow, however it is described. A pressed mark has no
+     copies: it has EDGES. So every layer below is the mark's luminance as a mask, and a rim is the
+     mark MINUS itself shifted by a hair (mask-composite: subtract), so light lives only on the
+     edge and hugs the form. Read from the room's light above: the top wall of the recess is in
+     shadow, the far lip catches the light, the stock lifts a hair around the rim, and the floor is
+     the SAME stock a shade darker under its wall — the fibre continues through it — with a whisper
+     of the back's own satin diagonal, because pressed fibre is a hair glossier. Three candidates
+     were captured before choosing (docs/design-proposals/2026-09-07-web-w33f2-premium-interaction). */
+  .apoyu-back__mark { position: relative; z-index: 0; width: 40%; aspect-ratio: 1; pointer-events: none;
+    --dx: .6px; --dy: 1.7px; }
+  .apoyu-back__mark i { position: absolute; inset: 0; display: block;
     -webkit-mask-image: var(--mascot-mark); mask-image: var(--mascot-mark);
     -webkit-mask-mode: luminance; mask-mode: luminance;
     -webkit-mask-size: contain; mask-size: contain;
     -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     -webkit-mask-position: center; mask-position: center; }
-  .apoyu-back__mark { position: relative; z-index: 0; width: 46%; aspect-ratio: 1; pointer-events: none;
-    background: linear-gradient(160deg, rgba(0,0,0,.34) 0%, rgba(0,0,0,.22) 55%, rgba(60,30,50,.20) 100%); }
-  .apoyu-back__mark::before { content: ''; position: absolute; inset: 0; z-index: -1;
-    transform: translate(-1.6%, -1.8%); background: rgba(255,226,196,.16); }
-  .apoyu-back__mark::after { content: ''; position: absolute; inset: 0; z-index: -2;
-    transform: translate(1.6%, 2%); background: rgba(0,0,0,.5); }
+  /* The floor: same stock, pressed. */
+  .apoyu-back__mark .apoyu-deboss__floor { background:
+      linear-gradient(118deg, rgba(255,236,214,0) 36%, rgba(255,236,214,.06) 50%, rgba(255,236,214,0) 64%),
+      linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.14) 50%, rgba(0,0,0,.06) 100%); }
+  /* The rims exist only where a browser can subtract one mask from another; elsewhere the floor
+     alone still reads as a pressed mark rather than two full silhouettes of light and shade. */
+  @supports (mask-composite: subtract) or (-webkit-mask-composite: source-out) {
+    .apoyu-back__mark .apoyu-deboss__rim {
+      -webkit-mask-image: var(--mascot-mark), var(--mascot-mark); mask-image: var(--mascot-mark), var(--mascot-mark);
+      -webkit-mask-mode: luminance, luminance; mask-mode: luminance, luminance;
+      -webkit-mask-size: contain, contain; mask-size: contain, contain;
+      -webkit-mask-repeat: no-repeat, no-repeat; mask-repeat: no-repeat, no-repeat;
+      -webkit-mask-composite: source-out; mask-composite: subtract; }
+    /* the wall in shadow under the light: the mark minus itself shifted down */
+    .apoyu-back__mark .apoyu-deboss__wall { background: rgba(0,0,0,.66);
+      -webkit-mask-position: center, calc(50% + var(--dx)) calc(50% + var(--dy));
+      mask-position: center, calc(50% + var(--dx)) calc(50% + var(--dy)); }
+    /* the far lip catching the light: the mark minus itself shifted up */
+    .apoyu-back__mark .apoyu-deboss__lip { background: rgba(255,228,200,.27);
+      -webkit-mask-position: center, calc(50% - var(--dx)) calc(50% - var(--dy));
+      mask-position: center, calc(50% - var(--dx)) calc(50% - var(--dy)); }
+    /* the stock lifting a hair around the recess: the shifted mark minus the mark */
+    .apoyu-back__mark .apoyu-deboss__ridge-lit { background: rgba(255,228,200,.09);
+      -webkit-mask-position: calc(50% - var(--dx)) calc(50% - var(--dy)), center;
+      mask-position: calc(50% - var(--dx)) calc(50% - var(--dy)), center; }
+    .apoyu-back__mark .apoyu-deboss__ridge-shade { background: rgba(0,0,0,.14);
+      -webkit-mask-position: calc(50% + var(--dx)) calc(50% + var(--dy)), center;
+      mask-position: calc(50% + var(--dx)) calc(50% + var(--dy)), center; }
+  }
   @media (prefers-reduced-motion: reduce) { .apoyu-flip { transition: none; } }
 
   @media (min-width: 900px) {
@@ -375,6 +410,6 @@
 
 <div id="root"></div>
 <script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
-<script src="/_expo/static/js/web/entry-b9a2670555a973fec7078224d6a299d3.js" defer></script>
+<script src="/_expo/static/js/web/entry-2d6f986255b4aa47e6758df24381c9f6.js" defer></script>
 </body>
 </html>
