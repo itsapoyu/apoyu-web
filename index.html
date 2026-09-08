@@ -46,6 +46,8 @@
     --ember: #FFB25C;
     --ember-deep: #E0742C;
     --night: 0;
+    /* The second leg (W3.4): 0 at midnight → 1 in the deep of the night, where Scenario lives. */
+    --deep: 0;
     /* 🔴 MIRRORS `src/landing/card-scale.ts`. Change both or neither. */
     --card-w: min(82vw, 360px);
     --pull-w: min(76vw, 320px);
@@ -75,12 +77,14 @@
   .apoyu-env { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .apoyu-env__ground {
     position: absolute; inset: 0;
+    /* Dusk → midnight on `--night`; midnight → the deep of the night on `--deep`, where the last
+       plum leaves the top of the room and the ground goes cool. */
     background:
       linear-gradient(180deg,
-        color-mix(in oklab, #301636 calc((1 - var(--night)) * 100%), #0D0A1F) 0%,
-        color-mix(in oklab, #1B1029 calc((1 - var(--night)) * 100%), #0F0B1D) 44%,
-        color-mix(in oklab, #15091F calc((1 - var(--night)) * 100%), #0B0916) 78%,
-        #0E0816 100%);
+        color-mix(in oklab, color-mix(in oklab, #301636 calc((1 - var(--night)) * 100%), #0D0A1F) calc((1 - var(--deep)) * 100%), #080A1C) 0%,
+        color-mix(in oklab, color-mix(in oklab, #1B1029 calc((1 - var(--night)) * 100%), #0F0B1D) calc((1 - var(--deep)) * 100%), #0A0B19) 44%,
+        color-mix(in oklab, color-mix(in oklab, #15091F calc((1 - var(--night)) * 100%), #0B0916) calc((1 - var(--deep)) * 100%), #080814) 78%,
+        color-mix(in oklab, #0E0816 calc((1 - var(--deep)) * 100%), #070710) 100%);
   }
   /* The fire, always below the horizon: one source, so every warm highlight is motivated. */
   .apoyu-env__ember {
@@ -88,9 +92,11 @@
     transform: translateX(-50%);
     /* Banks fast as the visitor descends: at half a viewport the fire has already receded to a
        third, so the mid-scroll reads as the room darkening rather than the same wash twice. */
+    /* And banks to an ember by the deep of the night: the Scenario's stage carries its own fire
+       under the card, so the room's may recede almost entirely. */
     background: radial-gradient(closest-side,
-      rgba(255, 150, 62, calc(0.34 - var(--night) * 0.28)) 0%,
-      rgba(214, 96, 40, calc(0.17 - var(--night) * 0.14)) 46%,
+      rgba(255, 150, 62, calc(0.34 - var(--night) * 0.28 - var(--deep) * 0.04)) 0%,
+      rgba(214, 96, 40, calc(0.17 - var(--night) * 0.14 - var(--deep) * 0.02)) 46%,
       rgba(120, 44, 26, 0) 78%);
     filter: blur(8px);
   }
@@ -101,9 +107,10 @@
   /* Cool night light arriving from above as the visitor descends toward Today's Pull. */
   .apoyu-env__moon {
     position: absolute; right: -14vw; top: -34vh; width: 118vw; height: 104vh;
+    /* Cooler and a little stronger in the deep of the night. */
     background: radial-gradient(closest-side,
-      rgba(146, 172, 255, calc(var(--night) * 0.22)) 0%,
-      rgba(96, 118, 208, calc(var(--night) * 0.09)) 50%,
+      rgba(146, 172, 255, calc(var(--night) * 0.22 + var(--deep) * 0.04)) 0%,
+      rgba(96, 118, 208, calc(var(--night) * 0.09 + var(--deep) * 0.015)) 50%,
       rgba(60, 70, 140, 0) 76%);
     filter: blur(12px);
   }
@@ -335,6 +342,181 @@
     .apoyu-pull__stage { justify-self: end; }
   }
 
+  /* ── SCENARIO (the deep of the night, W3.4) ─────────────────────────────── */
+  /* QUESTION → CHOICE → CONSEQUENCE, on one axis on a phone: eyebrow, question, three days, the
+     card, then what the day did to it. No background, no divider, no panel: the same room, deeper
+     in. On a wide screen the rail (question + days) spans the top and the card takes the left of a
+     gathered pair with the consequence beside it — not the Hero's copy/card grid, not the Pull's
+     card/copy pair, a stage with its readout. */
+  .apoyu-scn { display: grid; grid-template-areas: "rail" "stage" "consequence" "explainer" "close";
+    justify-items: center; text-align: center; row-gap: 28px;
+    padding-top: clamp(64px, 12vh, 150px); padding-bottom: clamp(88px, 16vh, 190px); }
+  .apoyu-scn__rail { grid-area: rail; display: grid; gap: 14px; justify-items: center; width: 100%; }
+  .apoyu-scn__question { max-width: 16ch; }
+  .apoyu-scn__stage { grid-area: stage; position: relative; display: grid; place-items: center;
+    width: var(--scn-card-w); min-height: var(--scn-card-h); }
+  .apoyu-scn__consequence { grid-area: consequence; display: grid; gap: 8px; justify-items: center;
+    max-width: 30rem; width: 100%; }
+  .apoyu-scn__explainer { grid-area: explainer; display: grid; justify-items: center; width: 100%;
+    max-width: 30rem; }
+  .apoyu-scn__close { grid-area: close; display: grid; gap: 12px; justify-items: center;
+    max-width: 30rem; margin-top: 12px; }
+
+  /* THE DAYS. Three objects on the table, not three tiles: a coin with the day's emoji and its name
+     beneath, no box around either. The chosen day's coin fills with the fire and a small ember pools
+     under it; the others sit in shadow with their names dimmed. Equal columns, so the third day is
+     never hidden and nothing scrolls sideways; a wrapping name is a name, not a break. */
+  /* Both choice groups are fieldsets (a group of real buttons with one accessible name); the
+     browser's fieldset chrome is reset so they lay out as rows. */
+  .apoyu-days, .apoyu-finish__row { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .apoyu-days { display: flex; gap: 6px; width: 100%; max-width: 440px; margin-top: 6px; }
+  .apoyu-day { appearance: none; flex: 1 1 0; min-width: 0; cursor: pointer; position: relative;
+    display: grid; justify-items: center; gap: 9px; padding: 10px 4px 8px; border-radius: 18px;
+    font: inherit; color: var(--ink-dim); background: none; border: 0;
+    transition: color 220ms ease; }
+  .apoyu-day:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 2px; }
+  /* The ember under the chosen coin: stage light, blurred, only there when the day is chosen. */
+  .apoyu-day::before { content: ''; position: absolute; left: 50%; top: 34px; width: 92px; height: 44px;
+    transform: translateX(-50%); border-radius: 50%; pointer-events: none; filter: blur(12px);
+    background: radial-gradient(ellipse at 50% 50%, rgba(255,150,62,.42) 0%, rgba(230,110,44,.14) 46%, rgba(160,60,30,0) 72%);
+    opacity: 0; transition: opacity 260ms ease; }
+  .apoyu-day__coin { position: relative; width: 46px; height: 46px; border-radius: 50%; display: grid;
+    place-items: center; font-size: 23px; line-height: 1;
+    background: radial-gradient(circle at 50% 28%, rgba(255,236,214,.14), rgba(255,236,214,0) 66%),
+      linear-gradient(180deg, #33243F 0%, #221730 100%);
+    box-shadow: 0 0 0 1px rgba(255,220,180,.22) inset, 0 1px 0 rgba(255,255,255,.06) inset,
+      0 8px 18px -10px rgba(0,0,0,.9);
+    transition: background 220ms ease, box-shadow 220ms ease, transform 220ms ease; }
+  .apoyu-day:hover .apoyu-day__coin { box-shadow: 0 0 0 1px rgba(255,220,180,.4) inset, 0 1px 0 rgba(255,255,255,.08) inset, 0 8px 18px -10px rgba(0,0,0,.9); }
+  .apoyu-day:active .apoyu-day__coin { transform: scale(.96); }
+  .apoyu-day__label { font-size: 12.5px; font-weight: 600; line-height: 1.2; letter-spacing: .005em;
+    text-wrap: balance; color: #BDB0A4; }
+  .apoyu-day.is-selected { color: var(--ink); }
+  .apoyu-day.is-selected::before { opacity: 1; }
+  .apoyu-day.is-selected .apoyu-day__coin { transform: translateY(-2px);
+    background: radial-gradient(circle at 50% 28%, #FFD9A8 0%, var(--ember) 46%, var(--ember-deep) 100%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.26) inset, 0 10px 22px -8px rgba(255,140,50,.75); }
+  .apoyu-scn__day { margin: 0; color: var(--ink-dim); font-size: 15px; font-style: italic;
+    line-height: 1.4; max-width: 34ch; text-wrap: balance; transition: opacity 140ms ease; }
+  .apoyu-scn__day.is-changing { opacity: 0; }
+
+  /* THE STAGE. The fire under the card follows the recovery: `--recovery` is the committed score
+     as 0..1, and the pool's strength rides it — banked at 12, full at 92. Stage light, not card
+     chrome; the same ember pool the Hero stands on, answering the day. */
+  .apoyu-scn__light { position: absolute; left: -24%; right: -24%; bottom: -14%; height: 64%;
+    pointer-events: none; z-index: 0; filter: blur(24px);
+    opacity: calc(0.28 + var(--recovery, 0.5) * 0.72);
+    background: radial-gradient(ellipse at 50% 96%,
+      rgba(255, 146, 58, .34) 0%, rgba(230, 110, 44, .15) 38%, rgba(160, 60, 30, 0) 72%);
+    transition: opacity 260ms ease; }
+  .apoyu-scn__slot { width: var(--scn-card-w); height: var(--scn-card-h); border-radius: 5.6%; }
+  /* The canonical poster in the card's shape until the exact card has it (WEB-74 on this beat). */
+  .apoyu-scn__poster { position: absolute; top: 0; left: 0; width: var(--scn-card-w);
+    height: var(--scn-card-h); object-fit: cover; border-radius: 5.6%; z-index: 3;
+    pointer-events: none; box-shadow: 0 34px 70px -28px rgba(0,0,0,.9), 0 0 0 1px rgba(255,220,180,.06); }
+  .apoyu-scn__stage .apoyu-cardstage--bare { position: relative; z-index: 1; }
+
+  /* THE CONSEQUENCE. A caption, the score in the card's own face, the material it forged. */
+  .apoyu-readout { margin: 0; display: flex; align-items: baseline; gap: 10px; line-height: 1;
+    font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif; }
+  .apoyu-readout__score { font-size: 46px; font-weight: 600; color: var(--ink); letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+  .apoyu-readout__sep { color: var(--ink-dim); font-size: 22px; }
+  .apoyu-readout__material { font-size: 15px; letter-spacing: .16em; color: var(--ember);
+    font-weight: 600; }
+  .apoyu-scn__note { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.5;
+    max-width: 36ch; text-wrap: balance; }
+
+  /* THE FINISH. A line that says what the row is for, then four finish tokens in the days' own
+     vocabulary: a swatch above, its name below, no box. The swatch is a hint of the finish family
+     (matte, satin, foil, laminate); the CARD is where the finish actually answers, under the light. */
+  .apoyu-finish { display: grid; gap: 8px; justify-items: center; width: 100%; margin-top: 30px; }
+  .apoyu-finish__head { margin: 0; font-size: 18px; font-weight: 600; color: var(--ink);
+    font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif; }
+  .apoyu-finish__support { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.45; }
+  .apoyu-finish__row { display: flex; gap: 4px; width: 100%; max-width: 380px; margin-top: 4px; }
+  .apoyu-finish__tier { appearance: none; flex: 1 1 0; min-width: 0; cursor: pointer;
+    display: grid; justify-items: center; gap: 7px; padding: 8px 2px 6px; border-radius: 14px;
+    font: inherit; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; color: var(--ink-dim);
+    background: none; border: 0; transition: color 200ms ease; }
+  .apoyu-finish__tier:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 2px; }
+  .apoyu-finish__tier.is-selected { color: var(--ink); }
+  .apoyu-finish__swatch { width: 30px; height: 20px; border-radius: 6px; display: block;
+    box-shadow: 0 0 0 1px rgba(255,220,180,.14) inset, 0 6px 14px -8px rgba(0,0,0,.9);
+    transition: box-shadow 200ms ease, transform 200ms ease; }
+  .apoyu-finish__tier:hover .apoyu-finish__swatch { box-shadow: 0 0 0 1px rgba(255,220,180,.28) inset, 0 6px 14px -8px rgba(0,0,0,.9); }
+  .apoyu-finish__tier.is-selected .apoyu-finish__swatch { transform: translateY(-1px);
+    box-shadow: 0 0 0 1.5px rgba(255,178,92,.85) inset, 0 8px 18px -8px rgba(255,140,50,.55); }
+  /* Every finish is the same card stock; what differs is how it catches a light. Common: none.
+     Uncommon: a faint satin band. Rare: a brighter band with a spectral edge. Legendary: a fine
+     spectral band. The same stock, the same diagonal the card's own sweep travels. */
+  .apoyu-finish__swatch { background: linear-gradient(160deg, #2F2639 0%, #1C1526 100%); }
+  .apoyu-finish__swatch.is-uncommon { background:
+      linear-gradient(115deg, rgba(255,240,222,0) 36%, rgba(255,240,222,.22) 50%, rgba(255,240,222,0) 64%),
+      linear-gradient(160deg, #2F2639 0%, #1C1526 100%); }
+  .apoyu-finish__swatch.is-rare { background:
+      linear-gradient(115deg, rgba(255,120,170,0) 41%, rgba(255,120,170,.35) 45%, rgba(255,246,236,.55) 50%, rgba(120,200,255,.35) 55%, rgba(120,200,255,0) 59%),
+      linear-gradient(160deg, #2F2639 0%, #1C1526 100%); }
+  .apoyu-finish__swatch.is-legendary { background:
+      linear-gradient(115deg, rgba(242,196,196,0) 30%, rgba(242,196,196,.8) 38%, rgba(245,226,184,.85) 44%, rgba(201,240,214,.85) 50%, rgba(191,217,247,.85) 56%, rgba(227,198,245,.8) 62%, rgba(227,198,245,0) 70%),
+      linear-gradient(160deg, #2F2639 0%, #1C1526 100%); }
+
+  /* HOW DOES APOYÜ GET THE SCORE? Collapsed by default; the privacy line never hides. */
+  .apoyu-disclosure { display: grid; gap: 10px; justify-items: center; width: 100%; }
+  .apoyu-disclosure__button { appearance: none; cursor: pointer; display: inline-flex;
+    align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; font: inherit;
+    font-size: 13.5px; font-weight: 600; color: var(--ink-dim); background: none;
+    border: 1px solid rgba(255,220,180,.14); transition: border-color 200ms ease, color 200ms ease; }
+  .apoyu-disclosure__button:hover { color: var(--ink); border-color: rgba(255,220,180,.28); }
+  .apoyu-disclosure__button:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 3px; }
+  .apoyu-disclosure__sign { color: var(--ember); font-size: 15px; font-weight: 700; }
+  .apoyu-scn__privacy { margin: 0; color: var(--ink-dim); font-size: 13px; }
+  .apoyu-disclosure__body { width: 100%; max-width: 26rem; text-align: left; display: grid; gap: 6px;
+    margin-top: 4px; }
+  .apoyu-disclosure__heading { margin: 10px 0 2px; font-size: 11px; letter-spacing: .16em;
+    color: var(--ember); font-weight: 700; }
+  .apoyu-signals { margin: 0; display: grid; gap: 8px; }
+  .apoyu-signals__row dt { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; color: var(--ink); }
+  .apoyu-signals__row dd { margin: 2px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink-dim); }
+  .apoyu-disclosure__text { margin: 0; font-size: 13px; line-height: 1.45; color: var(--ink-dim); }
+  .apoyu-disclosure__fine { margin: 6px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-dim);
+    opacity: .8; }
+
+  .apoyu-scn__closing { margin: 0; color: var(--ink); font-size: 17px; font-style: italic; line-height: 1.4; }
+  .apoyu-scn__deck { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.5; max-width: 34ch;
+    text-wrap: balance; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .apoyu-day, .apoyu-day::before, .apoyu-day__coin, .apoyu-finish__tier, .apoyu-finish__swatch,
+    .apoyu-scn__day, .apoyu-scn__light, .apoyu-disclosure__button { transition: none; }
+  }
+
+  @media (min-width: 600px) {
+    .apoyu-days { max-width: 500px; gap: 8px; }
+    .apoyu-day__label { font-size: 13.5px; }
+    .apoyu-finish__row { max-width: 420px; }
+    .apoyu-finish__tier { font-size: 11px; }
+  }
+  @media (min-width: 1000px) {
+    /* The rail spans; beneath it the card and its consequence are one gathered pair, centred. */
+    .apoyu-scn { grid-template-columns: auto minmax(0, 26rem); grid-template-areas: "rail rail"
+      "stage consequence" "explainer explainer" "close close"; align-items: center;
+      justify-content: center; column-gap: clamp(44px, 5vw, 92px); row-gap: 22px;
+      padding-top: clamp(28px, 4vh, 56px); padding-bottom: clamp(72px, 12vh, 150px); }
+    .apoyu-scn__rail { justify-self: center; gap: 10px; }
+    .apoyu-scn__explainer { justify-self: center; margin-top: 14px; }
+    .apoyu-disclosure { justify-items: center; }
+    .apoyu-disclosure__body { max-width: 30rem; }
+    .apoyu-scn__question { max-width: 26ch; }
+    .apoyu-days { max-width: 520px; }
+    .apoyu-scn__consequence { justify-items: start; text-align: left; gap: 10px; }
+    .apoyu-scn__note, .apoyu-finish__support, .apoyu-scn__deck { text-wrap: pretty; }
+    .apoyu-finish { justify-items: start; }
+    .apoyu-finish__row { max-width: 400px; }
+    .apoyu-readout__score { font-size: 54px; }
+    .apoyu-scn__close { justify-self: center; }
+  }
+
   /* ── PREVIEW SHEET ──────────────────────────────────────────────────────── */
   .apoyu-sheet { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
     padding: 24px; background: rgba(8,4,14,.62); backdrop-filter: blur(6px); }
@@ -409,7 +591,7 @@
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
-<script src="/_expo/static/js/web/entry-a6a2a28620d848d09738e3fa7a182130.js" defer></script>
+<script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
+<script src="/_expo/static/js/web/entry-4729643b574b028952fff8a8009a5f20.js" defer></script>
 </body>
 </html>
