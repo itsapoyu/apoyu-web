@@ -1,0 +1,40 @@
+{
+  "source": "apps/mobile/assets/animations/dailycall.riv",
+  "sourceSha256": "999bbc2b-f442d222-a821a55d-ea8e37a1-35587165-e0fa854e-408f521f-b8541f09",
+  "sourceAuthoritativeSha": "6252e290-4665e03b-9773f4db-4fdcbef1-e36cba60",
+  "artboard": "dailyCallEase",
+  "registry": "apps/mobile/src/features/instruction/services/call-scene-assets.ts (ease → dailyCallEase)",
+  "runtime": "@rive-app/canvas 2.40.1 (build-time export only; never shipped to a visitor)",
+  "playback": "artboard's own default state machine (never named, exactly as CallSceneArt mounts it), advanced in real time and paused at 2400 ms",
+  "chosenCandidate": "sm-2400",
+  "elapsedMs": 2400,
+  "candidatesInspected": [
+    "load-pose",
+    "sm-0400",
+    "sm-1200",
+    "sm-2400",
+    "sm-4000",
+    "idle-0000",
+    "idle-1200",
+    "idle-2400",
+    "wakeup-0600",
+    "wakeup-1600"
+  ],
+  "candidatesDir": "docs/design-proposals/2026-09-08-web-w35-daily-loop/call-art-candidates",
+  "fileNames": {
+    "artboards": ["dailyCallRest", "glow", "pro 1", "pro 2", "dailyCallEase"],
+    "machines": ["State Machine"],
+    "animations": ["Timeline 1", "idle", "WakeUp"],
+    "contents": "{\"artboards\":[{\"name\":\"dailyCallRest\",\"animations\":[\"idle\",\"WakeUp\"],\"stateMachines\":[{\"name\":\"State Machine\",\"inputs\":[]}]},{\"name\":\"glow\",\"animations\":[\"Timeline 1\"],\"stateMachines\":[{\"name\":\"State Machine 1\",\"inputs\":[{\"name\":\"hover red exit\",\"type\":58},{\"name\":\"hover red enter\",\"type\":58},{\"name\":\"hover enter \",\"type\":58},{\"name\":\"hover exit\",\"type\":58},{\"name\":\"test\",\"type\":58},{\"name\":\"Trigger 1\",\"type\":58}]}]},{\"name\":\"pro 1\",\"animations\":[\"Comp 3\"],\"stateMachines\":[{\"name\":\"State Machine 1\",\"inputs\":[]}]},{\"name\":\"pro 2\",\"animations\":[\"Comp 3\"],\"stateMachines\":[{\"name\":\"State Machine 1\",\"inputs\":[]}]},{\"name\":\"dailyCallEase\",\"animations\":[\"Timeline 1\",\"idle\",\"WakeUp\"],\"stateMachines\":[{\"name\":\"State Machine\",\"inputs\":[]}]}]}"
+  },
+  "losslessRender": "docs/design-proposals/2026-09-08-web-w35-daily-loop/call-art-candidates/sm-2400.png",
+  "losslessBytes": 815688,
+  "losslessSha256": "ee6fe595-f2416cf4-5e14dc90-3cb53df7-0a8ee72a-e7b1d84f-a43daf13-259029dd",
+  "shippedEncoder": "canvaskit-wasm (Skia) JPEG q92, flattened over #190E24 (CALL_ROOM_EDGE)",
+  "output": "apps/web/public/daily-loop/call-ease.jpg",
+  "outputWidth": 898,
+  "outputHeight": 1122,
+  "outputBytes": 113876,
+  "outputSha256": "b9680585-1926ace2-cc462ab3-7e6d6427-63f514ee-085b1f7f-a3685b29-cddb268d",
+  "exportedAt": "2026-09-08T15:37:36.527Z"
+}

@@ -552,6 +552,205 @@
     .apoyu-scn__close { justify-self: center; }
   }
 
+  /* ── THE DAILY LOOP (W3.5) ──────────────────────────────────────────────── */
+  /* THE CARD IS THE READ; THIS IS WHAT TO DO WITH IT. Two surfaces, deliberately unequal: the
+     CALL is a wide illustrated instrument (how hard do I go today?), the NUDGE is a small
+     concrete card set down after it (what is the one thing?). No section background, no divider,
+     no panel — the same room, one beat further into the night. There is nothing to press here.
+
+     🔴 NOT TWO EQUAL FEATURE CARDS. On a phone they run down one axis, the Nudge narrower than
+     the Call and inset from the same left edge, so the size difference IS the hierarchy. On a
+     desktop they are a gathered pair on a table: the Call takes the larger mass, the Nudge sits
+     smaller, lower and downstream of it, sharing a light rather than a grid row. */
+  .apoyu-loop { display: grid; grid-template-areas: "rail" "call" "then" "nudge";
+    justify-items: center; row-gap: 18px;
+    padding-top: clamp(40px, 8vh, 96px); padding-bottom: clamp(72px, 14vh, 160px); }
+  .apoyu-loop__rail { grid-area: rail; display: grid; gap: 14px; justify-items: center;
+    text-align: center; width: 100%; margin-bottom: 10px; }
+  .apoyu-loop__headline { max-width: 20ch; }
+  .apoyu-loop__support { max-width: 38ch; }
+  .apoyu-loop__call { grid-area: call; width: 100%; max-width: 560px; }
+  .apoyu-loop__nudge { grid-area: nudge; width: 100%; max-width: 560px; }
+  /* The two surface titles sit OUTSIDE their frames, in ash rather than ember, exactly as the
+     app stacks them: eyebrow, frame, eyebrow, frame down the scroll. Ember is spent on the one
+     section eyebrow above; a second ember label here would make three eyebrows compete. */
+  .apoyu-loop__label { margin: 0 0 8px 4px; font-size: 10px; letter-spacing: .2em;
+    line-height: 14px; color: rgba(163,154,142,.90); font-weight: 700; text-align: left;
+    font-family: 'Fredoka-Bold', 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif; }
+
+  /* THE SEQUENCING CUE. One quiet word between two ember traces — not a stepper, not a timeline,
+     not a numbered process. It says "and then this" and takes 14 px of the page to do it. */
+  /* 🔴 IT IS THE ONLY THING SAYING THE CALL CAUSES THE NUDGE, so it has to be readable: at
+     rgba(163,154,142,.62) it measured 3.4:1 on this ground, under the 4.5:1 bar for 10 px text. */
+  .apoyu-loop__then { grid-area: then; margin: 2px 0; display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: .28em; font-weight: 700; color: rgba(214,205,193,.82); }
+  .apoyu-loop__trace { display: block; width: clamp(28px, 9vw, 54px); height: 1px;
+    background: linear-gradient(90deg, rgba(255,170,120,0) 0%, rgba(255,170,120,.42) 50%, rgba(255,170,120,0) 100%); }
+
+  /* ── TODAY'S CALL ───────────────────────────────────────────────────────────
+     `CallScene`'s composition, restated in CSS: a full-width frame with the delivered artboard
+     underneath taking 61 % of it, the information floating on top from the halfway mark, and a
+     directional scrim carrying the contrast between them. 236 px is the app's own BASE_HEIGHT and
+     is a FLOOR here too — the frame grows with its content and never clips a line. Every colour
+     is a custom property written by `DailyLoop.tsx` from `call-scene-ink.ts`. */
+  /* 🔴 THE FRAME'S HEIGHT TRACKS ITS OWN WIDTH, AND THAT IS THE WHOLE RESPONSIVE RULE.
+     On device the frame is ~342 x 236: the board contains to 189 px, which reaches PAST the point
+     the copy starts (50 %), so the art runs under the words and the scrim dissolves it. Hold the
+     236 floor while the frame widens and that stops being true — at 768 the frame is 558 wide, the
+     board is still 189, and a 90 px band of bare room opens between the picture and the text. That
+     is the filmstrip-thumbnail-glued-to-a-UI-card failure `CallScene`'s own header describes, and
+     it appeared on the first tablet capture. 68.75 % is the device ratio (0.8 x 0.55 x width), so
+     one container query keeps the overlap at every width; 236 stays the floor and 384 the cap, and
+     a browser without container queries simply keeps the floor. */
+  .apoyu-loop__call { container-type: inline-size; }
+  .apoyu-call { position: relative; min-height: 236px; border-radius: 24px; overflow: hidden;
+    border: 1px solid var(--call-rim); background: var(--call-scrim); display: flex; }
+  .apoyu-call { min-height: clamp(236px, 68.75cqw, 384px); }
+  /* The room: ground, the hearth's wide faint spread, the hearth itself under the art zone, the
+     floor hairline at 0.84, and a corner vignette. Five layers, one element, no canvas. */
+  /* Every radius below is `PlaceholderField`'s own arithmetic resolved against the FRAME rather
+     than against the art stage, because CSS has no `artStageWidth`: the stage is 0.61 of the frame,
+     so the tight hearth's `artStageWidth * 0.95` is 57.95 % of the frame, the wide spread's
+     `artStageWidth * 2.6` is 158.6 %, and the emitter's `artStageWidth * 0.44` is 26.8 % across.
+     Each is then multiplied by the call's own `reach`, exactly as the app multiplies it. */
+  .apoyu-call__room { position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,0) 55%,
+        color-mix(in srgb, var(--call-vignette) 55%, transparent) 100%),
+      linear-gradient(to bottom, transparent calc(84% - 1px),
+        color-mix(in srgb, var(--call-hearth) calc(var(--call-hearth-a) * 55%), transparent) 84%,
+        transparent calc(84% + 1px)),
+      radial-gradient(ellipse calc(57.95% * var(--call-hearth-reach)) calc(72% * var(--call-hearth-reach)) at 26.8% 102%,
+        color-mix(in srgb, var(--call-hearth) calc(var(--call-hearth-a) * 100%), transparent) 0%,
+        color-mix(in srgb, var(--call-hearth) calc(var(--call-hearth-a) * 40%), transparent) 55%,
+        transparent 100%),
+      radial-gradient(ellipse calc(158.6% * var(--call-hearth-reach)) calc(105% * var(--call-hearth-reach)) at 26.8% 102%,
+        color-mix(in srgb, var(--call-hearth) calc(var(--call-hearth-a) * 34%), transparent) 0%,
+        transparent 100%),
+      linear-gradient(180deg, var(--call-ground-0) 0%, var(--call-ground-1) 50%, var(--call-ground-2) 100%); }
+  /* The art stage: a VISUAL footprint, never a layout column — nothing lays out against it and the
+     copy overlaps it freely. `ART_STAGE_FRACTION` is 0.61 in `CallScene.tsx`.
+
+     🔴 THE FEATHER RIDES THE BOARD, NOT THE STAGE, AND THAT IS THE ONE ADAPTATION. On device the
+     stage is only a hair wider than the contained 449x561 board, so the app can put the dissolve at
+     a fixed 0.88 of the STAGE and land it exactly where the artwork ends. A browser frame is not
+     that shape: at 1440 the frame is 603x300, the board contains to 240 of a 368 px stage, and a
+     0.88-of-stage ramp reached the board's edge only 38 % faded — a hard vertical seam, measured on
+     the first capture. So the board gets its OWN box, sized by the artboard's real 449:561 ratio and
+     pinned bottom-left exactly as `Fit.Contain` + `Alignment.BottomLeft` place it, and the app's own
+     ramp (0 / 0.52 / 0.76 / 0.88) runs across THAT. Same numbers, same intent, and the edge is fully
+     dissolved at any frame proportion the viewport can produce. */
+  .apoyu-call__panel { position: absolute; left: 0; top: 0; bottom: 0; width: 61%;
+    pointer-events: none; }
+  /* 🔴 AND THE DISSOLVE IS THE BOARD'S OWN ALPHA, NOT A COLOUR LAID OVER IT. The app paints
+     `CALL_ROOM_EDGE` at rising opacity because a native Image cannot be masked in place; a browser
+     can, and painting a FLAT colour over a board whose room is a vertical gradient leaves a step
+     wherever the two disagree — measured at the board's right edge, 22,13,32 against 28,15,31, a
+     27 % relative difference at near-black and a faint vertical line down the card. Fading the
+     board's own alpha instead reveals whatever the room actually is at that pixel, so the boundary
+     cannot seam at any frame proportion or any height. Same ramp as the app's (0 / 0.52 / 0.76 /
+     0.88), read as opacity rather than as coverage. */
+  .apoyu-call__board { position: absolute; left: 0; bottom: 0; height: 100%; width: auto;
+    max-width: 100%; aspect-ratio: 449 / 561; display: block;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 52%, rgba(0,0,0,.30) 76%, transparent 88%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 52%, rgba(0,0,0,.30) 76%, transparent 88%); }
+  .apoyu-call__art { position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; object-position: left bottom; }
+  /* Clear over Apoyü, climbing hard through the transition so the first character already sits on
+     contrast, and never reaching opaque so the hearth stays faintly readable behind the words. */
+  .apoyu-call__scrim { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--call-scrim) 0%, transparent) 0%,
+      color-mix(in srgb, var(--call-scrim) 10%, transparent) 34%,
+      color-mix(in srgb, var(--call-scrim) 65%, transparent) 52%,
+      color-mix(in srgb, var(--call-scrim) 91%, transparent) 70%,
+      color-mix(in srgb, var(--call-scrim) 95%, transparent) 100%); }
+  /* A shallow lift along the floor, so the scene has weight at its bottom edge. */
+  .apoyu-call__floor { position: absolute; left: 0; right: 0; bottom: 0; height: 84px;
+    pointer-events: none;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--call-scrim) 0%, transparent) 0%,
+      color-mix(in srgb, var(--call-scrim) 20%, transparent) 100%); }
+  /* A MARGIN, not a column (`INFO_LEFT_FRACTION` 0.5 < `ART_STAGE_FRACTION` 0.61): the art behind
+     it is untouched, and the two are never tiling the frame. */
+  .apoyu-call__info { position: relative; z-index: 1; margin-left: 50%; padding: 20px 20px 20px 0;
+    display: grid; align-content: center; flex-grow: 1; }
+  .apoyu-call__read { display: grid; gap: 20px; }
+  .apoyu-call__meter { width: 100%; }
+  .apoyu-call__words { display: grid; gap: 8px; }
+  /* THE LARGEST LINE IN THE SCENE. 20/26 Fredoka Medium, the app's own values — the meter already
+     carries the verdict word and a second giant EASE beneath it would be the same thing twice. */
+  .apoyu-call__prescription { margin: 0; font-size: 20px; line-height: 26px; color: #F0ECE3;
+    font-family: 'Fredoka-Medium', 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif; }
+  /* One concise, deterministic reason. `theme.type.footnote`: 12/17. */
+  .apoyu-call__reason { margin: 0; font-size: 12px; line-height: 17px; color: #A39A8E;
+    font-family: 'Fredoka-Variable', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif; }
+
+  /* ── TODAY'S NUDGE ────────────────────────────────────────────────────────
+     The frame, the band, the emblem, the target and the sentence are the APP'S OWN COMPONENTS
+     running through react-native-web; this rule only decides how wide the card is. It is
+     deliberately narrower than the Call and inset from its left edge, so the pair reads as a
+     large decision followed by a small move rather than as two products side by side. */
+  /* 🔴 SMALLER BY WIDTH, NEVER BY AN INSET. An inset card put its own eyebrow outside it (the label
+     sat up to 29 px left of the thing it labelled) and gave the beat three different left edges in
+     one column. Both surfaces and both labels now share the beat's own left edge, and the Nudge is
+     subordinate because it is narrower and shorter — which is the honest signal anyway. */
+  .apoyu-nudge { width: 88%; max-width: 420px; }
+  @media (max-width: 420px) { .apoyu-nudge { width: 92%; } }
+
+  /* 🔴 THE STACKED RANGE STAYS A COLUMN. Left to fill a tablet, the Call reached 560 x 384 while
+     its copy collapsed to one line each, leaving a 253 x 140 unlit rectangle in the lower right
+     that reads as content that failed to load. A gathered column is also what the Scenario above
+     does at this width, so the two beats agree about what a tablet is. */
+  @media (min-width: 640px) and (max-width: 999px) {
+    .apoyu-loop__label { font-size: 10.5px; }
+    .apoyu-loop__call, .apoyu-loop__nudge { max-width: 452px; }
+    .apoyu-call__read { gap: 22px; }
+    .apoyu-call__prescription { font-size: 22px; line-height: 28px; }
+    .apoyu-call__reason { font-size: 13px; line-height: 18px; }
+  }
+
+  /* THE MORNING TABLETOP. The rail spans; beneath it the Call takes the larger mass on the left
+     and the Nudge is set DOWN after it, smaller and to the right, with the sequencing cue turned on
+     its side between them. Related by sequence, not boxed for comparison: the pair is gathered
+     (a capped, centred width) rather than pushed to the two ends of a wide row, and the Nudge's
+     vertical offset is deep enough that the two never read as one grid line. */
+  @media (min-width: 1000px) {
+    /* Wider than the tablet column, or the beat's own instrument would be SMALLER on a monitor than
+       on a tablet — measured, 253 px of art at 1440 against 306 at 768, which is the wrong way
+       round for the page's fourth object. */
+    .apoyu-loop { grid-template-columns: minmax(0, 1.52fr) auto minmax(0, 1fr);
+      grid-template-areas: "rail rail rail" "call then nudge";
+      align-items: start; justify-content: center; column-gap: clamp(18px, 2.2vw, 30px);
+      row-gap: 24px; max-width: 1140px;
+      padding-top: clamp(48px, 8vh, 110px); padding-bottom: clamp(88px, 14vh, 170px); }
+    /* 🔴 FLUSH TO THE CALL, NOT CENTRED IN THE ROW. The base rule centres every item, so a rail
+       with a 34 rem measure landed 170 px right of the cards and aligned to nothing — and its right
+       edge missed the Nudge column by 11 px, which reads as a failed alignment rather than an
+       offset. The beat has ONE left spine and everything sits on it. */
+    .apoyu-loop__rail { justify-self: start; justify-items: start; text-align: left;
+      max-width: 34rem; margin-bottom: 18px; }
+    .apoyu-loop__headline { max-width: 22ch; }
+    .apoyu-loop__call { max-width: none; align-self: start; }
+    /* The reading side grows with the frame, or a 24 px prescription would be marooned in the
+       middle of a 360 px box: the app's 20/26 is a phone number, and every other line on this page
+       already scales with the viewport. The ratio to the meter's 10 px chrome is held near the
+       device's own 2:1 by capping it at 24. */
+    .apoyu-call__read { gap: clamp(20px, 2.4vh, 26px); }
+    .apoyu-call__meter { max-width: 320px; }
+    .apoyu-call__prescription { font-size: clamp(20px, 1.5vw, 24px); line-height: 1.3; }
+    .apoyu-call__reason { font-size: clamp(12px, .95vw, 13.5px); line-height: 1.42; }
+    /* 🔴 THE TWO OBJECTS REST ON ONE SURFACE. A fixed offset left their bottom edges 10 to 15 px
+       apart at the two desktop sizes — near enough to read as a missed alignment. `align-self: end`
+       flushes them exactly at every viewport, and the stagger that produces (the height difference,
+       ~150 px) is the "set down after it" the composition wanted in the first place. */
+    .apoyu-loop__nudge { max-width: none; align-self: end; }
+    .apoyu-nudge { width: 100%; max-width: 340px; }
+    /* Horizontal, seated between the two cards. Rotated 10 px text in a gutter reads as a stray
+       mark, not as a word — and this word is the only thing asserting that one causes the other. */
+    .apoyu-loop__then { grid-area: then; align-self: center; gap: 10px; letter-spacing: .24em; }
+    .apoyu-loop__trace { width: 20px; }
+  }
+
   /* ── PREVIEW SHEET ──────────────────────────────────────────────────────── */
   .apoyu-sheet { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
     padding: 24px; background: rgba(8,4,14,.62); backdrop-filter: blur(6px); }
@@ -626,7 +825,7 @@
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
-<script src="/_expo/static/js/web/entry-dc3afbff550c6b8982ef7cb8c2695f20.js" defer></script>
+<script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
+<script src="/_expo/static/js/web/entry-85c4497e78acb79b0222c00c300c5084.js" defer></script>
 </body>
 </html>
