@@ -1,11 +1,11 @@
 {
   "sourceRepo": "itsapoyu/apoyu",
-  "sourceSha": "7b15fa2026e86de0fa83a2d8315c46ca80abb376",
+  "sourceSha": "4f4efbd4f1e889542d2e9650d6da19ccbd873a03",
   "sourceBranch": "feature/web-v3",
   "jekyllInclude": [
     "_expo"
   ],
   "sourceClean": true,
-  "buildTime": "2026-09-08T00:25:47.251Z",
+  "buildTime": "2026-09-08T07:03:59.982Z",
   "artifactVersion": 1
 }

@@ -217,6 +217,41 @@
   /* A bare stage (W3.3F.2): the same coordinate space, shadow, tilt and glare on a surface that
      does not light the room — the Scenario diagnostic's card today. */
   .apoyu-cardstage--bare { width: auto; }
+  /* 🔴 THE BARE STAGE IS EXACT AT REST (W3.4.1, WEB-96). Three compositor effects were filtering a
+     card nobody had touched, each measured against a direct canonical mount at 390x844 under
+     software GL, each invisible on its own and none of them acceptable in a collectible:
+       preserve-3d   a 3D rendering context, so the card is composited through a projective
+                     transform: 35,520 of 673,350 pixels, max 4/255, at rest.
+       screen        the always-mounted glare's blend forces this subtree to be rendered as a blend
+                     group even at opacity 0: another 2,378 pixels, all at 1/255.
+       will-change   the promotion itself, once the other two are gone, is the last 64 pixels: a
+                     promoted layer is composited from its own texture and a directly painted one
+                     is not.
+     A TILTING card needs all three, and it gets all three, unchanged -- a held pose is the same
+     drawing W3.3F.2 froze, down to the rasterisation path (`transform-style: flat` renders a
+     rotated card through texture mapping instead: not softer, measured at -0.03 % edge energy, but
+     119,316 pixels away from the pose the founder approved, and the tilt is not what W3.4.1 was
+     asked to change). What the card does NOT need is any of them while it is standing still.
+     So they come back in TWO steps, because together they cost far more than apart (the layer alone
+     64 px, the blend alone 2,378, all three at once 35,519, and all of it compositing rounding
+     rather than blur: 0.15 % of the card's edge energy at the very worst, mean |delta| 0.055/255):
+       data-tilt="armed"    the LAYER, the moment a finger lands and before it has moved, so the
+                            gesture never waits on a promotion. 64 pixels, on a still card.
+       data-tilt="active"   the 3D context and the blend, on the first written frame -- the frame
+                            the glare appears in and the card starts to lean, so the larger change
+                            happens under motion and new light rather than on a still card.
+     Both are held for the whole 420 ms release; no attribute means rest, so the exact state is also
+     the default state. The Hero keeps its own stage untouched: every rule here is scoped to
+     `--bare`. */
+  .apoyu-cardstage--bare .apoyu-tiltable { transform-style: flat; will-change: auto; }
+  .apoyu-cardstage--bare .apoyu-glare { mix-blend-mode: normal; }
+  .apoyu-cardstage--bare[data-tilt] .apoyu-tiltable { will-change: transform; }
+  .apoyu-cardstage--bare[data-tilt="active"] .apoyu-tiltable { transform-style: preserve-3d; }
+  .apoyu-cardstage--bare[data-tilt="active"] .apoyu-glare { mix-blend-mode: screen; }
+  /* Probe-only (`/?scenarioControl=1`): the canonical card's stacking in the production stage, and
+     nothing else — the same `position: relative; z-index: 1` the tiltable carries so the card sits
+     above the contact shadow, with none of the compositing under test. */
+  .apoyu-scn__control { position: relative; z-index: 1; }
 
   /* ── TODAY'S PULL (midnight) ────────────────────────────────────────────── */
   /* No min-height of its own: the beat is as tall as its content plus air, so the scroll from
@@ -591,7 +626,7 @@
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
-<script src="/_expo/static/js/web/entry-4729643b574b028952fff8a8009a5f20.js" defer></script>
+<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
+<script src="/_expo/static/js/web/entry-dc3afbff550c6b8982ef7cb8c2695f20.js" defer></script>
 </body>
 </html>
