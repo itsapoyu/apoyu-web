@@ -602,6 +602,40 @@
      it appeared on the first tablet capture. 68.75 % is the device ratio (0.8 x 0.55 x width), so
      one container query keeps the overlap at every width; 236 stays the floor and 384 the cap, and
      a browser without container queries simply keeps the floor. */
+  /* ── THE FOUR-CALL SELECTOR (W3.5.1) ──────────────────────────────────────
+     The beat's ONE control, and the only focusable thing in it. Real radios, visually hidden, with
+     the <label> as the target — so arrow keys, Home/End and the "radio button, 2 of 4" announcement
+     are the browser's, not a re-implementation of them.
+
+     🔴 ALL FOUR FIT AT 390, WITHOUT SCROLLING, AND THE TARGET IS STILL 44px. Four equal columns of
+     a container that is already `max-width: 560px` and gutter-inset: at 390 the beat's rail leaves
+     ~342px, so each option is ~81px wide against a 44px minimum, and `min-height: 44px` holds the
+     other axis. No horizontal scroller, no overflow, no shrink-to-fit type.
+
+     🔴 SELECTED IS NEVER COLOUR ALONE. Ink AND weight lift, an ember underline appears, and the
+     chip gains a lit rim: three redundant cues, so the state survives greyscale entirely. */
+  .apoyu-callpick { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;
+    margin: 0 0 10px; padding: 0; border: 0; }
+  .apoyu-callpick__opt { display: block; min-width: 0; }
+  .apoyu-callpick__label { display: flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 6px 4px 5px; border-radius: 12px; cursor: pointer;
+    position: relative; font-size: 12.5px; letter-spacing: .06em; line-height: 16px;
+    color: rgba(163,154,142,.92); font-weight: 600;
+    border: 1px solid rgba(240,236,227,.08); background: rgba(240,236,227,.028);
+    font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
+    transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease; }
+  /* Cue 1 + 2: the chosen word is brighter AND heavier, and its chip is lit. */
+  .apoyu-callpick__label[data-on] { color: #F0ECE3; font-family: 'Fredoka-Bold', 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
+    background: rgba(255,179,102,.10); border-color: rgba(255,179,102,.38); }
+  /* Cue 3: an ember underline that exists only on the chosen one, so greyscale still reads. */
+  .apoyu-callpick__label[data-on]::after { content: ''; position: absolute; left: 26%; right: 26%;
+    bottom: 5px; height: 2px; border-radius: 2px; background: rgba(255,179,102,.92); }
+  @media (hover: hover) { .apoyu-callpick__label:hover { color: #E4DED2; background: rgba(240,236,227,.06); } }
+  /* The focus ring rides the LABEL, because the input it belongs to is visually hidden. */
+  .apoyu-callpick__input:focus-visible + .apoyu-callpick__label {
+    outline: 2px solid rgba(255,179,102,.9); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .apoyu-callpick__label { transition: none; } }
+
   .apoyu-loop__call { container-type: inline-size; }
   .apoyu-call { position: relative; min-height: 236px; border-radius: 24px; overflow: hidden;
     border: 1px solid var(--call-rim); background: var(--call-scrim); display: flex; }
@@ -656,6 +690,18 @@
     mask-image: linear-gradient(90deg, #000 0%, #000 52%, rgba(0,0,0,.30) 76%, transparent 88%); }
   .apoyu-call__art { position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: contain; object-position: left bottom; }
+  /* 🔴 THE LIVE ARTBOARD SHARES THE STILL'S BOX EXACTLY (W3.5.1), which is what makes the handoff
+     invisible: same 449:561 footprint, same bottom-left pin, same alpha feather, so the canvas
+     draws over the poster pixel for pixel and nothing reflows, shifts or flashes. The canvas is a
+     child of the same `.apoyu-call__board` span and simply fills it. */
+  .apoyu-call__board > div { position: absolute; inset: 0; }
+
+  /* HOLD and PUSH: no delivered artboard, so the app's OWN stand-in subject stands in the room.
+     The frame is the full Call, and the orb is placed inside it by `PlaceholderField`'s arithmetic
+     measured at runtime (the height is a container query, so there is no constant to read). */
+  .apoyu-call__standin { position: absolute; inset: 0; pointer-events: none; }
+  .apoyu-call__standin-floor { position: absolute; left: 0; right: 0; bottom: 0; opacity: .6;
+    pointer-events: none; }
   /* Clear over Apoyü, climbing hard through the transition so the first character already sits on
      contrast, and never reaching opaque so the hearth stays faintly readable behind the words. */
   .apoyu-call__scrim { position: absolute; inset: 0; pointer-events: none;
@@ -826,6 +872,6 @@
 
 <div id="root"></div>
 <script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
-<script src="/_expo/static/js/web/entry-85c4497e78acb79b0222c00c300c5084.js" defer></script>
+<script src="/_expo/static/js/web/entry-cea85d84e00ac24fcd84c86b9cf3ca48.js" defer></script>
 </body>
 </html>

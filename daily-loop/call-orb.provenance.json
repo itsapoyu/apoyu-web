@@ -1,0 +1,38 @@
+{
+  "size": 256,
+  "pad": 1.6,
+  "box": 410,
+  "devicePixelRatio": 2,
+  "rasters": {
+    "hold": {
+      "file": "public/daily-loop/call-orb-hold.png",
+      "bytes": 73974,
+      "sha256": "4fdeb307-5e0eb48a-3186e725-00b970bd-1b751f23-fdb438b2-9c471185-8e06fb87",
+      "pixels": "820x820"
+    },
+    "push": {
+      "file": "public/daily-loop/call-orb-push.png",
+      "bytes": 140480,
+      "sha256": "c025f046-2095f765-177de14e-693bea3f-906b77bf-ac98a045-f3d7f37d-f8e4a428",
+      "pixels": "820x820"
+    }
+  },
+  "provenance": {
+    "strategy": "the REAL CallOrb rendered through the REAL Skia runtime in a browser, captured with alpha",
+    "why": "importing CallOrb into the visitor bundle costs +101 % gzip, because it imports the @/features/viz BARREL; see this script header",
+    "component": {
+      "source": "apps/mobile/src/features/instruction/components/CallOrb.tsx",
+      "sourceSha256": "86ece54b-517e5729-68d78a7a-16e5fc7a-5eaf9b57-924f0b46-07b3c73f-23974a28"
+    },
+    "orb": {
+      "source": "apps/mobile/src/features/viz/orb/LiquidOrb.tsx",
+      "sourceSha256": "6cb5b9f5-175096e3-82603507-a78ab662-8222be84-1f205c3f-9ee15be1-893bce98"
+    },
+    "placement": {
+      "source": "apps/mobile/src/features/instruction/components/CallSceneArt.tsx",
+      "selector": "PlaceholderField: cx = artStageWidth * 0.44, floorY = height * 0.84, size = max(96, min(artStageWidth * 0.52, 128)), top = floorY - size * 0.68, opacity 0.85"
+    },
+    "interactive": false,
+    "note": "HOLD is a calm gauge (celebration none); PUSH wears `bloom`, whose radiance is in the raster."
+  }
+}
