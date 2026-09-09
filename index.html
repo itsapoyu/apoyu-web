@@ -665,31 +665,70 @@
   /* The art stage: a VISUAL footprint, never a layout column — nothing lays out against it and the
      copy overlaps it freely. `ART_STAGE_FRACTION` is 0.61 in `CallScene.tsx`.
 
-     🔴 THE FEATHER RIDES THE BOARD, NOT THE STAGE, AND THAT IS THE ONE ADAPTATION. On device the
-     stage is only a hair wider than the contained 449x561 board, so the app can put the dissolve at
-     a fixed 0.88 of the STAGE and land it exactly where the artwork ends. A browser frame is not
-     that shape: at 1440 the frame is 603x300, the board contains to 240 of a 368 px stage, and a
-     0.88-of-stage ramp reached the board's edge only 38 % faded — a hard vertical seam, measured on
-     the first capture. So the board gets its OWN box, sized by the artboard's real 449:561 ratio and
-     pinned bottom-left exactly as `Fit.Contain` + `Alignment.BottomLeft` place it, and the app's own
-     ramp (0 / 0.52 / 0.76 / 0.88) runs across THAT. Same numbers, same intent, and the edge is fully
-     dissolved at any frame proportion the viewport can produce. */
-  .apoyu-call__panel { position: absolute; left: 0; top: 0; bottom: 0; width: 61%;
-    pointer-events: none; }
-  /* 🔴 AND THE DISSOLVE IS THE BOARD'S OWN ALPHA, NOT A COLOUR LAID OVER IT. The app paints
+     🔴 RETIRED BY WEB-120, RECORDED SO IT IS NOT REINSTATED. W3.5 moved the app's ramp off the
+     stage and onto the BOARD, on the strength of a desktop measurement — "at 1440 the frame is
+     603x300, the board contains to 240 of a 368 px stage, and a 0.88-of-stage ramp reached the
+     board's edge only 38 % faded". That frame no longer exists: the Call is 534x367 at 1440 today
+     and `min-height: 68.75cqw` pins board/stage at 0.902 everywhere, so the premise is gone while
+     the workaround it justified stayed and quietly cropped the artwork. The board keeps its own box
+     — sized by the real 449:561 ratio and pinned bottom-left exactly as `Fit.Contain` +
+     `Alignment.BottomLeft` place it — but the DISSOLVE goes back where the app writes it. */
+  /* 🔴 THE FEATHER RIDES THE STAGE, BECAUSE THAT IS THE COORDINATE SYSTEM IT IS WRITTEN IN
+     (WEB-120, W3.5.1.3 — the founder's "the right side of the artwork seems cropped").
+
+     `CallSceneArt` puts its dissolve on a View of `width: artStageWidth` and runs the ramp
+     0 / 0.52 / 0.76 / 0.88 across THAT. W3.5 kept the numbers but moved them onto the BOARD, which
+     is narrower than the stage — so every stop landed early and the illustrated room stopped
+     reading well before the app's does. Measured on the founder's own build at 390: 0.52 at 97.4 px
+     instead of 107.8, 0.76 at 142.3 instead of 157.6, and full transparency at 164.8 instead of
+     182.5 — the artwork gone 17.7 px early, which on a 187 px illustration is what turned the
+     app's fully-lit REST MODE mug into a ghost. The stops were never the problem; the box they were
+     measured against was.
+
+     🔴 AND THE DISSOLVE STAYS THE PANEL'S OWN ALPHA, NOT A COLOUR LAID OVER IT. The app paints
      `CALL_ROOM_EDGE` at rising opacity because a native Image cannot be masked in place; a browser
-     can, and painting a FLAT colour over a board whose room is a vertical gradient leaves a step
-     wherever the two disagree — measured at the board's right edge, 22,13,32 against 28,15,31, a
-     27 % relative difference at near-black and a faint vertical line down the card. Fading the
-     board's own alpha instead reveals whatever the room actually is at that pixel, so the boundary
-     cannot seam at any frame proportion or any height. Same ramp as the app's (0 / 0.52 / 0.76 /
-     0.88), read as opacity rather than as coverage. */
-  .apoyu-call__board { position: absolute; left: 0; bottom: 0; height: 100%; width: auto;
-    max-width: 100%; aspect-ratio: 449 / 561; display: block;
+     can, and painting a FLAT colour over a room that is a vertical gradient leaves a step wherever
+     the two disagree — measured at 22,13,32 against 28,15,31, a 27 % relative difference at
+     near-black and a faint vertical line down the card. Fading alpha instead reveals whatever the
+     room actually is at that pixel. That was W3.5's one real adaptation and it is kept; only the
+     box it is measured against is corrected. Masking the STAGE also makes poster/live parity
+     structural rather than duplicated: both live inside this element, so the hand-off cannot
+     change the crop.
+
+     🔴 WHY NO TERMINAL ANTI-SEAM FEATHER IS NEEDED, AND IT IS ARITHMETIC RATHER THAN LUCK. The old
+     rule existed because a stage ramp once reached the board's edge only 38 % faded on desktop. It
+     cannot any more: `board / stage = (h x 449/561) / (0.61 w)`, and `min-height: 68.75cqw` pins
+     `h/w`, so the ratio is `1.3121 x 0.6875 = 0.902` at every width the card can produce (measured
+     0.9030 at 390, 0.9005 at 1440). 0.902 > 0.88, so the ramp reaches full transparency 4.8 px
+     inside the artwork at 390 and 6.6 px inside it at 1440. The board's literal edge is already
+     invisible before it arrives, at any viewport. */
+  .apoyu-call__panel { position: absolute; left: 0; top: 0; bottom: 0; width: 61%;
+    pointer-events: none;
     -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 52%, rgba(0,0,0,.30) 76%, transparent 88%);
     mask-image: linear-gradient(90deg, #000 0%, #000 52%, rgba(0,0,0,.30) 76%, transparent 88%); }
+  .apoyu-call__board { position: absolute; left: 0; bottom: 0; height: 100%; width: auto;
+    max-width: 100%; aspect-ratio: 449 / 561; display: block; }
   .apoyu-call__art { position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: contain; object-position: left bottom; }
+  /* 🔴 THE POSTER HANDS OFF; IT DOES NOT SIT BEHIND (W3.5.1.1). W3.5.1 left the still mounted and
+     fully visible under the live canvas, and a Rive canvas is transparent wherever its artboard
+     does not paint — so the frozen still showed THROUGH the live scene, and because the live art
+     does not cover the still's whole footprint its top band read as a second, dimmer ceiling. That
+     is the duplicated strip the founder reported. Proven by hiding only the poster in the running
+     page, which removed it entirely.
+
+     The asymmetry is deliberate. GOING (the attribute arrives, the live world is proven): a short
+     fade, then `visibility: hidden` at the END of it, so the poster contributes exactly zero pixels
+     rather than a permanent 5 %. RETURNING (the attribute leaves, on a call switch or offscreen):
+     INSTANT — the base rule declares no transition, so there is never a window with the poster
+     faded and the new world not yet up. No blank frame, ever, in either direction. Geometry never
+     moves: the same box, the same object-fit, the same mask. */
+  .apoyu-call__art { transition: none; }
+  .apoyu-call__art[data-handed-off='1'] { opacity: 0; visibility: hidden;
+    transition: opacity 120ms linear, visibility 0s linear 120ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .apoyu-call__art[data-handed-off='1'] { transition: none; }
+  }
   /* 🔴 THE LIVE ARTBOARD SHARES THE STILL'S BOX EXACTLY (W3.5.1), which is what makes the handoff
      invisible: same 449:561 footprint, same bottom-left pin, same alpha feather, so the canvas
      draws over the poster pixel for pixel and nothing reflows, shifts or flashes. The canvas is a
@@ -871,7 +910,7 @@
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
-<script src="/_expo/static/js/web/entry-cea85d84e00ac24fcd84c86b9cf3ca48.js" defer></script>
+<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
+<script src="/_expo/static/js/web/entry-96d55544928612346b2a8d1fa87f13cd.js" defer></script>
 </body>
 </html>
