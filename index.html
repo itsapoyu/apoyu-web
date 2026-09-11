@@ -51,6 +51,11 @@
     /* The third leg (W3.6 W3A): 0 through the Daily Loop → 1 as the Collection takes the screen.
        Blue hour, not sunrise: the plum leaves, the fire goes out, a cold seam appears low down. */
     --dawn: 0;
+    /* The fourth and fifth legs (W3.7): 0 through the Collection → 1 as Trust takes the screen,
+       then 0 → 1 as the closing CTA does. First light, then sunrise. Both are IDENTITY at 0, so
+       every term below them is pixel-unchanged anywhere above Trust. */
+    --light: 0;
+    --sun: 0;
     /* 🔴 MIRRORS `src/landing/card-scale.ts`. Change both or neither. */
     --card-w: min(82vw, 360px);
     --pull-w: min(76vw, 320px);
@@ -67,7 +72,8 @@
     -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   body { position: relative; }
   /* Display strings in the app's own face; everything else stays in the system's. */
-  .apoyu-mark, .apoyu-headline, .apoyu-eyebrow, .apoyu-subhead, .apoyu-back__mark {
+  .apoyu-mark, .apoyu-headline, .apoyu-eyebrow, .apoyu-subhead, .apoyu-back__mark,
+  .apoyu-trust__claim, .apoyu-acc__button {
     font-family: 'Fredoka-SemiBold', ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, sans-serif;
     font-weight: 600; }
 
@@ -83,14 +89,19 @@
     /* Dusk → midnight on `--night`; midnight → the deep of the night on `--deep`, where the last
        plum leaves the top of the room and the ground goes cool. */
     /* And the last plum leaves on `--dawn`: the ground cools to indigo and deep blue, with the
-       floor lightening just enough that the room has a far wall. Three legs, one gradient, one
-       rAF-coalesced apply — never a second scroll listener and never a section background. */
+       floor lightening just enough that the room has a far wall. */
+    /* Then `--light` warms the floor and the 78 % stop from deep blue toward a slate-mauve while
+       the top stop stays indigo — Trust is FIRST light, never daylight — and `--sun` finishes the
+       journey: a dawn violet-blue overhead, mauve through the middle, a warm rose-umber on the lit
+       floor the closing ask stands on. FIVE legs, one gradient, one rAF-coalesced apply — never a
+       second scroll listener and never a section background. Each leg MULTIPLIES the one inside
+       it and is identity at 0, so nothing above the Collection moves by a single channel. */
     background:
       linear-gradient(180deg,
-        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #301636 calc((1 - var(--night)) * 100%), #0D0A1F) calc((1 - var(--deep)) * 100%), #080A1C) calc((1 - var(--dawn)) * 100%), #101A3D) 0%,
-        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #1B1029 calc((1 - var(--night)) * 100%), #0F0B1D) calc((1 - var(--deep)) * 100%), #0A0B19) calc((1 - var(--dawn)) * 100%), #0D1531) 44%,
-        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #15091F calc((1 - var(--night)) * 100%), #0B0916) calc((1 - var(--deep)) * 100%), #080814) calc((1 - var(--dawn)) * 100%), #0B1230) 78%,
-        color-mix(in oklab, color-mix(in oklab, #0E0816 calc((1 - var(--deep)) * 100%), #070710) calc((1 - var(--dawn)) * 100%), #0A1029) 100%);
+        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #301636 calc((1 - var(--night)) * 100%), #0D0A1F) calc((1 - var(--deep)) * 100%), #080A1C) calc((1 - var(--dawn)) * 100%), #101A3D) calc((1 - var(--light)) * 100%), #141C3E) calc((1 - var(--sun)) * 100%), #2A3060) 0%,
+        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #1B1029 calc((1 - var(--night)) * 100%), #0F0B1D) calc((1 - var(--deep)) * 100%), #0A0B19) calc((1 - var(--dawn)) * 100%), #0D1531) calc((1 - var(--light)) * 100%), #1C2140) calc((1 - var(--sun)) * 100%), #4A3A5E) 44%,
+        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #15091F calc((1 - var(--night)) * 100%), #0B0916) calc((1 - var(--deep)) * 100%), #080814) calc((1 - var(--dawn)) * 100%), #0B1230) calc((1 - var(--light)) * 100%), #2A2438) calc((1 - var(--sun)) * 100%), #6A4650) 78%,
+        color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, #0E0816 calc((1 - var(--deep)) * 100%), #070710) calc((1 - var(--dawn)) * 100%), #0A1029) calc((1 - var(--light)) * 100%), #3A2B36) calc((1 - var(--sun)) * 100%), #7A4E42) 100%);
   }
   /* The fire, always below the horizon: one source, so every warm highlight is motivated. */
   .apoyu-env__ember {
@@ -129,13 +140,49 @@
      visible, and it arrives only with `--dawn`, so it does not exist anywhere above the Collection. */
   .apoyu-env__horizon {
     position: absolute; left: -10vw; right: -10vw; top: 58vh; height: 30vh;
-    pointer-events: none; opacity: var(--dawn); filter: blur(10px);
+    pointer-events: none; filter: blur(10px);
+    /* And the cold seam LEAVES as the warm one arrives. Two horizons at once — one blue, one
+       peach, at the same height — would read as a colour bug rather than as time passing. */
+    opacity: calc(var(--dawn) * (1 - var(--light)));
     background: linear-gradient(180deg,
       rgba(120, 160, 220, 0) 0%,
       rgba(120, 160, 220, .10) 44%,
       rgba(140, 200, 235, .16) 62%,
       rgba(120, 160, 220, .05) 74%,
       rgba(120, 160, 220, 0) 100%);
+  }
+  /* FIRST LIGHT (W3.7). The same band as the seam, two viewport-percent lower and wider, in
+     peach-gold at a peak of .14: warm, and deliberately NOT bright — the room above it is still
+     dark, and Trust is the moment before the sun rather than the sun. It dims as the sun arrives
+     behind it, because a band of haze in front of a risen sun is the one thing a real dawn never
+     does. */
+  .apoyu-env__firstlight {
+    position: absolute; left: -10vw; right: -10vw; top: 56vh; height: 34vh;
+    pointer-events: none; filter: blur(14px);
+    background: linear-gradient(180deg,
+      rgba(255, 196, 140, 0) 0%,
+      rgba(255, 196, 140, .09) 40%,
+      rgba(255, 210, 160, .14) 60%,
+      rgba(255, 196, 140, .04) 76%,
+      rgba(255, 196, 140, 0) 100%);
+    opacity: calc(var(--light) * (1 - var(--sun) * 0.6));
+  }
+  /* SUNRISE (W3.7). The ember's warmth returned as natural light: the same family of hue the fire
+     spent the whole night in, now a wider and cleaner source rising from below the bottom edge,
+     with a faint peach wash over the lower half behind it. No sparks — those belonged to the fire,
+     and the fire went out at blue hour. This is the only warm ground the page has had since dusk,
+     and it arrives exactly where the ask is. */
+  .apoyu-env__sun {
+    position: absolute; left: 50%; bottom: -34vh; width: 170vw; height: 96vh;
+    transform: translateX(-50%); pointer-events: none; filter: blur(10px);
+    background:
+      radial-gradient(closest-side,
+        rgba(255, 214, 150, .42) 0%,
+        rgba(255, 160, 90, .24) 34%,
+        rgba(230, 110, 60, .08) 62%,
+        rgba(180, 80, 50, 0) 78%),
+      linear-gradient(180deg, rgba(255, 190, 140, 0) 0%, rgba(255, 190, 140, .06) 100%);
+    opacity: var(--sun);
   }
   /* Film grain. Kills the flat digital-fill read of a large dark area. */
   .apoyu-env__grain {
@@ -1002,6 +1049,131 @@
     .apoyu-col__count { align-self: start; margin-top: 4px; }
   }
 
+  /* ── TRUST: FIRST LIGHT ─────────────────────────────────────────────────────
+     No object, no icons, no shield badge: a short typographic stanza standing in
+     the light. The only ornament is a warm point before each claim and a hairline
+     rule down the side — the first points of light, not a feature list. */
+  .apoyu-trust { display: grid; justify-items: center; text-align: center; row-gap: 26px;
+    padding-top: clamp(24px, 6vh, 80px); padding-bottom: clamp(48px, 9vh, 110px); }
+  .apoyu-trust__copy { display: grid; gap: 12px; justify-items: center; }
+  .apoyu-trust__support { margin: 0; color: var(--ink-dim); font-size: clamp(15px, 1vw + 10px, 17px);
+    line-height: 1.5; max-width: 40ch; text-wrap: balance; }
+  /* The claims read as a block of left-aligned lines even on a centred phone column: a stanza
+     ragged down one edge is a stanza, and three centred lines are a poster. */
+  .apoyu-trust__body { display: grid; gap: 18px; width: 100%; max-width: 34rem; text-align: left; }
+  .apoyu-trust__stanza { list-style: none; margin: 0; display: grid; gap: 14px; max-width: 30ch;
+    padding: 2px 0 2px 24px; border-left: 1px solid rgba(255, 196, 140, .18); }
+  /* Balanced, so a claim that wraps never strands its last word ("AI.") on a line of its own. */
+  .apoyu-trust__claim { position: relative; margin: 0; line-height: 1.25; font-weight: 600;
+    font-size: clamp(20px, 2.2vw, 24px); text-wrap: balance; }
+  .apoyu-trust__claim::before { content: ''; position: absolute; left: -16px; top: .62em;
+    width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%;
+    background: radial-gradient(circle, #FFD9A8 0%, #FFB25C 100%);
+    box-shadow: 0 0 10px rgba(255, 178, 92, .45); }
+  /* The one true sentence that a lock icon would have hidden: per-day results DO sync. It is
+     above the disclosure, not inside it, because a trust beat with something to bury is not one. */
+  .apoyu-trust__nuance { margin: 0; color: var(--ink-dim); font-size: 15px; line-height: 1.5;
+    max-width: 46ch; }
+  .apoyu-trust__links { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 0; }
+  .apoyu-trust__links a { display: inline-flex; align-items: center; min-height: 44px;
+    padding: 10px 0; color: var(--ink-dim); font-size: 14px; text-decoration: underline;
+    text-underline-offset: 3px; }
+  .apoyu-trust__links a:hover { color: var(--ink); }
+  .apoyu-trust__links a:focus-visible { color: var(--ink); outline: 2px solid #FFD9A8;
+    outline-offset: 3px; }
+
+  /* ── DISCLOSURE (Trust once, the FAQ five times) ─────────────────────────────
+     A real button in a real heading, and a panel whose height is a grid ROW, so
+     nothing is ever measured in JavaScript. `visibility` is delayed by the same
+     duration, so a closed panel is genuinely out of the tab order. */
+  .apoyu-acc { border-top: 1px solid rgba(244, 239, 230, .10); }
+  .apoyu-acc__heading { margin: 0; font: inherit; }
+  .apoyu-acc__button { display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; width: 100%; min-height: 48px; padding: 14px 0; background: none; border: 0;
+    color: var(--ink); font-size: 17px; font-weight: 600; line-height: 1.35; text-align: left;
+    cursor: pointer; }
+  .apoyu-acc__button:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 3px; }
+  /* Two borders of a square, rotated. No icon font, no SVG, no third asset to keep in sync. */
+  .apoyu-acc__chevron { flex: none; width: 9px; height: 9px; margin-right: 4px;
+    border-right: 1.5px solid var(--ink-dim); border-bottom: 1.5px solid var(--ink-dim);
+    transform: translateY(-2px) rotate(45deg); transition: transform 240ms ease; }
+  .apoyu-acc__button[aria-expanded="true"] .apoyu-acc__chevron {
+    transform: translateY(2px) rotate(225deg); }
+  .apoyu-acc__panel { display: grid; grid-template-rows: 0fr; visibility: hidden;
+    transition: grid-template-rows 240ms ease, visibility 0s linear 240ms; }
+  .apoyu-acc__panel[data-open="1"] { grid-template-rows: 1fr; visibility: visible;
+    transition: grid-template-rows 240ms ease, visibility 0s; }
+  .apoyu-acc__inner { min-height: 0; overflow: hidden; }
+  .apoyu-acc__inner > :last-child { margin-bottom: 16px; }
+  .apoyu-acc__answer { margin: 0 0 10px; color: var(--ink-dim); font-size: 15px; line-height: 1.55;
+    max-width: 60ch; }
+  @media (prefers-reduced-motion: reduce) {
+    .apoyu-acc__panel, .apoyu-acc__panel[data-open="1"], .apoyu-acc__chevron { transition: none; }
+  }
+
+  /* ── FAQ ────────────────────────────────────────────────────────────────────
+     The eyebrow IS the heading here. A display headline over five accordion rows
+     would out-shout the ask that follows, and the ask is what this page is for. */
+  .apoyu-faq { display: grid; gap: 18px; align-content: start;
+    padding-top: clamp(48px, 8vh, 96px); padding-bottom: clamp(40px, 7vh, 96px); }
+  .apoyu-faq__list { display: grid; }
+
+  /* ── THE CLOSE: SUNRISE ─────────────────────────────────────────────────────
+     The page ends on the word it opened with, in the only warm ground it has had
+     since dusk. Plain DOM: no Rive, no Skia, no clock. If the 4 MB card runtime
+     never arrives, the ask still works. */
+  .apoyu-claim { min-height: 78svh; display: grid; align-content: center; justify-items: center;
+    padding-top: clamp(56px, 10vh, 120px); padding-bottom: clamp(40px, 8vh, 96px); }
+  .apoyu-claim__stack { display: grid; gap: 16px; justify-items: center; text-align: center;
+    width: 100%; max-width: 560px; }
+  .apoyu-claim__form { display: grid; gap: 10px; width: 100%; margin-top: 6px; }
+  /* The dim ink was tuned for the night; on the sunrise floor (about #6A4650 at 1.0) it measures
+     3.3:1, so the free line and the legal links carry the page ink at reduced opacity instead —
+     the same hierarchy, legible in the light it actually sits in. */
+  .apoyu-claim .apoyu-fine, .apoyu-claim .apoyu-support { color: rgba(244, 239, 230, .82); }
+  /* 16 px is a floor, not a preference: iOS zooms the page on focus below it, and a landing that
+     zooms itself the instant a visitor taps the one field has lost them. */
+  .apoyu-claim__email { width: 100%; min-height: 52px; border-radius: 999px; padding: 0 20px;
+    background: rgba(244, 239, 230, .08); border: 1px solid rgba(244, 239, 230, .18);
+    color: var(--ink); font: inherit; font-size: 16px; }
+  .apoyu-claim__email::placeholder { color: var(--ink-dim); }
+  .apoyu-claim__email:focus-visible { outline: 2px solid #FFD9A8; outline-offset: 2px; }
+  .apoyu-claim__form .apoyu-cta { min-height: 52px; }
+  .apoyu-claim__error { margin: 0; color: var(--ember); font-size: 14px; grid-column: 1 / -1;
+    text-align: center; }
+  @media (min-width: 600px) {
+    .apoyu-claim__form { grid-template-columns: minmax(0, 1fr) auto; }
+  }
+
+  /* ── FOOTER ─────────────────────────────────────────────────────────────────
+     Four legal links and the one line the store requires, inside the same light.
+     `z-index` because this sits beside `main`, not inside its stacking context. */
+  .apoyu-foot { position: relative; z-index: 1; text-align: center;
+    padding-top: 8px; padding-bottom: 40px; }
+  .apoyu-foot__nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; }
+  .apoyu-foot__link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px;
+    color: rgba(244, 239, 230, .78); font-size: 13px; text-decoration: none; }
+  .apoyu-foot__link:hover { color: var(--ink); text-decoration: underline; }
+  .apoyu-foot__link:focus-visible { color: var(--ink); text-decoration: underline;
+    outline: 2px solid #FFD9A8; outline-offset: 2px; }
+  .apoyu-foot__note { margin: 6px 0 0; color: rgba(244, 239, 230, .7); font-size: 12px; }
+
+  @media (min-width: 900px) {
+    /* Trust: the copy holds the left, the claims stand in the light on the right. The right
+       column drops by a hair so the first claim's cap height meets the headline's. */
+    .apoyu-trust { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(40px, 5vw, 84px); align-items: start; text-align: left;
+      justify-items: start; }
+    .apoyu-trust__copy { justify-items: start; }
+    .apoyu-trust__support { max-width: 34ch; }
+    .apoyu-trust__body { padding-top: 6px; max-width: none; }
+    /* The FAQ's eyebrow becomes a column label, and the questions get a measured column rather
+       than the full 1240: an accordion row a metre wide is a row nobody can scan. */
+    .apoyu-faq { grid-template-columns: 220px minmax(0, 640px);
+      column-gap: clamp(40px, 5vw, 84px); justify-content: center; align-items: start; }
+    .apoyu-claim { min-height: 56svh; }
+  }
+
   /* ── PREVIEW SHEET ──────────────────────────────────────────────────────── */
   .apoyu-sheet { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
     padding: 24px; background: rgba(8,4,14,.62); backdrop-filter: blur(6px); }
@@ -1050,6 +1222,8 @@
   <div class="apoyu-env__ember"></div>
   <div class="apoyu-env__moon"></div>
   <div class="apoyu-env__horizon"></div>
+  <div class="apoyu-env__firstlight"></div>
+  <div class="apoyu-env__sun"></div>
   <div class="apoyu-env__grain"></div>
   <div class="apoyu-env__sparks"></div>
 </div>
@@ -1081,7 +1255,7 @@
 </div>
 
 <div id="root"></div>
-<script src="/_expo/static/js/web/index-a4507e0de4816c3d3e34a90ded5066b3.js" defer></script>
-<script src="/_expo/static/js/web/entry-08ede5f866f2bbd048d88454dfd4ad57.js" defer></script>
+<script src="/_expo/static/js/web/index-19a2921ed284b5891f2fc288ba1cc63b.js" defer></script>
+<script src="/_expo/static/js/web/entry-ad4ec22c846abc87661b843b3701e019.js" defer></script>
 </body>
 </html>
