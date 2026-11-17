@@ -43,3 +43,23 @@ Merge order: #2, then #3, then #4. Retarget each to `main` after the one below i
 - Desk merged the stack: main `36944b3`. Pages build run 44043838871 ended in success at 08:06:22Z.
 - Live pages NOT verified from this lane: the container proxy refuses apoyu.app and github.io, and WebFetch cannot resolve apoyu.app. A lane that can reach apoyu.app should load /, /privacy, /privacy-draft, /support and an unknown path.
 - Upstream PR on itsapoyu/apoyu (branch `docs/site-upstream-sync`): this lane could not get push access (the request was denied). The commit was prepared locally on base `7120d42` and sent to the desk as a format-patch: support draft gets the AP-159 text, health draft gets the heartbeat series wording (both verbatim from the HTML), and docs/site gets the table region markup. docs/site then matches apoyu-web byte for byte. It waits for the desk to hand it to a lane with push access.
+
+### Upstream commit message (for the lane that applies it)
+```
+docs(legal,site): sync two drafts to the newer HTML, keyboard access to site tables
+
+- support-page-draft.md: "What do I need" now carries the AP-159 Watch
+  required text already published in docs/site/support.html (#1173).
+- health-data-disclosure-v3-draft.md: adds the "if granted, the
+  heartbeat series" wording already in docs/site/health-privacy.html
+  (#1079, AP-049), in both places.
+  Both copied verbatim from the HTML: a sync, no new legal wording.
+- docs/site privacy, terms, health-privacy: role="region" tabindex="0"
+  aria-label on each scrolling .table-wrap (axe scrollable-region-
+  focusable at 390px). Markup only. docs/site is byte-identical again to
+  the published apoyu-web pages (apoyu-web #4).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_014sJreo8w2hY9tND9SmFj7p
+
+```
