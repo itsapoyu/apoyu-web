@@ -1,0 +1,6 @@
+lh-health-privacy.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}
+lh-index.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}
+lh-privacy-draft.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}
+lh-privacy.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}
+lh-support.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}
+lh-terms.json {'performance': 100, 'accessibility': 100, 'best-practices': 100, 'seo': 100}

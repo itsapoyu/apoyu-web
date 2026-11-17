@@ -1,0 +1,3 @@
+const http=require('http'),fs=require('fs'),path=require('path');const site=process.argv[2];
+const T={'.html':'text/html; charset=utf-8','.css':'text/css','.png':'image/png','.ico':'image/x-icon'};
+http.createServer((q,r)=>{let p=q.url.split('?')[0];if(p.endsWith('/'))p+='index.html';let f=path.join(site,p);if(!fs.existsSync(f)&&fs.existsSync(f+'.html'))f+='.html';if(!fs.existsSync(f)){r.writeHead(404,{'content-type':T['.html']});return r.end(fs.readFileSync(path.join(site,'404.html')))}r.writeHead(200,{'content-type':T[path.extname(f)]||'application/octet-stream'});r.end(fs.readFileSync(f))}).listen(8765);
