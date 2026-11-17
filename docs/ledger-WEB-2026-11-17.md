@@ -14,9 +14,9 @@ Branch `web/qa-ledger` (never merged; it holds this ledger, QA screenshots and t
 ## PR sequence and state
 | # | Branch | PR | Head | State |
 |---|---|---|---|---|
-| 1 | `web/static-site` | #2 | `151cb19` | open, awaiting desk |
-| 2 | `web/landing` (base `web/static-site`) | #3 | `4427595` | open, awaiting desk |
-| 3 | `web/qa` (base `web/landing`) | #4 | `76d91e2` | open, awaiting desk |
+| 1 | `web/static-site` | #2 | `151cb19` | merged |
+| 2 | `web/landing` (base `web/static-site`) | #3 | `4427595` | merged |
+| 3 | `web/qa` (base `web/landing`) | #4 | `76d91e2` | merged |
 
 Merge order: #2, then #3, then #4. Retarget each to `main` after the one below it merges.
 
@@ -38,3 +38,8 @@ Merge order: #2, then #3, then #4. Retarget each to `main` after the one below i
 
 ## How to re-run QA
 `npm i axe-core@4.10.2` next to `tools/qa.js`, then `node tools/qa.js <apoyu-web checkout> <outdir>`. It serves the folder locally (with extensionless URLs and 404 handling), checks each page at 390 and 1280 for no sideways scroll, one h1, `lang`, img alt, axe WCAG A/AA plus best practice, internal links and in-page anchors, and writes the screenshots.
+
+## After merge (2026-11-17 08:07Z)
+- Desk merged the stack: main `36944b3`. Pages build run 44043838871 ended in success at 08:06:22Z.
+- Live pages NOT verified from this lane: the container proxy refuses apoyu.app and github.io, and WebFetch cannot resolve apoyu.app. A lane that can reach apoyu.app should load /, /privacy, /privacy-draft, /support and an unknown path.
+- Upstream PR on itsapoyu/apoyu (branch `docs/site-upstream-sync`): this lane could not get push access (the request was denied). The commit was prepared locally on base `7120d42` and sent to the desk as a format-patch: support draft gets the AP-159 text, health draft gets the heartbeat series wording (both verbatim from the HTML), and docs/site gets the table region markup. docs/site then matches apoyu-web byte for byte. It waits for the desk to hand it to a lane with push access.
