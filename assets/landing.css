@@ -1,0 +1,57 @@
+/* Landing page only. Shared rules live in styles.css (a copy of the main repo's docs/site/styles.css). */
+
+.landing-hero {
+  padding-top: 36px;
+}
+
+.app-icon {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  box-shadow: 0 10px 40px rgba(255, 138, 74, 0.28);
+}
+
+.landing-hero .lede {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.soon {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 138, 74, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 138, 74, 0.08);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.intro {
+  margin: 28px 0 8px;
+  font-size: 18px;
+}
+
+.needs {
+  margin: 28px 0;
+}
+
+.needs h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (min-width: 640px) {
+  .app-icon {
+    width: 128px;
+    height: 128px;
+    border-radius: 28px;
+  }
+
+  .landing-hero .lede {
+    font-size: 26px;
+  }
+}

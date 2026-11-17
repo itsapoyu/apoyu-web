@@ -1,35 +1,47 @@
 # apoyu-web
 
-Static site serving `apoyu.app` — landing page + legal policies.
+The public static site at `apoyu.app`: the landing page, the legal pages and support.
 
-## What's published here
+Plain HTML and one stylesheet. No JavaScript, no external fonts, no CDNs, no analytics, no build step. `.nojekyll` tells GitHub Pages to serve the files as they are.
 
-| URL | Source markdown | Required for |
-|---|---|---|
-| `apoyu.app/` | `index.md` | Marketing landing (placeholder for now) |
-| `apoyu.app/privacy` | `privacy.md` | App Store Connect Privacy Policy URL (HARD BLOCKER for Beta App Review) |
-| `apoyu.app/terms` | `terms.md` | Paywall subscription disclosure (App Store §3.1.2) |
-| `apoyu.app/health-privacy` | `health-privacy.md` | Washington My Health My Data Act |
-| `apoyu.app/support` | `support.md` | App Store Connect Support URL |
+## What is published
 
-Drafts live in the main repo at `apoyu/docs/legal/` and are copied here at publication time. Manual sync — when policies update, edit there, copy here, push.
+| URL | File | Source of truth (main repo `itsapoyu/apoyu`) | State |
+|---|---|---|---|
+| `apoyu.app/` | `index.html` | Hand written here, copy from `docs/launch/app-store-listing.md` | |
+| `apoyu.app/privacy` | `privacy.html` | Privacy policy v2, as published here on 2026-08-19 (commit `5169da4`) | **In effect since 2026-08-19.** Cited in App Store Connect. Text unchanged; one line at the top links the draft |
+| `apoyu.app/privacy-draft` | `privacy-draft.html` | `docs/site/privacy.html` (from `docs/legal/drafts/privacy-policy-v3-draft.md`) | Draft, pending counsel review, not yet in effect |
+| `apoyu.app/terms` | `terms.html` | `docs/site/terms.html` (from `terms-of-service-v3-draft.md`) | Draft, pending counsel review |
+| `apoyu.app/health-privacy` | `health-privacy.html` | `docs/site/health-privacy.html` (from `health-data-disclosure-v3-draft.md`) | Draft, pending counsel review |
+| `apoyu.app/support` | `support.html` | `docs/site/support.html` (from `support-page-draft.md`) | Draft banner, as in the source |
+| (any missing page) | `404.html` | Hand written here | |
+| | `styles.css` | `docs/site/styles.css` (Banked Hearth palette) | |
 
-## Deploy
+GitHub Pages serves `privacy.html` at both `/privacy.html` and `/privacy`, so the extensionless URLs used in App Store Connect and in the app keep working.
 
-GitHub Pages, deploy from branch `main`, root directory. Custom domain `apoyu.app` configured via DNS A records at the registrar (Spaceship.com).
+## How a legal page changes
 
-## Updating a policy
+Legal wording is owned by counsel and edited in the main repo, never here.
 
-1. Edit the draft in `apoyu/docs/legal/`
-2. Update the effective date at the top of the policy body
-3. Copy the file into this repo, commit, push
-4. Verify the new version serves at the public URL
-5. Tag the commit with `policy-YYYY-MM-DD` for rollback reference
+1. The change lands in the main repo: the Markdown draft in `docs/legal/drafts/` first, then the matching page in `docs/site/`, in the same PR (rules in `docs/site/README.md` there).
+2. Copy the changed `docs/site/` file here byte for byte (`cmp` should report no difference), in a PR. Do not edit legal text in this repo.
+3. The desk reviews the screenshots and merges. Pages deploys from `main` within a minute or two.
+4. Tag the merge commit `<page>-YYYY-MM-DD` (for example `privacy-2026-12-01`) so every published version can be found again.
 
-## Version pinning
+## Going from draft to in effect
 
-Every policy carries an `**Effective date:** YYYY-MM-DD` line at the top. The git history of this repo is the authoritative rollback path.
+Only after the items in the main repo's `docs/legal/drafts/README-legal-status.md` §3 to §5 are done (counsel review, effective dates, operator identity):
 
-## Rollback
+1. In the main repo, remove the draft banner and set the effective dates in the Markdown and in `docs/site/`.
+2. Here, copy the final `docs/site/privacy.html` over `privacy.html`, keep the old policy reachable at a dated URL (for example `privacy-2026-08-19.html`), and remove `privacy-draft.html` or make it redirect to `/privacy`.
+3. Copy the final terms, health privacy and support pages.
 
-Identify the commit tag for the previous policy version. Revert or checkout that commit's version of the affected file. Republish via the deploy flow above. Bump the effective date forward (don't claim the policy retroactively reverted).
+Never edit a published policy without moving its effective date forward, and never backdate one.
+
+## Checking a change
+
+Every page at a 390 pixel wide window and at desktop width: no sideways scroll on the page (wide tables scroll inside their own box), one `h1`, every link resolves, axe reports no WCAG A or AA issues. Copy rules for anything written here: no em dashes or en dashes, no hyphen ranges ("2 to 4"), Apoyü with the ü in display text, plain and warm.
+
+## Hosting
+
+GitHub Pages, deploy from branch `main`, root folder. Custom domain `apoyu.app` (the `CNAME` file), DNS A records at the registrar. Do not add trackers or third party scripts without a desk decision.
