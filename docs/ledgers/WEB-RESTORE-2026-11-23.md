@@ -24,3 +24,10 @@ Lane WEB-RESTORE for merge desk 29. Ruling: apoyu.app shows the Sep 2 designed l
 
 - Could not read `itsapoyu/apoyu` `docs/launch/app-store-listing.md`: attaching that repository was refused in this session. Membership and device wording comes from main's home page (36944b3), which was written from that listing on Nov 17. One deliberate difference: main said "your first full morning is on us, with no subscription needed"; I left that out because the ruling says no free plan. Put it back if the listing still says it.
 - "53 cards in the launch deck" and "Never sold, never used to train models" are kept from the Sep 2 page as written; worth one check against the current app and privacy policy.
+
+## Desk 29 review, round 2
+
+- Desk confirmed from itsapoyu/apoyu `docs/launch/app-store-listing.md` line 99 that the one preview morning stays (it is the Membership law's preview, not a free plan). Restored "Your first full morning is on us, start to finish, with no subscription needed." in the Membership section and in the "Do I need a subscription?" answer.
+- "53 cards" changed to "Over 50 cards in the launch deck." (the manifest count drifts).
+- "Never sold, never used to train models" and "Ages 13 and up" confirmed by the desk; kept.
+- Re-took all screenshots; checks re-run.
