@@ -2,13 +2,13 @@
 
 The public static site at `apoyu.app`: the landing page, the legal pages and support.
 
-Plain HTML and one stylesheet. No JavaScript, no external fonts, no CDNs, no analytics, no build step. `.nojekyll` tells GitHub Pages to serve the files as they are.
+Plain static files. The legal pages are plain HTML on one stylesheet with no JavaScript. The home page is the Sep 2 2026 landing (collectible card hero), self contained in `index.html` with its art, the Fredoka subset, the ported CollectibleCardV3 and the vendored Rive runtime under `art/`. No external fonts, no CDNs, no analytics, no build step, no forms. `.nojekyll` tells GitHub Pages to serve the files as they are.
 
 ## What is published
 
 | URL | File | Source of truth (main repo `itsapoyu/apoyu`) | State |
 |---|---|---|---|
-| `apoyu.app/` | `index.html` | Hand written here, copy from `docs/launch/app-store-listing.md` | |
+| `apoyu.app/` | `index.html`, `art/`, `og.png` | The Sep 2 landing from branch `review/landing-page-recovery` (restored 2026-11-23). Membership and device copy from `docs/launch/app-store-listing.md`: Apoyü Membership, 14 day trial, no free plan, no prices, Apple Watch worn to sleep | No waitlist: there is no signup backend |
 | `apoyu.app/privacy` | `privacy.html` | Privacy policy v2, as published here on 2026-08-19 (commit `5169da4`) | **In effect since 2026-08-19.** Cited in App Store Connect. Text unchanged; one line at the top links the draft |
 | `apoyu.app/privacy-draft` | `privacy-draft.html` | `docs/site/privacy.html` (from `docs/legal/drafts/privacy-policy-v3-draft.md`) | Draft, pending counsel review, not yet in effect |
 | `apoyu.app/terms` | `terms.html` | `docs/site/terms.html` (from `terms-of-service-v3-draft.md`) | Draft, pending counsel review |
