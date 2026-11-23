@@ -1,93 +1,1009 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Apoyü: How hard should you go today?</title>
-  <meta name="description" content="Apoyü is a small fire creature who reads your night from Apple Health and meets you in the morning with the truth. Requires an iPhone with Apple Health and an Apple Watch worn to sleep.">
-  <meta name="color-scheme" content="dark">
-  <meta name="theme-color" content="#1B0D2A">
-  <meta property="og:title" content="Apoyü">
-  <meta property="og:description" content="How hard should you go today?">
-  <meta property="og:image" content="https://apoyu.app/assets/icon-256.png">
-  <meta property="og:url" content="https://apoyu.app/">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="assets/landing.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apoyü: meet your recovery. It has a face.</title>
+<meta name="description" content="One call every morning: push, hold, ease or rest. Apoyü reads your night from Apple Health and answers with one call, on a collectible card. Requires an iPhone with Apple Health and an Apple Watch worn to sleep.">
+<meta name="theme-color" content="#1B0D2A">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://apoyu.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Apoyü: meet your recovery. It has a face.">
+<meta property="og:description" content="One call every morning: push, hold, ease, or rest. A small fire creature reads your night and answers on a collectible card.">
+<meta property="og:url" content="https://apoyu.app/">
+<meta property="og:image" content="https://apoyu.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!--
+  Apoyü, apoyu.app home page. The Sep 2 2026 W1A landing (branch
+  review/landing-page-recovery), restored as the home page on 2026-11-23.
+  Static. No build step, no framework, no third party runtime dependency.
+  There is no waitlist and no form: nothing on this page collects anything.
+
+  Copy follows the Membership law of 2026-09-09: Apoyü Membership, a 14 day
+  trial for eligible new subscribers, no free plan, and no prices on this page
+  (the App Store shows them). Apoyü requires an Apple Watch worn to sleep.
+
+  VISUAL SOURCE OF TRUTH is the app, not this file's own history. The ground
+  is the app's Banked Hearth substrate (GradientBackdrop). Type is the app's
+  Fredoka. Cards use the app's real collectible art, archetype names,
+  rarities and voice lines from the launch canon.
+
+  THE COLLECTIBLE GRAMMAR (three independent channels, mirrored from
+  features/collectible/tokens):
+      COMFORT   = MATERIAL   how recovered the body is, as a surface
+      ARCHETYPE = ART/WORLD  what happened today
+      RARITY    = FINISH     how remarkable this particular mint is
+  Their independence is load bearing. Never imply high recovery = high rarity.
+
+  REVIEW HOOKS (no visible controls):
+      #reveal      today's pull already flipped
+      #collection  jump to the collection rail
+      #membership  jump to the membership block
+      #calm        force the reduced motion presentation
+      #light-left, #light-right, #light-top, #sweep   hero inspection stills
+      #legendary-stress  LAB stress specimen, not a production valid mint
+-->
+
+<style>
+/* ===========================================================================
+   TOKENS: mirrored from apps/mobile/src/constants/theme.ts
+   =========================================================================== */
+:root{
+  /* Banked Hearth substrate (runtime stops from lib/use-daily-gradient.ts) */
+  --bg-top:#1B0D2A; --bg-mid:#170E22; --bg-floor:#160D1C;
+  --surface:#241813; --sheet:#120D0B;
+
+  /* Ink. Warm off-white, never pure white. */
+  --ink:#F0ECE3; --ink-2:#A39A8E; --ink-on-ember:#1C0F0C;
+
+  /* Fire */
+  --flame:#FF6B3A; --amber:#FF8A4A; --gold:#FFC857;
+
+  /* Verdict heat ramp: the call word wears its temperature */
+  --heat-rest:#E8845A; --heat-ease:#FF9B5E; --heat-hold:#FFB347; --heat-push:#FFD98A;
+
+  /* Rarity indicator */
+  --r-common:#8A887F; --r-uncommon:#4A90D9; --r-rare:#9B59B6; --r-legendary:#FFD700;
+
+  /* Card material (theme material.card) */
+  --card-top:rgba(54,37,29,.94); --card-bot:rgba(31,22,18,.96);
+  --card-rim:rgba(255,176,104,.24);
+
+  /* Glass (material.glass fallbacks) */
+  --glass:rgba(20,15,13,.55); --glass-thick:rgba(20,15,13,.75);
+  --rim:rgba(255,255,255,.05);
+
+  /* Primary CTA ember pill (DareActionPill recipe) */
+  --cta-tint:rgba(22,15,12,.52); --cta-rim:rgba(255,184,122,.42);
+  --cta-solid:rgba(26,18,14,.92);
+
+  --rad:16px; --rad-lg:20px; --rad-pill:999px;
+  --pad:20px;
+  --maxw:520px;
+
+  /* Type ramp */
+  --t-display:clamp(30px,8.6vw,40px);
+  --t-verdict:26px; --t-title:22px; --t-heading:18px;
+  --t-body:16px; --t-label:14px; --t-caption:13px; --t-foot:12px;
+}
+
+@font-face{
+  font-family:'Fredoka';
+  src:url('art/font/fredoka-var.ttf') format('truetype-variations');
+  font-weight:300 700; font-style:normal; font-display:swap;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg-mid); color:var(--ink);
+  font-family:'Fredoka',ui-rounded,'SF Pro Rounded','Segoe UI',system-ui,sans-serif;
+  font-weight:300; font-size:var(--t-body); line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3{margin:0; font-weight:500; line-height:1.14; letter-spacing:-.012em}
+p{margin:0}
+a{color:inherit}
+img{max-width:100%; display:block}
+button{font:inherit; color:inherit; -webkit-tap-highlight-color:transparent}
+
+.wrap{width:100%; max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); position:relative; z-index:2}
+.beat{padding:clamp(62px,12vh,104px) 0; position:relative}
+.eyebrow{font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-2)}
+.lede{font-size:var(--t-body); color:var(--ink-2); line-height:1.55}
+.foot{font-size:var(--t-foot); color:var(--ink-2); line-height:1.5}
+
+/* Skip link */
+.skip{position:absolute; left:-9999px; top:8px; z-index:99; background:var(--sheet);
+  padding:10px 16px; border-radius:var(--rad-pill); border:1px solid var(--cta-rim)}
+.skip:focus{left:12px}
+:focus-visible{outline:2px solid var(--gold); outline-offset:3px; border-radius:6px}
+
+/* ===========================================================================
+   GROUND: the app's GradientBackdrop, reproduced
+   =========================================================================== */
+.ground{position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg-mid) 52%,var(--bg-floor) 100%)}
+/* hearth glow from below: fire just under the screen */
+.ground::after{content:''; position:absolute; inset:0;
+  background:radial-gradient(120% 46% at 50% 104%,rgba(255,122,58,.30) 0%,rgba(255,107,58,.11) 38%,transparent 72%)}
+/* corner vignette */
+.vig{position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(126% 88% at 50% 42%,transparent 52%,rgba(0,0,0,.46) 100%)}
+/* 0.025 monochrome film grain: kills the flat digital-fill read */
+.grain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:160px 160px}
+
+/* rising sparks: CSS only, GPU composited, no rAF, no main-thread cost */
+.sparks{position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden}
+.sp{position:absolute; bottom:-14px; width:2px; height:2px; border-radius:50%;
+  background:var(--amber); opacity:0; filter:blur(.3px);
+  animation:rise linear infinite}
+@keyframes rise{
+  0%{transform:translate3d(0,0,0) scale(.7); opacity:0}
+  12%{opacity:.5}
+  70%{opacity:.28}
+  100%{transform:translate3d(var(--dx,10px),-104vh,0) scale(.28); opacity:0}
+}
+
+/* ===========================================================================
+   THE COLLECTIBLE: art dominant, material in the edge, finish over the top
+   =========================================================================== */
+.card{
+  position:relative; aspect-ratio:848/1264; border-radius:var(--rad);
+  background:linear-gradient(180deg,var(--card-top),var(--card-bot));
+  overflow:hidden; isolation:isolate;
+  border:1px solid var(--edge,var(--card-rim));
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.72), 0 0 0 .5px rgba(0,0,0,.5),
+             0 0 34px -14px var(--glow,transparent);
+}
+.card img{width:100%; height:100%; object-fit:cover}
+/* bottom scrim so the plaque type always clears the art */
+.card .plaque{
+  position:absolute; left:0; right:0; bottom:0; padding:13px 13px 12px; z-index:3;
+  background:linear-gradient(180deg,transparent,rgba(9,5,4,.62) 34%,rgba(9,5,4,.93) 100%);
+}
+.card .aname{font-size:15px; font-weight:500; line-height:1.16; letter-spacing:-.01em}
+.card .meta{display:flex; align-items:center; gap:7px; margin-top:6px; font-size:11px; color:var(--ink-2)}
+.gem{width:7px; height:7px; border-radius:50%; background:var(--r-common); flex:none;
+  box-shadow:0 0 7px -1px var(--r-common)}
+.r-common .gem{background:var(--r-common); box-shadow:0 0 7px -1px var(--r-common)}
+.r-uncommon .gem{background:var(--r-uncommon); box-shadow:0 0 8px -1px var(--r-uncommon)}
+.r-rare .gem{background:var(--r-rare); box-shadow:0 0 9px 0 var(--r-rare)}
+.r-legendary .gem{background:var(--r-legendary); box-shadow:0 0 11px 0 var(--r-legendary)}
+.dot{opacity:.4}
+
+/* RARITY = FINISH. One coherent planar sweep, luminance-modulated so the art
+   keeps winning. Common gets none: a Common is austere, not cheap. */
+.card .sweep{position:absolute; inset:-30%; z-index:2; pointer-events:none; opacity:0;
+  background:linear-gradient(104deg,transparent 42%,rgba(255,255,255,.5) 50%,transparent 58%);
+  mix-blend-mode:overlay; transform:translate3d(-62%,0,0)}
+.r-uncommon .sweep{opacity:.34; animation:sweep 7.5s ease-in-out infinite}
+.r-rare .sweep{opacity:.5; animation:sweep 6.4s ease-in-out infinite}
+.r-legendary .sweep{opacity:.62; animation:sweep 5.4s ease-in-out infinite}
+/* the upper tiers add fine spectral interference INSIDE the band, never a standing rainbow */
+.r-rare .sweep,.r-legendary .sweep{
+  background:linear-gradient(104deg,transparent 42%,rgba(180,225,255,.30) 47%,rgba(255,255,255,.55) 50%,
+    rgba(255,205,170,.30) 53%,transparent 58%)}
+@keyframes sweep{
+  0%{transform:translate3d(-62%,0,0)} 58%{transform:translate3d(62%,0,0)}
+  100%{transform:translate3d(62%,0,0)}
+}
+/* edge light: a second, non-hue rarity separator */
+.card::after{content:''; position:absolute; inset:0; z-index:4; pointer-events:none;
+  border-radius:inherit; box-shadow:inset 0 0 0 1px var(--edge,var(--card-rim))}
+.r-legendary::after{box-shadow:inset 0 0 0 1px rgba(255,215,0,.4), inset 0 0 22px -8px rgba(255,215,0,.5)}
+.r-rare::after{box-shadow:inset 0 0 0 1px rgba(155,89,182,.34), inset 0 0 18px -9px rgba(155,89,182,.42)}
+
+/* ===========================================================================
+   CONTROLS
+   =========================================================================== */
+.cta{
+  display:block; width:100%; border:1px solid var(--cta-rim); border-radius:var(--rad-pill);
+  background:var(--cta-solid); color:var(--ink);
+  padding:17px 22px; font-size:17px; font-weight:500; letter-spacing:.005em;
+  cursor:pointer; position:relative; overflow:hidden;
+  box-shadow:0 0 26px -12px rgba(255,138,74,.66), inset 0 1px 0 rgba(255,255,255,.045);
+  transition:transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .2s ease;
+}
+.cta::before{content:''; position:absolute; left:50%; bottom:-58%; width:150%; height:110%;
+  transform:translateX(-50%); pointer-events:none;
+  background:radial-gradient(58% 62% at 50% 100%,rgba(255,138,74,.44),transparent 72%)}
+.cta:hover{box-shadow:0 0 34px -10px rgba(255,138,74,.8), inset 0 1px 0 rgba(255,255,255,.06)}
+.cta:active{transform:scale(.985)}
+a.cta{text-align:center; text-decoration:none}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:var(--rad-pill);
+  background:var(--glass); border:1px solid var(--rim); font-size:var(--t-caption); color:var(--ink)}
+.chip b{width:5px; height:5px; border-radius:50%; background:var(--amber); flex:none;
+  box-shadow:0 0 6px 0 var(--amber)}
+
+.panel{background:var(--glass); border:1px solid var(--rim); border-radius:var(--rad-lg); padding:18px}
+.link{display:inline-flex; align-items:center; gap:6px; color:var(--gold);
+  text-decoration:none; border-bottom:1px solid rgba(255,200,87,.28); padding-bottom:1px;
+  font-size:var(--t-label)}
+.link:hover{border-bottom-color:var(--gold)}
+
+/* ===========================================================================
+   BEAT 1: HERO. One focal point: the card.
+   =========================================================================== */
+.hero{min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  padding:clamp(44px,7svh,72px) 0 clamp(22px,3.4svh,34px); position:relative; overflow:hidden}
+/* the July environment art survives ONLY as atmosphere: masked, far back, low.
+   The product owns the frame. */
+.atmos{position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.17;
+  background-image:image-set(url('art/hero-dusk-tall.webp') 1x);
+  background-size:cover; background-position:50% 22%;
+  -webkit-mask-image:radial-gradient(72% 54% at 50% 34%,#000 0%,transparent 78%);
+  mask-image:radial-gradient(72% 54% at 50% 34%,#000 0%,transparent 78%)}
+/* the dusk to night to dawn journey survives as ATMOSPHERE only: masked, far
+   back, low. Each beat gets its hour; the product still owns every frame. */
+.atmos.night-a{opacity:.13; background-image:url('art/night-deep.webp'); background-position:50% 50%;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 34%,#000 66%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 34%,#000 66%,transparent)}
+.atmos.night-b{opacity:.15; background-image:url('art/night-pools.webp'); background-position:50% 60%;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+.atmos.dawn{opacity:.2; background-image:url('art/dawn-vent.webp'); background-position:50% 78%;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 46%,#000 100%);
+  mask-image:linear-gradient(180deg,transparent,#000 46%,#000 100%)}
+.beat{isolation:isolate}
+
+.mark{font-size:12px; font-weight:700; letter-spacing:.34em; color:var(--ink);
+  opacity:.9; text-transform:uppercase}
+.hero h1{font-size:var(--t-display); margin:14px 0 0; max-width:11ch}
+.hero .util{margin-top:12px; font-size:15px; color:var(--ink-2); line-height:1.5; max-width:30ch}
+.hero .util em{font-style:normal; color:var(--ink); font-weight:500}
+/* the card is capped by the HEIGHT that is actually left, so the trust line
+   under the CTA can never be pushed off a short viewport. 0.6709 = 848/1264. */
+.herocard{width:min(68%,264px); max-width:calc(41svh * 0.6709);
+  margin:clamp(14px,2.6svh,26px) 0 0; position:relative}
+.float{animation:float 7.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate3d(0,0,0) rotate(-1.1deg)}
+  50%{transform:translate3d(0,-11px,0) rotate(.7deg)}}
+/* the specimen carries its own inspection transform, so its idle drift is
+   TRANSLATE ONLY: a rotating parent would fight the tilt. */
+.floaty{animation:floaty 7.5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-9px,0)}}
+.specimen-fallback{width:100%;height:auto;border-radius:5.5%;display:block;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.72)}
+#specimen{touch-action:pan-y}
+#specimen.mounted .specimen-fallback{display:none}
+.hero .act{margin-top:auto; padding-top:clamp(16px,2.8svh,28px)}
+.hero .fine{margin-top:10px; text-align:center}
+
+/* ===========================================================================
+   BEAT 2: TODAY'S PULL
+   =========================================================================== */
+.pullstage{display:flex; flex-direction:column; align-items:center; margin-top:22px}
+.flipper{width:min(74%,286px); aspect-ratio:848/1264; perspective:1400px; background:none; border:0;
+  padding:0; cursor:pointer; display:block}
+/* these are <span>s inside a <button>; without display:block they stay inline,
+   collapse to zero height, and the absolutely positioned faces never paint. */
+.flipinner{display:block; position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .62s cubic-bezier(.36,.9,.3,1)}
+.flipped .flipinner{transform:rotateY(180deg)}
+.face{display:block; position:absolute; inset:0; backface-visibility:hidden;
+  -webkit-backface-visibility:hidden; border-radius:var(--rad)}
+.back{transform:rotateY(180deg)}
+/* card back: the ember seal, not an egg */
+.cardback{width:100%; height:100%; border-radius:var(--rad); position:relative; overflow:hidden;
+  background:linear-gradient(180deg,#241813,#160D1C);
+  border:1px solid var(--card-rim); display:grid; place-items:center;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.72)}
+.cardback::before{content:''; position:absolute; inset:0;
+  background:radial-gradient(58% 40% at 50% 74%,rgba(255,107,58,.3),transparent 70%)}
+.seal{width:46%; aspect-ratio:1; border-radius:50%; position:relative;
+  background:radial-gradient(circle at 50% 42%,var(--gold),var(--flame) 52%,#5A2417 100%);
+  box-shadow:0 0 44px -6px rgba(255,107,58,.72), inset 0 -6px 16px -6px rgba(0,0,0,.6);
+  animation:breathe 4.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1); filter:brightness(1)}
+  50%{transform:scale(1.045); filter:brightness(1.14)}}
+.pullhint{margin-top:15px; font-size:var(--t-caption); color:var(--ink-2); text-align:center}
+.reveal{margin-top:18px; opacity:0; transform:translateY(9px);
+  transition:opacity .44s ease .16s, transform .44s ease .16s}
+.flipped ~ .reveal, .isrevealed .reveal{opacity:1; transform:none}
+.voice{font-size:var(--t-title); line-height:1.32; font-weight:500; letter-spacing:-.014em}
+.said{margin-top:9px; font-size:var(--t-caption); color:var(--ink-2)}
+
+/* ===========================================================================
+   BEAT 3: THE LOOP
+   =========================================================================== */
+.moment{display:grid; grid-template-columns:52px 1fr; gap:15px; align-items:start;
+  padding:19px 0; border-top:1px solid rgba(255,255,255,.055)}
+.moment:first-of-type{border-top:0}
+.mnum{font-size:10px; font-weight:700; letter-spacing:.18em; color:var(--ink-2); padding-top:5px}
+.mtitle{font-size:var(--t-heading); font-weight:600; letter-spacing:-.01em}
+.mbody{margin-top:7px; font-size:var(--t-label); color:var(--ink-2); line-height:1.52}
+.verdictword{font-size:34px; font-weight:600; letter-spacing:-.02em; line-height:1;
+  color:var(--heat-ease); display:block}
+.presc{margin-top:8px; font-size:var(--t-body); color:var(--ink); font-weight:500}
+.meter{display:flex; gap:5px; margin-top:13px; align-items:center}
+.stop{height:4px; flex:1; border-radius:2px; background:rgba(255,255,255,.1)}
+.stop.on{background:var(--heat-ease); box-shadow:0 0 10px -2px var(--heat-ease)}
+.stoplabels{display:flex; justify-content:space-between; margin-top:7px; font-size:10px;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--ink-2)}
+.minicard{width:106px; flex:none}
+
+/* ===========================================================================
+   BEAT 4: COLLECTION RAIL
+   =========================================================================== */
+.rail{display:flex; gap:13px; overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+  padding:4px var(--pad) 20px; margin:22px 0 0;
+  scroll-padding-inline:var(--pad); scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail > *{scroll-snap-align:center; flex:0 0 auto; width:172px}
+.rail .card{width:172px}
+.grammar{margin-top:6px; display:grid; gap:9px}
+.grow{display:grid; grid-template-columns:88px 1fr; gap:12px; align-items:baseline;
+  font-size:var(--t-caption)}
+.grow dt{font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold)}
+.grow dd{margin:0; color:var(--ink-2)}
+.ladder{display:flex; flex-wrap:wrap; gap:7px; margin-top:16px}
+.tier{display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border-radius:var(--rad-pill);
+  background:var(--glass); border:1px solid var(--rim); font-size:var(--t-foot); color:var(--ink-2)}
+.tier i{width:6px; height:6px; border-radius:50%; font-style:normal; flex:none}
+
+/* ===========================================================================
+   BEAT 5: TRUST + CONVERSION
+   =========================================================================== */
+.needs{margin-top:22px}
+.needs li{margin-top:6px; color:var(--ink-2); font-size:var(--t-label)}
+.needs ul{margin:10px 0 0; padding-left:20px}
+
+/* FAQ */
+.faq details{border-top:1px solid rgba(255,255,255,.07)}
+.faq details:last-of-type{border-bottom:1px solid rgba(255,255,255,.07)}
+.faq summary{list-style:none; cursor:pointer; padding:17px 0; display:flex; gap:14px;
+  align-items:center; justify-content:space-between; font-size:15px; font-weight:500}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:''; width:9px; height:9px; flex:none; margin-right:2px;
+  border-right:1.6px solid var(--ink-2); border-bottom:1.6px solid var(--ink-2);
+  transform:rotate(45deg) translateY(-2px); transition:transform .22s ease}
+.faq details[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.faq .ans{padding:0 0 17px; font-size:var(--t-label); color:var(--ink-2); line-height:1.56}
+
+footer{padding:36px 0 44px; border-top:1px solid rgba(255,255,255,.055); margin-top:20px}
+footer a{color:var(--ink-2); text-decoration:none; font-size:var(--t-caption)}
+footer a:hover{color:var(--ink)}
+.flinks{display:flex; flex-wrap:wrap; gap:7px 16px; margin-bottom:14px}
+
+/* scroll-in. Content is visible by default; JS opts in, so nothing can hide. */
+.js .rise{opacity:0; transform:translateY(15px);
+  transition:opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1)}
+.js .rise.in{opacity:1; transform:none}
+
+/* ===========================================================================
+   DESKTOP: expands from the mobile composition, never a different page
+   =========================================================================== */
+@media (min-width:900px){
+  :root{--maxw:1080px; --pad:40px; --t-display:clamp(42px,4.4vw,60px)}
+  .beat{padding:132px 0}
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center}
+  .hero{min-height:100vh}
+  .hero .inner{display:grid; grid-template-columns:1.02fr .98fr; gap:0 72px; align-items:center}
+  .hero h1{max-width:13ch}
+  .hero .util{font-size:18px; max-width:34ch}
+  /* the card owns the right column across both rows; the mobile height cap that
+     keeps a phone hero on one screen must not shrink it here. */
+  .herocard{grid-column:2; grid-row:1 / span 2; align-self:center; justify-self:center;
+    width:min(100%,352px); max-width:none; margin:0}
+  .hero .act{grid-column:1; max-width:400px; margin-top:30px; padding-top:0}
+  .hero .fine{text-align:left}
+  .atmos{background-image:image-set(url('art/hero-dusk-wide.webp') 1x);
+    -webkit-mask-image:radial-gradient(58% 62% at 62% 44%,#000 0%,transparent 76%);
+    mask-image:radial-gradient(58% 62% at 62% 44%,#000 0%,transparent 76%)}
+  .flipper{width:320px}
+  .pullstage{align-items:flex-start}
+  .pullhint,.hero .fine{text-align:left}
+  .rail > *,.rail .card{width:212px}
+  .moment{grid-template-columns:64px 1fr; gap:22px}
+  .faq .cols{columns:2; column-gap:56px}
+  .faq details{break-inside:avoid}
+}
+
+/* ===========================================================================
+   REDUCED MOTION: settle everything, hide nothing
+   =========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important}
+  .sparks{display:none}
+  .float{animation:none}
+  .seal{animation:none}
+  .card .sweep{animation:none; transform:translate3d(0,0,0); opacity:.2}
+  .js .rise{opacity:1; transform:none}
+  .flipinner{transition:none}
+  .floaty{animation:none}
+}
+/* #calm review hook mirrors the same presentation */
+body.calm .sparks{display:none}
+body.calm .float,body.calm .seal{animation:none}
+body.calm .card .sweep{animation:none; transform:translate3d(0,0,0); opacity:.2}
+body.calm .js .rise,body.calm .rise{opacity:1; transform:none}
+body.calm .flipinner{transition:none}
+body.calm .floaty{animation:none}
+</style>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="wordmark" href="index.html">Apoyü</a>
-      <nav aria-label="Main">
-        <ul class="nav">
-        <li><a href="index.html" aria-current="page">Home</a></li>
-        <li><a href="privacy.html">Privacy</a></li>
-        <li><a href="terms.html">Terms</a></li>
-        <li><a href="health-privacy.html">Health Privacy</a></li>
-        <li><a href="support.html">Support</a></li>
-        </ul>
-      </nav>
+<a class="skip" href="#pull">Skip to today's card</a>
+
+<div class="ground" aria-hidden="true"></div>
+<div class="vig" aria-hidden="true"></div>
+<div class="sparks" id="sparks" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ======================= BEAT 1: HERO ======================= -->
+<header class="hero">
+  <div class="atmos" aria-hidden="true"></div>
+  <div class="wrap inner">
+    <div>
+      <p class="mark">Apoyü</p>
+      <h1>Meet your recovery. It has a face.</h1>
+      <p class="util">One call every morning: <em>push</em>, <em>hold</em>, <em>ease</em>, or <em>rest</em>.</p>
     </div>
-  </header>
-  <main id="main" class="wrap">
-    <section class="hero landing-hero">
-      <img class="app-icon" src="assets/icon-256.png" width="128" height="128" alt="">
-      <h1>Apoyü</h1>
-      <p class="lede">How hard should you go today?</p>
-      <p>Wear your Apple Watch to sleep tonight. In the morning Apoyü will be waiting with your first card and an honest call for the day. That first morning is on us.</p>
-      <p class="soon">Coming to the App Store.</p>
-    </section>
 
-    <section class="intro">
-      <p>Some mornings you wake up ready to run through a wall. Some mornings you are Basically Furniture. Apoyü can usually tell which one before you can.</p>
-      <p>Apoyü is a small fire creature who reads your night from Apple Health and meets you in the morning with the truth. You get your recovery score and a collectible card about the body you brought to breakfast. Then Apoyü makes one honest call for the day: push, hold, ease or rest, with the reason behind it.</p>
-    </section>
+    <!-- W1A.2 FIDELITY SPECIMEN. The host is replaced by the ported CollectibleCardV3
+         once its module loads; until then the canonical poster stands in, so the
+         hero paints immediately and the runtime streams in behind it. -->
+    <div class="herocard floaty" id="specimen"
+         role="img"
+         aria-label="This Is Absolutely Fine. A Rare Apoyü collectible on dirt, recovery 38.
+                     Training these last days ran 1.4 times what your body normally carries.">
+      <img class="specimen-fallback" src="art/card/this_is_absolutely_fine.webp"
+           width="720" height="1073" fetchpriority="high" decoding="async" alt="">
+    </div>
 
-    <section class="card" aria-labelledby="how">
-      <h2 id="how">How your morning works</h2>
-      <p>Wear your Apple Watch to sleep. When you wake up, Apoyü reads last night on your phone and compares it with your own normal, not a stranger's average.</p>
-      <p>Every morning arrives in the same order. First your Recovery. Then today's collectible card. Then the Daily Call. Then a short brief in Apoyü's voice. Last comes Today's Nudge, one small thing worth doing before the day is done.</p>
-      <p>When the night was thin on data, Apoyü tells you so instead of guessing. If a number would only stress you out, you can hide it and keep the card.</p>
-      <p>Your cards add up to a Collection and a calendar of the mornings you have lived. Rare days make rare cards. Any card you have earned is yours to share.</p>
-    </section>
+    <div class="act">
+      <a class="cta" href="#membership">Coming to the App Store</a>
+      <p class="foot fine">Requires an Apple Watch worn to sleep</p>
+    </div>
+  </div>
+</header>
 
-    <section class="card" aria-labelledby="membership">
-      <h2 id="membership">Membership, in plain words</h2>
-      <p>Your first full morning is on us, start to finish, with no subscription needed.</p>
-      <p>After that morning, Apoyü Membership keeps the mornings coming. Choose a yearly or a monthly plan. The App Store shows you the price in your own currency before you subscribe. Both plans start with a 14 day free trial for eligible new subscribers.</p>
-      <p>If you decide not to join, or your membership ends, Apoyü moves into Archive Mode. Everything you have earned stays yours: your cards, your Collection, your past mornings and the ability to share them. Apoyü simply stops making new mornings until you come back.</p>
-    </section>
+<main id="main">
 
-    <section class="card" aria-labelledby="honest">
-      <h2 id="honest">Honest about what it is</h2>
-      <p>Apoyü is a general wellness app, not a medical device. It is not intended to diagnose, treat, cure or prevent any disease, and nothing in it is medical advice. If something about your health worries you, talk to a doctor.</p>
-      <p>Your individual readings never leave your phone. Apoyü works out your score on the device. Only the day's results, like your score and a short summary of the night and of each workout, are saved to your private account. The AI services that help write your brief see those daily results and your first name, never your individual readings. <a href="health-privacy.html">See exactly what goes where.</a></p>
-    </section>
+<!-- ======================= BEAT 2: TODAY'S PULL ======================= -->
+<section class="beat" id="pull" aria-labelledby="pullh">
+  <div class="wrap">
+    <p class="eyebrow rise">Today's pull</p>
+    <h2 id="pullh" class="rise" style="font-size:var(--t-title);margin-top:10px">Every morning mints one card.</h2>
 
-    <section class="needs" aria-labelledby="needs">
-      <h2 id="needs">What you need</h2>
-      <p>Requires an iPhone with Apple Health and an Apple Watch worn to sleep. For ages 13 and up.</p>
-    </section>
+    <div class="pullstage">
+      <button class="flipper rise" id="flipper" aria-describedby="pullhint"
+              aria-label="Pull today's card">
+        <span class="flipinner">
+          <span class="face">
+            <span class="cardback">
+              <span class="seal" aria-hidden="true"></span>
+            </span>
+          </span>
+          <span class="face back">
+            <article class="card" id="pullcard">
+              <img id="pullart" src="" width="560" height="835" alt="" loading="lazy" decoding="async">
+              <span class="sweep" aria-hidden="true"></span>
+              <div class="plaque">
+                <p class="aname" id="pullname"></p>
+                <p class="meta"><span class="gem"></span><span id="pullrarity"></span><span class="dot">·</span><span id="pullcomfort"></span></p>
+              </div>
+            </article>
+          </span>
+        </span>
+      </button>
+      <p class="pullhint rise" id="pullhint">Tap to pull today's card</p>
+    </div>
 
-    <section class="card" aria-labelledby="fine-print">
-      <h2 id="fine-print">The fine print</h2>
-      <ul class="links">
-        <li><a href="privacy.html">Privacy Policy</a></li>
-        <li><a href="terms.html">Terms of Service</a></li>
-        <li><a href="health-privacy.html">Health Data Disclosure and Consumer Health Data Privacy Policy</a></li>
-        <li><a href="support.html">Support and account deletion</a></li>
+    <div class="reveal" id="revealblock" aria-live="polite">
+      <p class="voice" id="voiceline"></p>
+      <p class="said">Apoyü, on <span id="pulldate"></span></p>
+      <p class="foot" style="margin-top:15px">A demo pull from the launch deck, the same cards the app
+        ships with. Your own card is minted from your own night.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BEAT 3: THE DAILY LOOP ======================= -->
+<section class="beat" id="loop" aria-labelledby="looph">
+  <div class="atmos night-a" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow rise">The daily loop</p>
+    <h2 id="looph" class="rise" style="margin-top:10px">How hard should you go today?</h2>
+    <p class="lede rise" style="margin-top:12px">No dashboard to decode. One call, one card, one small
+      thing in the evening.</p>
+
+    <div style="margin-top:26px">
+
+      <div class="moment rise">
+        <p class="mnum">01</p>
+        <div>
+          <p class="mtitle">The call</p>
+          <span class="verdictword">Ease</span>
+          <p class="presc">Take the edge off today.</p>
+          <div class="meter" aria-hidden="true">
+            <span class="stop"></span><span class="stop on"></span><span class="stop"></span><span class="stop"></span>
+          </div>
+          <div class="stoplabels" aria-hidden="true">
+            <span>Rest</span><span>Ease</span><span>Hold</span><span>Push</span>
+          </div>
+          <p class="mbody">Training load is running well over your normal week.</p>
+        </div>
+      </div>
+
+      <div class="moment rise">
+        <p class="mnum">02</p>
+        <div>
+          <p class="mtitle">The card</p>
+          <div style="display:flex;gap:15px;align-items:flex-start;margin-top:11px">
+            <div class="minicard">
+              <article class="card r-uncommon" style="--edge:rgba(178,142,100,.52)">
+                <img src="art/cards/goblin_mode.webp" width="560" height="835" loading="lazy" decoding="async"
+                     alt="Apoyü in a goblin hood, eating cereal on the floor of an overgrown kitchen.">
+                <span class="sweep" aria-hidden="true"></span>
+              </article>
+            </div>
+            <p class="mbody" style="margin-top:0">That day becomes a card you keep. Goblin Mode
+              Activated, Uncommon, on Dirt.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="moment rise">
+        <p class="mnum">03</p>
+        <div>
+          <p class="mtitle">The dare</p>
+          <p class="presc" style="margin-top:9px">&ldquo;Take a 15 minute walk today.&rdquo;</p>
+          <p class="mbody">In the evening Apoyü asks for one small thing. Keep it and Apple Health confirms
+            it, then Apoyü has something to say about it in the morning. Miss it and nothing is said at all.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BEAT 4: THE COLLECTION ======================= -->
+<section class="beat" id="collection" aria-labelledby="collh">
+  <div class="atmos night-b" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow rise">The collection</p>
+    <h2 id="collh" class="rise" style="margin-top:10px">53 cards in the launch deck.</h2>
+    <p class="lede rise" style="margin-top:12px">You will not know which one you are getting tomorrow.</p>
+  </div>
+
+  <div class="rail" id="rail" role="list" tabindex="0" aria-label="Cards from the launch deck">
+    <article class="card r-common" role="listitem" style="--edge:rgba(240,236,255,.78)">
+      <img src="art/cards/turn_the_lights_off.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü with closed eyes in a crowd under stage lights.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Turn the lights off</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Cloud</p>
+      </div>
+    </article>
+    <article class="card r-uncommon" role="listitem" style="--edge:rgba(178,142,100,.52)">
+      <img src="art/cards/goblin_mode.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü in a goblin hood eating cereal in an overgrown kitchen.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Goblin Mode Activated</p>
+        <p class="meta"><span class="gem"></span>Uncommon<span class="dot">·</span>Dirt</p>
+      </div>
+    </article>
+    <article class="card r-rare" role="listitem" style="--edge:rgba(184,132,92,.66)">
+      <img src="art/cards/pilot_ejected.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü ejected from a cockpit over a runway.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Pilot Ejected</p>
+        <p class="meta"><span class="gem"></span>Rare<span class="dot">·</span>Couch</p>
+      </div>
+    </article>
+    <article class="card r-common" role="listitem" style="--edge:rgba(236,216,190,.64)">
+      <img src="art/cards/not_great_not_terrible.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü at a control room desk, unbothered.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Not Great, Not Terrible</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Mattress</p>
+      </div>
+    </article>
+    <article class="card r-uncommon" role="listitem" style="--edge:rgba(184,132,92,.66)">
+      <img src="art/cards/bare_minimum_monarch.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü crowned on a small throne.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Bare Minimum Monarch</p>
+        <p class="meta"><span class="gem"></span>Uncommon<span class="dot">·</span>Couch</p>
+      </div>
+    </article>
+    <article class="card r-common" role="listitem" style="--edge:rgba(206,176,138,.54)">
+      <img src="art/cards/this_is_absolutely_fine.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü calm in a room that is on fire.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">This Is Absolutely Fine</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Cardboard</p>
+      </div>
+    </article>
+    <article class="card r-common" role="listitem" style="--edge:rgba(236,216,190,.64)">
+      <img src="art/cards/wednesday_already_canon.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü halfway through the week and unimpressed.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Wednesday Already</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Mattress</p>
+      </div>
+    </article>
+    <article class="card r-common" role="listitem" style="--edge:rgba(178,142,100,.52)">
+      <img src="art/cards/the_bush_vanisher.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü disappearing backwards into a hedge.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">Witness Protection</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Dirt</p>
+      </div>
+    </article>
+    <article class="card r-common" role="listitem" style="--edge:rgba(184,132,92,.66)">
+      <img src="art/cards/it_aint_much_but_its_honest_work.webp" width="560" height="835" loading="lazy" decoding="async" alt="Apoyü with a tiny rake, doing honest business.">
+      <span class="sweep" aria-hidden="true"></span>
+      <div class="plaque">
+        <p class="aname">It Ain't Much but It's Honest Work</p>
+        <p class="meta"><span class="gem"></span>Common<span class="dot">·</span>Couch</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="wrap">
+    <dl class="grammar rise">
+      <div class="grow"><dt>Comfort</dt><dd>the material. Cloud on your best mornings, Concrete on your worst.</dd></div>
+      <div class="grow"><dt>Archetype</dt><dd>the world. What actually happened that day.</dd></div>
+      <div class="grow"><dt>Rarity</dt><dd>the finish. How remarkable that particular mint was.</dd></div>
+    </dl>
+    <p class="foot rise" style="margin-top:14px">Three independent channels. A rough morning can still
+      mint something remarkable.</p>
+
+    <div class="ladder rise">
+      <span class="tier"><i style="background:var(--r-common);box-shadow:0 0 7px -1px var(--r-common)"></i>Common · Clean surface</span>
+      <span class="tier"><i style="background:var(--r-uncommon);box-shadow:0 0 8px -1px var(--r-uncommon)"></i>Uncommon · Polished edge</span>
+      <span class="tier"><i style="background:var(--r-rare);box-shadow:0 0 9px 0 var(--r-rare)"></i>Rare · Localized refractive foil</span>
+      <span class="tier"><i style="background:var(--r-legendary);box-shadow:0 0 11px 0 var(--r-legendary)"></i>Legendary · Prismatic laminate</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BEAT 5: TRUST + CONVERSION ======================= -->
+<section class="beat" id="trust" aria-labelledby="trusth">
+  <div class="atmos dawn" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow rise">What leaves your phone</p>
+    <h2 id="trusth" class="rise" style="margin-top:10px">Your night stays yours.</h2>
+    <p class="lede rise" style="margin-top:13px">Your individual readings never leave your phone. Apoyü works
+      out your score on the device. Only the day's results, like your score and a short summary of the night
+      and of each workout, are saved to your private account. The AI services that help write your brief see
+      those daily results and your first name, never your individual readings.</p>
+
+    <div class="chips rise" style="margin-top:20px">
+      <span class="chip"><b></b>Raw readings stay on device</span>
+      <span class="chip"><b></b>No ads, no trackers</span>
+      <span class="chip"><b></b>Never sold, never used to train models</span>
+    </div>
+
+    <p class="rise" style="margin-top:20px">
+      <a class="link" href="health-privacy.html">See exactly what goes where →</a>
+    </p>
+  </div>
+</section>
+
+<section class="beat" id="membership" aria-labelledby="memh" style="padding-bottom:64px">
+  <div class="wrap">
+    <p class="eyebrow rise">Membership</p>
+    <h2 id="memh" class="rise" style="margin-top:10px">Tomorrow already has a card.</h2>
+    <p class="lede rise" style="margin-top:12px">Apoyü Membership keeps the mornings coming. Choose a yearly
+      or a monthly plan. Both start with a 14 day free trial for eligible new subscribers, and the App Store
+      shows you the price in your own currency before you subscribe.</p>
+    <p class="lede rise" style="margin-top:12px">If your membership ends, Apoyü moves into Archive Mode.
+      Your cards, your Collection, your past mornings and the ability to share them stay yours. Apoyü simply
+      stops making new mornings until you come back.</p>
+
+    <div class="panel needs rise" aria-labelledby="needh">
+      <h3 id="needh" style="font-size:var(--t-heading)">What you need</h3>
+      <ul>
+        <li>An iPhone with Apple Health</li>
+        <li>An Apple Watch, worn to sleep</li>
+        <li>Ages 13 and up</li>
       </ul>
-    </section>
-  </main>
-  <footer class="site-footer">
-    <div class="wrap">
-      <p>For ages 13 and up.</p>
-      <p><a href="mailto:support@apoyu.app">support@apoyu.app</a></p>
-      <p>Apoyü is a wellness app, not a medical device, and does not provide medical advice.</p>
     </div>
-  </footer>
+    <p class="foot rise" style="margin-top:14px">Coming to the App Store.</p>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section class="beat faq" id="faq" aria-labelledby="faqh" style="padding-top:0">
+  <div class="wrap">
+    <h2 id="faqh" class="eyebrow rise" style="margin-bottom:6px">Reasonable questions</h2>
+    <div class="cols">
+      <details class="rise">
+        <summary>Doesn't my Apple Watch already show me this?</summary>
+        <p class="ans">The watch records. It does not decide. You still wake up to charts and the same
+          question. Apoyü reads the night for you and answers it, one call with one reason, measured
+          against your own baseline rather than a population curve.</p>
+      </details>
+      <details class="rise">
+        <summary>I already wear a recovery tracker.</summary>
+        <p class="ans">Then you already know the morning question. Apoyü works with the watch you own, so
+          there is no second strap to charge. It is also honest at the door about what each wearable
+          actually lets it hear.</p>
+      </details>
+      <details class="rise">
+        <summary>Do I need a subscription?</summary>
+        <p class="ans">Yes. Apoyü runs on Apoyü Membership, yearly or monthly, and there is no free plan.
+          Both plans start with a 14 day free trial for eligible new subscribers. If you stop, everything
+          you have earned stays yours in Archive Mode.</p>
+      </details>
+      <details class="rise">
+        <summary>Will it work without my watch on at night?</summary>
+        <p class="ans">No. Apoyü reads the night your Apple Watch records while you sleep, so it needs the
+          watch on your wrist in bed. On a night with thin data, Apoyü tells you so instead of guessing.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav class="flinks" aria-label="Site">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="health-privacy.html">Health Data Privacy</a>
+      <a href="support.html">Support</a>
+      <a href="mailto:support@apoyu.app">support@apoyu.app</a>
+    </nav>
+    <p class="foot">Apoyü is a wellness app. It is not a medical device and does not diagnose, treat or
+      prevent any condition. For ages 13 and up.</p>
+  </div>
+</footer>
+
+
+<script>
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+document.documentElement.classList.add('js');
+
+const HASH = location.hash.replace('#', '');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches || HASH === 'calm';
+if (HASH === 'calm') document.body.classList.add('calm');
+
+/* ===========================================================================
+   THE LAUNCH DECK (subset). Archetype names, rarities and voice lines are
+   verbatim from the app's Gold canon: launch_voice_lines.json. Comfort is the
+   material channel and is independent of rarity, by design.
+   =========================================================================== */
+const DECK = [
+  { id:'turn_the_lights_off', name:'Turn the lights off', rarity:'Common', tier:'common',
+    comfort:'Cloud', edge:'rgba(240,236,255,.78)', line:'The lights are off. The hips are not.' },
+  { id:'goblin_mode', name:'Goblin Mode Activated', rarity:'Uncommon', tier:'uncommon',
+    comfort:'Dirt', edge:'rgba(178,142,100,.52)', line:'The cereal box was closer than the bowl.' },
+  { id:'pilot_ejected', name:'Pilot Ejected', rarity:'Rare', tier:'rare',
+    comfort:'Couch', edge:'rgba(184,132,92,.66)', line:'The runway is more of a suggestion.' },
+  { id:'not_great_not_terrible', name:'Not Great, Not Terrible', rarity:'Common', tier:'common',
+    comfort:'Mattress', edge:'rgba(236,216,190,.64)', line:'The control room has chosen not to panic.' },
+  { id:'bare_minimum_monarch', name:'Bare Minimum Monarch', rarity:'Uncommon', tier:'uncommon',
+    comfort:'Couch', edge:'rgba(184,132,92,.66)', line:'A tiny effort has been knighted.' },
+  { id:'this_is_absolutely_fine', name:'This Is Absolutely Fine', rarity:'Common', tier:'common',
+    comfort:'Cardboard', edge:'rgba(206,176,138,.54)', line:'The smoke alarm is being dramatic.' },
+  { id:'wednesday_already_canon', name:'Wednesday Already', rarity:'Common', tier:'common',
+    comfort:'Mattress', edge:'rgba(236,216,190,.64)', line:'The week is only half dead, which feels inefficient.' },
+  { id:'the_bush_vanisher', name:'Witness Protection', rarity:'Common', tier:'common',
+    comfort:'Dirt', edge:'rgba(178,142,100,.52)', line:'I was last seen becoming shrubbery.' },
+  { id:'it_aint_much_but_its_honest_work', name:"It Ain't Much but It's Honest Work", rarity:'Common',
+    tier:'common', comfort:'Couch', edge:'rgba(184,132,92,.66)', line:'The tiny rake did honest business.' }
+];
+
+/* Local-date key, never a UTC day boundary (the app's todayLocalDateString rule). */
+function todayKey() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function seedFrom(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+const TODAY = todayKey();
+const CARD = DECK[seedFrom(TODAY) % DECK.length];
+
+/* ===========================================================================
+   TODAY'S PULL
+   =========================================================================== */
+const flipper = $('#flipper');
+const pullSection = $('#pull');
+
+$('#pullart').src = 'art/cards/' + CARD.id + '.webp';
+$('#pullart').alt = CARD.name + ', a card from the Apoyü launch deck.';
+$('#pullname').textContent = CARD.name;
+$('#pullrarity').textContent = CARD.rarity;
+$('#pullcomfort').textContent = CARD.comfort;
+$('#voiceline').textContent = '“' + CARD.line + '”';
+$('#pulldate').textContent = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+const pullcard = $('#pullcard');
+pullcard.classList.add('r-' + CARD.tier);
+pullcard.style.setProperty('--edge', CARD.edge);
+
+let pulled = false;
+function pull() {
+  if (pulled) return;
+  pulled = true;
+  flipper.classList.add('flipped');
+  pullSection.classList.add('isrevealed');
+  flipper.setAttribute('aria-label', CARD.name + ', ' + CARD.rarity + '. ' + CARD.line);
+  $('#pullhint').textContent = 'Tomorrow is a different card.';
+}
+flipper.addEventListener('click', pull);
+if (HASH === 'reveal') pull();
+
+/* ===========================================================================
+   AMBIENT SPARKS: a handful, CSS-driven, skipped entirely under reduced motion
+   =========================================================================== */
+if (!REDUCED) {
+  const host = $('#sparks');
+  const n = innerWidth < 700 ? 9 : 15;
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    const dur = 11 + Math.random() * 13;
+    html += '<span class="sp" style="left:' + (Math.random() * 100).toFixed(2) + '%;'
+      + 'animation-duration:' + dur.toFixed(1) + 's;'
+      + 'animation-delay:-' + (Math.random() * dur).toFixed(1) + 's;'
+      + '--dx:' + (Math.random() * 60 - 30).toFixed(0) + 'px;'
+      + 'opacity:' + (0.35 + Math.random() * 0.4).toFixed(2) + '"></span>';
+  }
+  host.innerHTML = html;
+}
+
+/* ===========================================================================
+   SCROLL-IN. Opt-in only: without JS or IntersectionObserver everything shows.
+   =========================================================================== */
+const RISERS = $$('.rise');
+function revealAll() { RISERS.forEach(el => el.classList.add('in')); }
+if ('IntersectionObserver' in window && !REDUCED) {
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  RISERS.forEach(el => io.observe(el));
+  // anything already on screen shows at once, without waiting for a callback
+  RISERS.forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
+  });
+  // FAILSAFE: motion must never be able to hide content. If the observer never
+  // fires (print, prerender, an old engine, a screenshot pass), show everything.
+  setTimeout(revealAll, 1600);
+  addEventListener('beforeprint', revealAll);
+} else {
+  revealAll();
+}
+
+/* ===========================================================================
+   THE V3 FIDELITY SPECIMEN (W1A.2)
+   ---------------------------------------------------------------------------
+   Facts are the app's own visual-lab fixture for this archetype
+   (features/collectible/fixtures/visual-lab-fixtures.ts): nothing invented.
+   The module is loaded LAZILY and only when the hero is near the viewport, so
+   the runtime never blocks first paint.
+   =========================================================================== */
+/* THE DEFAULT HERO IS A PRODUCTION-VALID MINT.
+   Every field below is either read from the production pipeline or generated by
+   it. Provenance, field by field:
+     archetypeId/title  ARCHETYPE_MANIFEST.this_is_absolutely_fine (displayName)
+     rarity 'rare'      archetypes.ts pins minRarity = maxRarity = 'rare', and
+                        rarity-engine.ts clamps every roll to that range, so a
+                        LEGENDARY card of this archetype cannot be minted.
+     recoveryScore 38   chosen inside the archetype's own eligible band
+     comfortType 'dirt' NOT chosen: assignComfortType(38) returns it, and
+                        zoneOfComfort('dirt') is 'red', which is the zone this
+                        archetype serves. It is in its comfortTypeAffinity.
+     why                GENERATED by the real presentReceiptWhy() over a receipt
+                        of the shape this archetype's trigger consults
+                        (rule 'acute_chronic_ratio', coverage 'evidence').
+                        NOT the visual-lab line, which that module explicitly
+                        says is not production truth.
+     hrv/sleep/rhr      display vitals, directionally consistent with the
+                        z-scores the why was generated from (hrv -1.62,
+                        rhr -1.18, sleep -0.7). No production generator exists
+                        for a synthetic user's own measurements.
+     trainingLoad .86   the high end of the LOW/USUAL/HIGH track, consistent
+                        with the acute-to-chronic ratio of 1.42 above.
+     finishSeed         an arbitrary valid 32-bit seed; P6 stores one per mint.
+   This is a REVIEW FIXTURE assembled from production-valid values. It is not a
+   claim that any real user ever minted this exact card. */
+window.APOYU_SPECIMEN = {
+  archetypeId: 'this_is_absolutely_fine',
+  title: 'This Is Absolutely Fine',
+  why: 'Training these last days ran 1.4 times what your body normally carries. Yesterday alone cost 186.',
+  comfortType: 'dirt',
+  rarity: 'rare',
+  finishSeed: 604417233,
+  recoveryScore: 38,
+  hrvMs: 34,
+  sleepQualityScore: 61,
+  rhrBpm: 59,
+  trainingLoad: { position: 0.86 },
+};
+
+/* 🔴 STRESS SPECIMEN, REVIEW ONLY, REACHED VIA #legendary-stress.
+   The visual-lab fixture (visual-lab-fixtures.ts), kept because Legendary is the
+   only tier that exercises the whole finish vocabulary: holo play, sparkle, the
+   thinnest catch, full edge light, and the highest orb and gem participation.
+   A LEGENDARY This Is Absolutely Fine IS NOT A PRODUCTION-VALID MINT. Never use
+   this as the founder's side-by-side fidelity reference. */
+window.APOYU_SPECIMEN_STRESS = {
+  archetypeId: 'this_is_absolutely_fine',
+  title: 'This Is Absolutely Fine',
+  why: 'Training load stayed high while recovery sank. The overload finally added up, and the lights agree.',
+  comfortType: 'concrete',
+  rarity: 'legendary',
+  finishSeed: 880713920,
+  recoveryScore: 38,
+  hrvMs: 34,
+  sleepQualityScore: 61,
+  rhrBpm: 59,
+  trainingLoad: { position: 0.86 },
+};
+
+/* ===========================================================================
+   REVIEW HOOKS
+   =========================================================================== */
+if (HASH === 'reveal') $('#pull').scrollIntoView({ behavior: 'auto' });
+if (HASH === 'collection') $('#collection').scrollIntoView({ behavior: 'auto' });
+if (HASH === 'membership') $('#membership').scrollIntoView({ behavior: 'auto' });
+</script>
+
+<script type="module">
+/* Boot the fidelity specimen. Everything here is additive: if the module, WebGL2
+   or Rive is unavailable the hero keeps the canonical poster and the page is
+   otherwise unchanged. */
+const host = document.getElementById('specimen');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches
+             || location.hash.replace('#','') === 'calm';
+let booted = false;
+async function boot() {
+  if (booted || !host) return;
+  booted = true;
+  try {
+    const { mountCollectibleV3 } = await import('./art/card/mount.js');
+    const stress = location.hash.replace('#', '') === 'legendary-stress';
+    const facts = stress ? window.APOYU_SPECIMEN_STRESS : window.APOYU_SPECIMEN;
+    const lead = stress
+      ? `A lab stress specimen, not a production-valid mint: a ${facts.rarity} Apoyü collectible`
+      : `A ${facts.rarity} Apoyü collectible`;
+    host.setAttribute('aria-label',
+      `${facts.title}. ${lead} on ${facts.comfortType}, recovery ${facts.recoveryScore}. ${facts.why}`);
+    document.documentElement.dataset.specimenMode = stress ? 'legendary-stress' : 'production';
+    const card = await mountCollectibleV3(host, facts, { reduceMotion: REDUCED });
+    host.classList.add('mounted');
+    window.__apoyuCard = card;               // review hook: card.setPointer(x, y)
+    document.documentElement.dataset.specimen = card.riveActive ? 'rive' : 'poster';
+    // Review hooks for the inspection states, so a still can be captured at a
+    // known light position instead of chasing a live pointer.
+    const h = location.hash.replace('#', '');
+    if (h === 'light-left') card.setPointer(-0.85, -0.35);
+    if (h === 'light-right') card.setPointer(0.85, 0.35);
+    if (h === 'light-top') card.setPointer(0, -0.9);
+    // Hold the travelling catch mid-card so a still can evidence the finish.
+    if (h === 'sweep' || h === 'light-left' || h === 'light-right') card.setFinishPhase(0.72);
+  } catch (e) {
+    console.warn('[apoyu] specimen unavailable, canonical poster stands:', e);
+    document.documentElement.dataset.specimen = 'poster';
+  }
+}
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((es) => {
+    if (es[0].isIntersecting) { io.disconnect(); boot(); }
+  }, { rootMargin: '200px' });
+  io.observe(host);
+} else { boot(); }
+</script>
 </body>
 </html>
